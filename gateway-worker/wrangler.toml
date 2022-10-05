@@ -7,3 +7,11 @@ APP_BASE_URL = "https://piercing-productivity-suite.pages.dev"
 
 [env.local.vars]
 APP_BASE_URL = "http://localhost:8585"
+
+[[services]]
+binding = "login-fragment"
+service = "piercing-productivity-suite-login-fragment"
+
+[[env.local.services]]
+binding = "login-fragment"
+service = "piercing-productivity-suite-login-fragment-local"

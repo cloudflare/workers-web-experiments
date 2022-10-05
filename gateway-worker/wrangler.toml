@@ -1,0 +1,9 @@
+name = "piercing-productivity-suite-gateway-worker"
+main = "src/index.ts"
+compatibility_date = "2022-10-05"
+
+[vars]
+APP_BASE_URL = "https://piercing-productivity-suite.pages.dev"
+
+[env.local.vars]
+APP_BASE_URL = "http://localhost:8585"

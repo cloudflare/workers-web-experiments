@@ -6,8 +6,10 @@ import { registerPiercingFragmentOutlet } from "piercing-lib";
 
 registerPiercingFragmentOutlet();
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+setTimeout(() => {
+  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}, +(window.sessionStorage.getItem("spaDelay") ?? 0) * 500);

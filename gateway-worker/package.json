@@ -1,0 +1,15 @@
+{
+  "name": "gateway-worker",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.16.0",
+    "typescript": "^4.8.4",
+    "wrangler": "2.1.10",
+    "piercing-lib": "file:../piercing-lib"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev --local --env local",
+    "deploy": "wrangler publish"
+  }
+}

@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "piercing-lib": "file:../piercing-lib",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "piercing-lib": "file:../piercing-lib"
+    "react-router-dom": "^6.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

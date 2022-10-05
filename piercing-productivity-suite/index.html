@@ -5,9 +5,68 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Piercing Productivity Suite</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .spa-delay-slider-wrapper {
+        background-color: #e1e1e1;
+        color: gray;
+        border-bottom: 1px solid #bcbcbc;
+        display: flex;
+        align-items: center;
+      }
+
+      @media (max-width: 500px){
+        .spa-delay-slider-wrapper {
+
+        flex-direction: column;
+        }
+      }
+
+      .spa-delay-slider-wrapper > * {
+        margin: .5rem;
+      }
+
+      #spa-delay-slider-input {
+        flex: 1;
+        align-self: stretch;
+        opacity: 0.5;
+        accent-color: #8a8a8a;
+      }
+
+      #spa-delay-slider-output {
+        width: 11ch;
+        text-align: end;
+        margin-left: 0;
+      }
+    </style>
   </head>
   <body>
+    <div class="spa-delay-slider-wrapper">
+      <span>SPA bootstrap delay: </span>
+      <input type="range" min="0" max="100" value="0" id="spa-delay-slider-input">
+      <span id="spa-delay-slider-output"></span>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      const spaDelaySliderInput = document.getElementById('spa-delay-slider-input');
+      const spaDelaySliderOutput = document.getElementById('spa-delay-slider-output');
+      spaDelaySliderInput.addEventListener('input', (event) => {
+        window.sessionStorage.setItem('spaDelay', event.target.value);
+        updateSpaDelaySliderOutput();
+      });
+      const initialSpaDelay = window.sessionStorage.getItem('spaDelay');
+      spaDelaySliderInput.value = initialSpaDelay ?? 0;
+      updateSpaDelaySliderOutput();
+
+      function updateSpaDelaySliderOutput() {
+        const value = +spaDelaySliderInput.value;
+        spaDelaySliderOutput.textContent = `${value / 2} second${
+          value === 0 || value > 1 ? 's' : ''
+        }`;
+      }
+    </script>
   </body>
 </html>

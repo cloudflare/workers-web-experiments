@@ -1,6 +1,6 @@
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { AuthProvider, RequireAuth } from "./auth";
+import { AuthProvider, RequireAuth, RequireNotAuth } from "./auth";
 import { Layout } from "./components/layout";
 import { Login, TodoLists, Calendar, Contacts, News } from "./components/pages";
 
@@ -11,7 +11,15 @@ export default function App() {
         <AuthProvider>
           <Routes>
             <Route element={<Layout />}>
-              <Route path="/login" element={<Login />} />
+              <Route
+                element={
+                  <RequireNotAuth>
+                    <Outlet />
+                  </RequireNotAuth>
+                }
+              >
+                <Route path="/login" element={<Login />} />
+              </Route>
               {ProtectedRoutes}
             </Route>
           </Routes>

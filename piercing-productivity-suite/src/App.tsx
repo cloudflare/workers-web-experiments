@@ -2,7 +2,7 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { AuthProvider, RequireAuth } from "./auth";
 import { Layout } from "./components/layout";
-import { Login } from "./components/pages/login";
+import { Login, TodoLists, Calendar, Contacts, News } from "./components/pages";
 
 export default function App() {
   return (
@@ -29,8 +29,10 @@ const ProtectedRoutes = (
       </RequireAuth>
     }
   >
-    <Route path="/" element={<h2>TODO LIST</h2>} />
-    <Route path="/todos" element={<h2>TODO LIST</h2>} />
-    <Route path="/calendar" element={<h2>CALENDAR</h2>} />
+    <Route path="/" element={<TodoLists />} />
+    <Route path="/todos" element={<TodoLists />} />
+    <Route path="/calendar" element={<Calendar />} />
+    <Route path="/contacts" element={<Contacts />} />
+    <Route path="/news" element={<News />} />
   </Route>
 );

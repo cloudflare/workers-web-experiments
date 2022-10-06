@@ -256,7 +256,12 @@ export class PiercingGateway<Env> {
     const match = fragmentBasePathRegex.exec(pathname);
     const assetPath = match?.[1] ?? "";
     const service = this.getFragmentFetcher(env, fragmentId);
-    const newRequest = new Request(`${getBaseUrl(env)}${assetPath}`, request);
+    const baseUrl = getBaseUrl(env);
+    const divisor = baseUrl.endsWith("/") ? "" : "/";
+    const newRequest = new Request(
+      `${getBaseUrl(env)}${divisor}${assetPath}`,
+      request
+    );
     return service.fetch(newRequest);
   }
 

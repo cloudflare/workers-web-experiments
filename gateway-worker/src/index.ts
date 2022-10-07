@@ -23,6 +23,8 @@ gateway.registerFragment({
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host {
 			position: absolute;
+      top: 7.2rem;
+      left: .5rem;
     }`,
   shouldBeIncluded: async (request: Request) => !isUserAuthenticated(request),
 });
@@ -34,10 +36,11 @@ gateway.registerFragment({
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
       top: 16.5rem;
-      left: 1rem;
+      left: 1.5rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
-    isUserAuthenticated(request) && new URL(request.url).pathname === "/todos",
+    isUserAuthenticated(request) &&
+    ["/", "/todos"].includes(new URL(request.url).pathname),
 });
 
 gateway.registerFragment({
@@ -47,10 +50,11 @@ gateway.registerFragment({
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
       top: 16.5rem;
-      left: 17rem;
+      left: 17.5rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
-    isUserAuthenticated(request) && new URL(request.url).pathname === "/todos",
+    isUserAuthenticated(request) &&
+    ["/", "/todos"].includes(new URL(request.url).pathname),
 });
 
 export default gateway;

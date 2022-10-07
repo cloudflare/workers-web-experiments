@@ -12,14 +12,14 @@ let AuthContext = createContext<AuthContextType>(null!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  const user = getCookie("current-user");
+  const user = getCookie("currentUser");
 
   const login = async (username: string) => {
-    saveCookie("current-user", username);
+    saveCookie("currentUser", username);
   };
 
   const logout = () => {
-    deleteCookie("current-user");
+    deleteCookie("currentUser");
     navigate("/login");
   };
 

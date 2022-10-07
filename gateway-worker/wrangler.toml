@@ -23,3 +23,11 @@ service = "piercing-productivity-suite-todo-lists-fragment"
 [[env.local.services]]
 binding = "todo-lists-fragment"
 service = "piercing-productivity-suite-todo-lists-fragment-local"
+
+[[services]]
+binding = "todos-fragment"
+service = "piercing-productivity-suite-todos-fragment"
+
+[[env.local.services]]
+binding = "todos-fragment"
+service = "piercing-productivity-suite-todos-fragment-local"

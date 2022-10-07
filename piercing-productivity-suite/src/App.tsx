@@ -6,7 +6,7 @@ import { Login, TodoLists, Calendar, Contacts, News } from "./components/pages";
 
 export default function App() {
   return (
-    <div className="App">
+    <>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
@@ -25,7 +25,7 @@ export default function App() {
           </Routes>
         </AuthProvider>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 

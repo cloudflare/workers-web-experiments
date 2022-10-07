@@ -27,4 +27,17 @@ gateway.registerFragment({
   shouldBeIncluded: async (request: Request) => !isUserAuthenticated(request),
 });
 
+gateway.registerFragment({
+  fragmentId: "todo-lists",
+  getBaseUrl: () => `http:0.0.0.0/build`,
+  prePiercingStyles: `
+		:not(piercing-fragment-outlet) > piercing-fragment-host {
+      position: absolute;
+      top: 16.5rem;
+      left: 1rem;
+    }`,
+  shouldBeIncluded: async (request: Request) =>
+    isUserAuthenticated(request) && new URL(request.url).pathname === "/todos",
+});
+
 export default gateway;

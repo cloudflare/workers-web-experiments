@@ -3,7 +3,7 @@ import "./TodoLists.css";
 export function TodoLists() {
   return (
     <div className="todo-lists-page">
-      <div className="placeholder">lists sidenav goes here</div>
+      <piercing-fragment-outlet fragment-id="todo-lists" />
       <div className="placeholder">todos go here</div>
     </div>
   );

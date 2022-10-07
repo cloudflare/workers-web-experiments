@@ -12,4 +12,4 @@ setTimeout(() => {
       <App />
     </React.StrictMode>
   );
-}, +(window.sessionStorage.getItem("spaDelay") ?? 0) * 500);
+}, +(window.sessionStorage.getItem("spaDelay") ?? 0) * 1000);

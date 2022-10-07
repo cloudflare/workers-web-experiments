@@ -22,7 +22,6 @@ export const Root = component$(() => {
       <form
         preventdefault:submit
         onSubmit$={() => {
-          console.log(`username => ${userData.username}`);
           dispatchPiercingEvent(ref.current!, {
             type: "login",
             payload: {
@@ -41,7 +40,6 @@ export const Root = component$(() => {
               userData.password = [...value]
                 .map((s) => s.charCodeAt(0))
                 .join("");
-              console.log(`${userData.username} - ${userData.password}`);
             }}
             value={userData.username}
             autoComplete="true"

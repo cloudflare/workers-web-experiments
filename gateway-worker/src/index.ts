@@ -19,7 +19,10 @@ function isUserAuthenticated(request: Request) {
 
 gateway.registerFragment({
   fragmentId: "login",
-  getBaseUrl: () => `http:0.0.0.0/build`,
+  // Note: deployment part of the url is fine also for local development since then
+  //       only the path part of the url is being used
+  getBaseUrl: () =>
+    `https://piercing-productivity-suite-login-fragment.devdash.workers.dev/build`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host {
 			position: absolute;
@@ -31,7 +34,10 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todo-lists",
-  getBaseUrl: () => `http:0.0.0.0/build`,
+  // Note: deployment part of the url is fine also for local development since then
+  //       only the path part of the url is being used
+  getBaseUrl: () =>
+    `https://piercing-productivity-suite-todo-lists-fragment.devdash.workers.dev/build`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -45,7 +51,10 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todos",
-  getBaseUrl: () => `http:0.0.0.0/_fragment/todos`,
+  // Note: deployment part of the url is fine also for local development since then
+  //       only the path part of the url is being used
+  getBaseUrl: () =>
+    `https://piercing-productivity-suite-todos-fragment.devdash.workers.dev/_fragment/todos`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;

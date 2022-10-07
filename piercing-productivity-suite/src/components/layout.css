@@ -1,0 +1,38 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header button {
+    margin-left: .5rem;
+}
+
+nav > ul {
+    list-style: none;
+    display: flex;
+}
+
+nav > ul > li {
+    margin: .5rem;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+main {
+    flex: 1;
+}
+
+header, footer {
+    background-color: blue;
+    color: white;
+}
+
+footer > p {
+    margin: .5rem;
+    text-align: end;
+}

@@ -21,7 +21,7 @@ export const Root = component$(() => {
 
   const state = useStore<{
     currentUser?: string;
-    lists: string[];
+    lists: { name: string; todos: any[] }[];
     newListName: string;
   }>({
     lists: [],
@@ -30,33 +30,35 @@ export const Root = component$(() => {
 
   useMount$(() => {
     state.currentUser = envCurrentUser;
-    state.lists = initialUserData.todoLists.map(({ name }) => name);
+    state.lists = initialUserData.todoLists;
   });
 
   return (
     <aside ref={ref}>
       <h3>Your Lists:</h3>
       <ul>
-        {state.lists.map((listName) => (
-          <li key={listName}>
+        {state.lists.map((list) => (
+          <li key={list.name}>
             <button
               onClick$={() => {
                 dispatchPiercingEvent(ref.current!, {
                   type: "todo-list-click",
-                  payload: { listName },
+                  payload: { list },
                 });
               }}
             >
-              {listName}
+              {list.name}
             </button>
             <button
               onClick$={async () => {
                 const success = await removeTodoList(
                   state.currentUser!,
-                  listName
+                  list.name
                 );
                 if (success) {
-                  state.lists = state.lists.filter((list) => list !== listName);
+                  state.lists = state.lists.filter(
+                    ({ name }) => name !== list.name
+                  );
                 }
               }}
             >
@@ -73,7 +75,10 @@ export const Root = component$(() => {
                 state.newListName
               );
               if (success) {
-                state.lists = [...state.lists, state.newListName];
+                state.lists = [
+                  ...state.lists,
+                  { name: state.newListName, todos: [] },
+                ];
                 state.newListName = "";
               }
             }}

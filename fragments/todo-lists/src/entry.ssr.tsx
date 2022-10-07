@@ -9,7 +9,7 @@ export default {
     const writer = writable.getWriter();
 
     const cookie = parse(request.headers.get("Cookie") || "");
-    const currentUser = cookie["piercingDemoSuite_current-user"];
+    const currentUser = cookie["piercingDemoSuite_currentUser"];
     const userData: { todoLists: { name: string; todos: any[] }[] } =
       JSON.parse(
         cookie[`piercingDemoSuite_userData_${currentUser}`] ??

@@ -8,3 +8,15 @@ body {
     flex: 1;
     display: flex;
 }
+
+.placeholder {
+    display: grid;
+    place-content: center;
+    color: gray;
+    border: 3px dashed currentColor;
+    font-size: 1.5rem;
+    flex: 1;
+    margin: 1rem;
+    background-color: #f1f1f1;
+    text-align: center;
+}

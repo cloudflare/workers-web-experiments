@@ -1,19 +1,25 @@
+import { useState } from "react";
 import "./TodoLists.css";
 
 export function TodoLists() {
+  const [selectedList, setSelectedList] = useState<{
+    name: string;
+    todos: any[];
+  }>();
+
   return (
     <div className="todo-lists-page">
       <piercing-fragment-outlet
         fragment-id="todo-lists"
         onTodoListClick={({
-          detail: { listName },
+          detail: { list },
         }: {
-          detail: { listName: string };
+          detail: { list: { name: string; todos: any[] } };
         }) => {
-          alert(`${listName} list clicked`);
+          setSelectedList(list);
         }}
       />
-      <piercing-fragment-outlet fragment-id="todos" />
+      {selectedList && <piercing-fragment-outlet fragment-id="todos" />}
     </div>
   );
 }

@@ -13,7 +13,7 @@ const cookiesPrefix = "piercingDemoSuite_";
 
 function isUserAuthenticated(request: Request) {
   const cookie = parse(request.headers.get("Cookie") || "");
-  const currentUser = cookie[`${cookiesPrefix}current-user`];
+  const currentUser = cookie[`${cookiesPrefix}currentUser`];
   return !!currentUser;
 }
 

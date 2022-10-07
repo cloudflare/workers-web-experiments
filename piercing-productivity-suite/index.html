@@ -36,7 +36,7 @@
       }
 
       #spa-delay-slider-output {
-        width: 11ch;
+        width: 9ch;
         text-align: end;
         margin-left: 0;
       }
@@ -45,7 +45,7 @@
   <body>
     <div class="spa-delay-slider-wrapper">
       <span>SPA bootstrap delay: </span>
-      <input type="range" min="0" max="100" value="0" id="spa-delay-slider-input">
+      <input type="range" min="0" max="10" value="3" id="spa-delay-slider-input">
       <span id="spa-delay-slider-output"></span>
     </div>
     <div id="root"></div>
@@ -63,7 +63,7 @@
 
       function updateSpaDelaySliderOutput() {
         const value = +spaDelaySliderInput.value;
-        spaDelaySliderOutput.textContent = `${value / 2} second${
+        spaDelaySliderOutput.textContent = `${value} second${
           value === 0 || value > 1 ? 's' : ''
         }`;
       }

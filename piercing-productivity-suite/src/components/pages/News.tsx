@@ -1,7 +1,7 @@
 export function News() {
   return (
-    <div>
-      <h2>News</h2>
+    <div className="placeholder">
+      <p>News go here</p>
     </div>
   );
 }

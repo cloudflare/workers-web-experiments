@@ -1,7 +1,7 @@
 export function Contacts() {
   return (
-    <div>
-      <h2>Contacts</h2>
+    <div className="placeholder">
+      <p>Contacts go here</p>
     </div>
   );
 }

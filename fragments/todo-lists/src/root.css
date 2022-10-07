@@ -1,0 +1,15 @@
+.root {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: none;
+}
+
+.form-control {
+    margin: 1rem;
+}
+
+.submit-btn {
+    margin-top: 1rem;
+    display: block;
+}

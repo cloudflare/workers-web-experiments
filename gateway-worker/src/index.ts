@@ -31,10 +31,23 @@ gateway.registerFragment({
   fragmentId: "todo-lists",
   getBaseUrl: () => `http:0.0.0.0/build`,
   prePiercingStyles: `
-		:not(piercing-fragment-outlet) > piercing-fragment-host {
+		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
       top: 16.5rem;
       left: 1rem;
+    }`,
+  shouldBeIncluded: async (request: Request) =>
+    isUserAuthenticated(request) && new URL(request.url).pathname === "/todos",
+});
+
+gateway.registerFragment({
+  fragmentId: "todos",
+  getBaseUrl: () => `http:0.0.0.0/_fragment/todos`,
+  prePiercingStyles: `
+		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
+      position: absolute;
+      top: 16.5rem;
+      left: 17rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
     isUserAuthenticated(request) && new URL(request.url).pathname === "/todos",

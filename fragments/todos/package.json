@@ -1,0 +1,36 @@
+{
+	"name": "piercing-productivity-suite-todo-lists-fragment",
+	"description": "Todos Fragment Implemented using React",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev -c vite.config.client.ts",
+		"build:client": "tsc && vite build -c vite.config.client.ts",
+		"build:server": "tsc && vite build --ssr src/worker/index.tsx -c vite.config.server.ts",
+		"build:client-local": "tsc && vite build -c vite.config.client.ts --mode development-local",
+		"build:server-local": "tsc && vite build --ssr src/worker/index.tsx -c vite.config.server.ts --mode development-local",
+		"build": "npm run build:client; npm run build:server",
+		"build-local": "npm run build:client-local; npm run build:server-local",
+		"preview": "wrangler dev",
+		"start-local": "wrangler dev --local --env local",
+		"deploy": "wrangler publish"
+	},
+	"dependencies": {
+		"@cloudflare/kv-asset-handler": "^0.2.0",
+		"cookie": "^0.5.0",
+		"piercing-lib": "file:../../piercing-lib",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^3.14.1",
+		"@types/cookie": "^0.5.1",
+		"@types/react": "^18.0.17",
+		"@types/react-dom": "^18.0.6",
+		"@vitejs/plugin-react": "^2.0.1",
+		"typescript": "^4.6.4",
+		"vite": "^3.0.7",
+		"wrangler": "^2.1.9"
+	}
+}

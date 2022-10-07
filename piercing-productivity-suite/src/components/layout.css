@@ -38,3 +38,7 @@ footer > p {
     margin: .5rem;
     text-align: end;
 }
+
+.active {
+    font-weight: bolder;
+}

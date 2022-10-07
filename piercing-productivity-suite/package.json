@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main"
   },
   "// React note for the blog post - 1": "make sure to remember to mention that we need the react experimental packages",
   "// React note for the blog post - 2": "and that for compatibility with the react-router-dom we need to add `-f` to `npm i`",

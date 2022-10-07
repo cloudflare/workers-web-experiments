@@ -14,7 +14,7 @@ export const Root = component$(() => {
 
   const userData = useStore({
     username: "",
-    password: "hjgjj",
+    password: "",
   });
 
   return (

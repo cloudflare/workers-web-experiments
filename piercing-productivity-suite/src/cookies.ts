@@ -4,7 +4,7 @@ const cookiesPrefix = "piercingDemoSuite_";
 import { parse } from "cookie";
 
 export function saveCookie(name: string, value: string) {
-  if (new Blob([value]).size > cookieBytesLimit) {
+  if (new Blob([`${cookiesPrefix}${name}`, value]).size > cookieBytesLimit) {
     alert(
       `Error: The cookie bytes limit is not enough to hold the data for cookie \"${name}\",` +
         " expect something not to work as it should"

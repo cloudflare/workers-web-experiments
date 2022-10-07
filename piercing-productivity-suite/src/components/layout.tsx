@@ -47,16 +47,27 @@ function Footer() {
   );
 }
 
+const pageTitlesMap: { [path: string]: string } = {
+  "/todos": "Todo Lists",
+  "/": "Todo Lists",
+  "/calendar": "Calendar",
+  "/contacts": "Contacts",
+  "/news": "News",
+};
+
 export function Layout() {
   const location = useLocation();
 
-  const isLoginPage = location.pathname === "/login";
+  const path = location.pathname;
+  const isLoginPage = path === "/login";
+  const pageTitle = pageTitlesMap[path];
 
   return (
     <div className="layout">
       <Header />
       {!isLoginPage && <NavBar />}
       <main>
+        {pageTitle && <h2>{pageTitle}</h2>}
         <Outlet />
       </main>
       <Footer />

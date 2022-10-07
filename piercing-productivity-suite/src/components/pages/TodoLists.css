@@ -1,0 +1,7 @@
+.todo-lists-page {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 15rem 5fr;
+    gap: 1rem;
+    padding: 1rem;
+}

@@ -5,6 +5,11 @@ export interface FragmentConfig<Env> {
   fragmentId: string;
   getBaseUrl: (env: Env) => string;
   prePiercingStyles: string;
+  convertRequest?: (
+    request: Request,
+    env: Env,
+    fragmentConfig: FragmentConfig<Env>
+  ) => Request;
   shouldBeIncluded: (
     request: Request,
     env: Env,
@@ -97,9 +102,7 @@ export class PiercingGateway<Env> {
   }
 
   private async handleFragmentFetch(request: Request, env: Env) {
-    const match = request.url.match(
-      /^https?:\/\/[^/]*\/piercing-fragment\/([^?/]*)/
-    );
+    const match = request.url.match(/\/piercing-fragment\/([^?/]*)[^/]*$/);
 
     if (match?.length !== 2) return null;
 
@@ -129,13 +132,22 @@ export class PiercingGateway<Env> {
   private async handleFragmentAssetFetch(request: Request, env: Env) {
     const url = new URL(request.url);
     const path = url.pathname;
-    const regex = /^\/_fragment\/([^/]*)(?:\/?)(?:.*)$/;
+    const regex = /\/_fragment\/([^/]*)\/?.*$/;
     const match = path.match(regex);
     if (match?.length !== 2) return null;
     const fragmentId = match[1];
     const fragmentConfig = this.fragmentConfigs.get(fragmentId);
     if (!fragmentConfig) return null;
-    return this.proxyAssetRequestToFragmentWorker(env, fragmentConfig, request);
+    // if the request has an extra base we need to remove it here
+    const adjustedReq = new Request(
+      new URL(`${url.protocol}//${url.host}${match[0]}`),
+      request
+    );
+    return this.proxyAssetRequestToFragmentWorker(
+      env,
+      fragmentConfig,
+      adjustedReq
+    );
   }
 
   private forwardFetchToBaseApp(request: Request, env: Env) {
@@ -213,17 +225,9 @@ export class PiercingGateway<Env> {
     request: Request,
     prePiercing = true
   ): Promise<ReadableStream> {
-    const url = new URL(request.url);
     const service = this.getFragmentFetcher(env, fragmentConfig.fragmentId);
-    const searchParams = `${url.searchParams}`;
-    const searchParamsStr = searchParams ? `?${searchParams}` : "";
-    const newBaseUrl = fragmentConfig.getBaseUrl(env).replace(/\/$/, "");
-    const fragmentPathUrl = url.pathname.replace(
-      `piercing-fragment/${fragmentConfig.fragmentId}`,
-      ""
-    );
-    const newUrl = `${newBaseUrl}${fragmentPathUrl}${searchParamsStr}`;
-    const response = await service.fetch(newUrl, request);
+    const newRequest = this.getRequestForFragment(request, fragmentConfig, env);
+    const response = await service.fetch(newRequest);
     const fragmentStream = response.body!;
 
     let preFragment = `<piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>`;
@@ -238,6 +242,25 @@ export class PiercingGateway<Env> {
     }
 
     return wrapStreamInText(preFragment, postFragment, fragmentStream);
+  }
+
+  private getRequestForFragment(
+    request: Request,
+    fragmentConfig: FragmentConfig<Env>,
+    env: Env
+  ) {
+    const url = new URL(
+      request.url.replace(`piercing-fragment/${fragmentConfig.fragmentId}`, "")
+    );
+
+    const convertRequest =
+      fragmentConfig.convertRequest ?? this.defaultConvertRequest;
+    const newRequest = convertRequest(
+      new Request(url, request),
+      env,
+      fragmentConfig
+    );
+    return newRequest;
   }
 
   private getFragmentFetcher(env: Env, fragmentId: string): Fetcher {
@@ -277,6 +300,20 @@ export class PiercingGateway<Env> {
           missingBindingFragmentIds.map((id) => `${id}-fragment`).join(", ")
       );
     }
+  }
+
+  private defaultConvertRequest(
+    request: Request,
+    env: Env,
+    fragmentConfig: FragmentConfig<Env>
+  ) {
+    const url = new URL(request.url);
+    return new Request(
+      `${fragmentConfig.getBaseUrl(env).replace(/\/$/, "")}${url.pathname}?${
+        url.searchParams
+      }`,
+      request
+    );
   }
 }
 

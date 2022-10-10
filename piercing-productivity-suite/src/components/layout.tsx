@@ -60,12 +60,21 @@ const pageTitlesMap: { [path: string]: string } = {
   "/news": "News",
 };
 
+function getPageTitle(path: string) {
+  const pageTitle = pageTitlesMap[path];
+  if (pageTitle) return pageTitle;
+
+  if (/\/todos\/[^/]?/.test(path)) {
+    return pageTitlesMap["/todos"];
+  }
+}
+
 export function Layout() {
   const location = useLocation();
 
   const path = location.pathname;
   const isLoginPage = path === "/login";
-  const pageTitle = pageTitlesMap[path];
+  const pageTitle = getPageTitle(path);
 
   return (
     <div className="layout">

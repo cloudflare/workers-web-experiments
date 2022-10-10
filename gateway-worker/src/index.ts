@@ -1,5 +1,5 @@
 import { parse } from "cookie";
-import { PiercingGateway } from "piercing-lib";
+import { FragmentConfig, PiercingGateway } from "piercing-lib";
 
 export interface Env {
   APP_BASE_URL: string;
@@ -46,7 +46,27 @@ gateway.registerFragment({
     }`,
   shouldBeIncluded: async (request: Request) =>
     isUserAuthenticated(request) &&
-    ["/", "/todos"].includes(new URL(request.url).pathname),
+    /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
+  convertRequest: (
+    request: Request,
+    env: Env,
+    thisConfig: FragmentConfig<Env>
+  ) => {
+    const path = new URL(request.url).pathname;
+    const match = /^\/todos\/([^/]+)$/.exec(path);
+
+    if (!match) return request;
+
+    const listName = match[1];
+    const params = new URLSearchParams({ listName });
+
+    return new Request(
+      // TODO: instead of replacing /build/ we should probably have an assets base url
+      //       and a base url... maybe?
+      `${thisConfig.getBaseUrl(env).replace(/\/build$/, "")}?${params}`,
+      request
+    );
+  },
 });
 
 gateway.registerFragment({
@@ -63,7 +83,23 @@ gateway.registerFragment({
     }`,
   shouldBeIncluded: async (request: Request) =>
     isUserAuthenticated(request) &&
-    ["/", "/todos"].includes(new URL(request.url).pathname),
+    /\/todos\/[^/]+/.test(new URL(request.url).pathname),
+  convertRequest: (
+    request: Request,
+    env: Env,
+    thisConfig: FragmentConfig<Env>
+  ) => {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    const match = /\/todos\/([^/]+)$/.exec(path);
+    const listName = match?.[1] ?? url.searchParams.get("listName");
+
+    if (!listName) return request;
+
+    const params = new URLSearchParams({ listName });
+
+    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+  },
 });
 
 export default gateway;

@@ -13,3 +13,7 @@
     margin-top: 1rem;
     display: block;
 }
+
+.selected-list {
+    font-weight: bolder;
+}

@@ -1,11 +1,12 @@
-import { parse } from "cookie";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
 (async () => {
+  const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
+
   const todosListDetails = {
-    listName: "Todo List",
+    listName: match?.[1] ?? null,
   };
 
   const application = (

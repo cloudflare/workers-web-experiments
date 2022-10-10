@@ -12,7 +12,7 @@ export function TodoLists() {
     const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
     if (match) {
       setSelectedList({
-        name: match[1],
+        name: decodeURIComponent(match[1]),
         todos: [],
       });
     }

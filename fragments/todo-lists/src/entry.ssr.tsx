@@ -15,6 +15,8 @@ export default {
         cookie[`piercingDemoSuite_userData_${currentUser}`] ??
           '{ "todoLists": [] }'
       );
+    const url = new URL(request.url);
+    const listName = url.searchParams.get("listName") ?? null;
 
     const stream = {
       write: (chunk: any) => {
@@ -36,6 +38,7 @@ export default {
       envData: {
         currentUser,
         userData,
+        listName,
       },
     }).finally(() => writer.close());
 

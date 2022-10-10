@@ -10,3 +10,4 @@ import piercingFragmentHostInlineScriptRaw from "../dist/piercing-fragment-host-
 export const piercingFragmentHostInlineScript = `<script>(() => {${piercingFragmentHostInlineScriptRaw}})();</script>`;
 
 export { PiercingGateway } from "./piercing-gateway";
+export type { FragmentConfig } from "./piercing-gateway";

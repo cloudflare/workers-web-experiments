@@ -57,7 +57,7 @@ gateway.registerFragment({
 
     if (!match) return request;
 
-    const listName = match[1];
+    const listName = decodeURIComponent(match[1]);
     const params = new URLSearchParams({ listName });
 
     return new Request(
@@ -92,7 +92,9 @@ gateway.registerFragment({
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/todos\/([^/]+)$/.exec(path);
-    const listName = match?.[1] ?? url.searchParams.get("listName");
+    const listName =
+      (match?.[1] && decodeURIComponent(match[1])) ??
+      url.searchParams.get("listName");
 
     if (!listName) return request;
 

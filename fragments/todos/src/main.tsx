@@ -1,17 +1,30 @@
+import { parse } from "cookie";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { getList } from "./api";
 import App from "./App";
+import { EnvContext } from "./env";
 
 (async () => {
   const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
+  const listName = match?.[1] ?? null;
+  let todosListDetails = undefined;
 
-  const todosListDetails = {
-    listName: match?.[1] ?? null,
-  };
+  const cookie = parse(document.cookie);
+  const currentUser = cookie["piercingDemoSuite_currentUser"] ?? null;
+
+  if (currentUser && listName) {
+    const list = await getList(currentUser, decodeURIComponent(listName));
+    if (list) {
+      todosListDetails = list;
+    }
+  }
 
   const application = (
     <React.StrictMode>
-      <App todosListDetails={todosListDetails} />
+      <EnvContext.Provider value={{ currentUser }}>
+        <App todosListDetails={todosListDetails} />
+      </EnvContext.Provider>
     </React.StrictMode>
   );
 

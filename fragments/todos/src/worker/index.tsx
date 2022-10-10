@@ -7,6 +7,8 @@ import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 // @ts-ignore
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 import { wrapStreamInText } from "piercing-lib";
+import { EnvContext } from "../env";
+import { getList } from "../api";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
@@ -26,6 +28,8 @@ export default {
   ): Promise<Response> {
     globalThis.backendWorkerFetcher = env.backend;
     const cookie = parse(request.headers.get("Cookie") || "");
+    const currentUser = cookie["piercingDemoSuite_currentUser"] ?? null;
+
     const url = new URL(request.url);
     const pathname = url.pathname;
 
@@ -37,11 +41,18 @@ export default {
       return fetchAsset(request, ctx, env);
     }
 
-    const listName = url.searchParams.get("listName") ?? null;
-
-    const todosListDetails = {
-      listName,
-    };
+    const listName = url.searchParams.get("listName");
+    let todosListDetails = undefined;
+    if (currentUser && listName) {
+      const list = await getList(
+        currentUser,
+        decodeURIComponent(listName),
+        request.headers.get("Cookie") || ""
+      );
+      if (list) {
+        todosListDetails = list;
+      }
+    }
 
     const baseUrl = request.url
       .replace(/todos\/todos/, "todos")
@@ -64,7 +75,11 @@ export default {
     const stream = wrapStreamInText(
       pre,
       post,
-      await renderToReadableStream(<App todosListDetails={todosListDetails} />)
+      await renderToReadableStream(
+        <EnvContext.Provider value={{ currentUser }}>
+          <App todosListDetails={todosListDetails} />
+        </EnvContext.Provider>
+      )
     );
 
     return new Response(stream, {

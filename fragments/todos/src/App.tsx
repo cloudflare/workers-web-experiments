@@ -2,7 +2,7 @@ import "./App.css";
 import { dispatchPiercingEvent } from "piercing-lib";
 import { UIEvent } from "react";
 
-const App: React.FC<{ todosListDetails: { listName: string } }> = ({
+const App: React.FC<{ todosListDetails: { listName: string | null } }> = ({
   todosListDetails: { listName },
 }) => {
   return (

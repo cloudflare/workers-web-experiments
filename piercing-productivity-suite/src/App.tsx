@@ -39,6 +39,7 @@ const ProtectedRoutes = (
   >
     <Route path="/" element={<TodoLists />} />
     <Route path="/todos" element={<TodoLists />} />
+    <Route path="/todos/:listName" element={<TodoLists />} />
     <Route path="/calendar" element={<Calendar />} />
     <Route path="/contacts" element={<Contacts />} />
     <Route path="/news" element={<News />} />

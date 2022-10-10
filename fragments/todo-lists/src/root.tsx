@@ -18,19 +18,23 @@ export const Root = component$(() => {
   const envCurrentUser: string = useEnvData("currentUser")!;
   const initialUserData: { todoLists: { name: string; todos: any[] }[] } =
     useEnvData("userData")!;
+  const initialListName: string | null = useEnvData("listName") ?? null;
 
   const state = useStore<{
     currentUser?: string;
     lists: { name: string; todos: any[] }[];
     newListName: string;
+    selectedList: string | null;
   }>({
     lists: [],
     newListName: "",
+    selectedList: null,
   });
 
   useMount$(() => {
     state.currentUser = envCurrentUser;
     state.lists = initialUserData.todoLists;
+    state.selectedList = initialListName;
   });
 
   return (
@@ -45,7 +49,9 @@ export const Root = component$(() => {
                   type: "todo-list-click",
                   payload: { list },
                 });
+                state.selectedList = list.name;
               }}
+              class={state.selectedList === list.name ? "selected-list" : ""}
             >
               {list.name}
             </button>

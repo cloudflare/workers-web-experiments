@@ -29,7 +29,7 @@ export default {
     const url = new URL(request.url);
     const pathname = url.pathname;
 
-    const requestIsForIndex = /^\/_fragment\/todos(\/todos)?\/?$/.test(
+    const requestIsForIndex = /^\/(_fragment\/todos(\/todos)?\/?)?$/.test(
       pathname
     );
 
@@ -37,11 +37,16 @@ export default {
       return fetchAsset(request, ctx, env);
     }
 
+    const listName = url.searchParams.get("listName") ?? null;
+
     const todosListDetails = {
-      listName: "Todo List",
+      listName,
     };
 
-    const baseUrl = request.url.replace(/todos(\/todos)?\/?$/, "todos");
+    const baseUrl = request.url
+      .replace(/todos\/todos/, "todos")
+      .replace(/(\?[^/]*)\/?$/, "");
+
     const initialPageHtml = await fetchAsset(
       new Request(`${baseUrl}/index.html`),
       ctx,

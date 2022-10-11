@@ -22,7 +22,7 @@ gateway.registerFragment({
   // Note: deployment part of the url is fine also for local development since then
   //       only the path part of the url is being used
   getBaseUrl: () =>
-    `https://piercing-productivity-suite-login-fragment.devdash.workers.dev/build`,
+    `https://piercing-productivity-suite-login-fragment.devdash.workers.dev`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host {
 			position: absolute;
@@ -37,7 +37,7 @@ gateway.registerFragment({
   // Note: deployment part of the url is fine also for local development since then
   //       only the path part of the url is being used
   getBaseUrl: () =>
-    `https://piercing-productivity-suite-todo-lists-fragment.devdash.workers.dev/build`,
+    `https://piercing-productivity-suite-todo-lists-fragment.devdash.workers.dev`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -60,12 +60,7 @@ gateway.registerFragment({
     const listName = decodeURIComponent(match[1]);
     const params = new URLSearchParams({ listName });
 
-    return new Request(
-      // TODO: instead of replacing /build/ we should probably have an assets base url
-      //       and a base url... maybe?
-      `${thisConfig.getBaseUrl(env).replace(/\/build$/, "")}?${params}`,
-      request
-    );
+    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
   },
 });
 

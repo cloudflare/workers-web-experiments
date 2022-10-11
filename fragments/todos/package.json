@@ -5,7 +5,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev -c vite.config.client.ts",
+		"dev:vite": "vite dev -c vite.config.client.ts",
 		"build:client": "tsc && vite build -c vite.config.client.ts",
 		"build:server": "tsc && vite build --ssr src/worker/index.tsx -c vite.config.server.ts",
 		"build:client-local": "tsc && vite build -c vite.config.client.ts --mode development-local",
@@ -13,7 +13,8 @@
 		"build": "npm run build:client; npm run build:server",
 		"build-local": "npm run build:client-local; npm run build:server-local",
 		"preview": "wrangler dev",
-		"start-local": "wrangler dev --local --env local",
+		"start": "wrangler dev --local --env local",
+		"dev": "npm run start",
 		"deploy": "wrangler publish"
 	},
 	"dependencies": {

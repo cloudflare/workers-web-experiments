@@ -11,6 +11,7 @@
   "private": true,
   "scripts": {
     "start": "wrangler dev --local --env local",
+    "dev": "npm run start",
     "deploy": "wrangler publish"
   },
   "dependencies": {

@@ -37,6 +37,12 @@ export const Root = component$(() => {
     state.selectedList = initialListName;
   });
 
+  const trimmedNewListName = state.newListName.trim();
+
+  const addButtonDisabled =
+    !trimmedNewListName.trim() ||
+    state.lists.some(({ name }) => name === trimmedNewListName);
+
   return (
     <aside ref={ref}>
       <h3>Your Lists:</h3>
@@ -78,12 +84,12 @@ export const Root = component$(() => {
             onSubmit$={async () => {
               const success = await addTodoList(
                 state.currentUser!,
-                state.newListName.trim()
+                trimmedNewListName
               );
               if (success) {
                 state.lists = [
                   ...state.lists,
-                  { name: state.newListName.trim(), todos: [] },
+                  { name: trimmedNewListName, todos: [] },
                 ];
                 state.newListName = "";
               }
@@ -96,14 +102,7 @@ export const Root = component$(() => {
                 state.newListName = (event.target as HTMLInputElement).value;
               }}
             />
-            <button
-              disabled={
-                !state.newListName.trim() ||
-                state.lists.some(({ name }) => name === state.newListName)
-              }
-            >
-              Add
-            </button>
+            <button disabled={addButtonDisabled}>Add</button>
           </form>
         </li>
       </ul>

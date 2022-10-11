@@ -22,7 +22,7 @@ export default {
       manifest,
       containerTagName: "login",
       qwikLoader: { include: "never" },
-      base: "_fragment/login",
+      base: "_fragment/login/build",
       stream,
     }).finally(() => writer.close());
 

@@ -78,12 +78,12 @@ export const Root = component$(() => {
             onSubmit$={async () => {
               const success = await addTodoList(
                 state.currentUser!,
-                state.newListName
+                state.newListName.trim()
               );
               if (success) {
                 state.lists = [
                   ...state.lists,
-                  { name: state.newListName, todos: [] },
+                  { name: state.newListName.trim(), todos: [] },
                 ];
                 state.newListName = "";
               }
@@ -96,7 +96,14 @@ export const Root = component$(() => {
                 state.newListName = (event.target as HTMLInputElement).value;
               }}
             />
-            <button disabled={!state.newListName}>Add</button>
+            <button
+              disabled={
+                !state.newListName.trim() ||
+                state.lists.some(({ name }) => name === state.newListName)
+              }
+            >
+              Add
+            </button>
           </form>
         </li>
       </ul>

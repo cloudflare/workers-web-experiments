@@ -1,0 +1,7 @@
+.todo-label {
+    cursor: pointer;
+}
+
+.todo-label.done {
+    text-decoration: line-through;
+}

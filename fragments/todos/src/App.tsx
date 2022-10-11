@@ -23,8 +23,14 @@ const App: React.FC<{
           <ul>
             {todos.map(({ text, done }) => (
               <li key={text}>
-                <span>{text}</span>
+                <label
+                  htmlFor={`todo-checkbox-${text}`}
+                  className={`todo-label ${done ? "done" : ""}`}
+                >
+                  {text}
+                </label>
                 <input
+                  id={`todo-checkbox-${text}`}
                   type="checkbox"
                   checked={done}
                   onChange={async (event: ChangeEvent<HTMLInputElement>) => {
@@ -55,10 +61,10 @@ const App: React.FC<{
           <form
             onSubmit={async (event: FormEvent) => {
               event.preventDefault();
-              await addTodo(currentUser, listName, newTodoText);
+              await addTodo(currentUser, listName, newTodoText.trim());
               setTodosListDetails({
                 listName,
-                todos: [...todos, { text: newTodoText, done: false }],
+                todos: [...todos, { text: newTodoText.trim(), done: false }],
               });
               setNewTodoText("");
             }}
@@ -74,7 +80,8 @@ const App: React.FC<{
             />
             <button
               disabled={
-                !newTodoText || todos.some(({ text }) => text === newTodoText)
+                !newTodoText.trim() ||
+                todos.some(({ text }) => text === newTodoText)
               }
             >
               Add Todo

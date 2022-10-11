@@ -15,6 +15,12 @@ const App: React.FC<{
 
   const { currentUser } = useContext(EnvContext);
 
+  const trimmedNewTodoText = newTodoText.trim();
+
+  const addButtonDisabled =
+    !trimmedNewTodoText ||
+    todos.some(({ text }) => text === trimmedNewTodoText);
+
   return (
     <>
       {currentUser && listName && todos && (
@@ -61,10 +67,10 @@ const App: React.FC<{
           <form
             onSubmit={async (event: FormEvent) => {
               event.preventDefault();
-              await addTodo(currentUser, listName, newTodoText.trim());
+              await addTodo(currentUser, listName, trimmedNewTodoText);
               setTodosListDetails({
                 listName,
-                todos: [...todos, { text: newTodoText.trim(), done: false }],
+                todos: [...todos, { text: trimmedNewTodoText, done: false }],
               });
               setNewTodoText("");
             }}
@@ -78,14 +84,7 @@ const App: React.FC<{
                 setNewTodoText(event.target.value);
               }}
             />
-            <button
-              disabled={
-                !newTodoText.trim() ||
-                todos.some(({ text }) => text === newTodoText)
-              }
-            >
-              Add Todo
-            </button>
+            <button disabled={addButtonDisabled}>Add Todo</button>
           </form>
         </div>
       )}

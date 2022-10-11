@@ -6,7 +6,7 @@ function Header() {
   const auth = useAuth();
 
   return (
-    <header>
+    <header className="app-header">
       <h1>Piercing Productivity Suite</h1>
       {auth.user && (
         <div>
@@ -27,7 +27,7 @@ function NavBar() {
   ];
 
   return (
-    <nav>
+    <nav className="app-nav">
       <ul>
         {navBarLinks.map(({ path, text }) => (
           <li key={path}>
@@ -46,7 +46,7 @@ function NavBar() {
 
 function Footer() {
   return (
-    <footer>
+    <footer className="app-footer">
       <p>2022</p>
     </footer>
   );
@@ -80,7 +80,7 @@ export function Layout() {
     <div className="layout">
       <Header />
       {!isLoginPage && <NavBar />}
-      <main>
+      <main className="app-main">
         {pageTitle && <h2>{pageTitle}</h2>}
         <Outlet />
       </main>

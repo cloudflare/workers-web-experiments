@@ -10,6 +10,7 @@
 		"build.ssr-local": "vite build --mode development-local --ssr src/entry.ssr.tsx",
 		"lint": "eslint \"src/**/*.ts*\"",
 		"start": "npx wrangler dev --local --env local",
+		"dev": "npm run start",
 		"deploy": "npx wrangler publish",
 		"typecheck": "tsc --incremental --noEmit"
 	},

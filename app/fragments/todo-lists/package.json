@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"cookie": "^0.5.0",
-		"piercing-lib": "file:../../../piercing-lib"
+		"piercing-library": "file:../../../piercing-library"
 	},
 	"devDependencies": {
 		"@builder.io/qwik": "0.10.0",

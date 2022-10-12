@@ -4,7 +4,7 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import { dispatchPiercingEvent } from "piercing-lib";
+import { dispatchPiercingEvent } from "piercing-library";
 
 import styles from "./root.css?inline";
 

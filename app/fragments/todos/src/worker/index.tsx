@@ -6,7 +6,7 @@ import { parse } from "cookie";
 import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 // @ts-ignore
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
-import { wrapStreamInText } from "piercing-lib";
+import { wrapStreamInText } from "piercing-library";
 import { EnvContext } from "../env";
 import { getList } from "../api";
 const assetManifest = JSON.parse(manifestJSON);

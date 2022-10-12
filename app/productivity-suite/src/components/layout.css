@@ -10,12 +10,27 @@
 }
 
 .app-nav > ul {
+    margin: 0;
+    padding: .5rem 1rem;
+    background-color: #fff;
+    color: #0051c3;
+    border-bottom: 1px solid currentColor;
     list-style: none;
     display: flex;
+    justify-content: space-evenly;
 }
 
 .app-nav > ul > li {
     margin: .5rem;
+}
+
+.app-nav > ul a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.app-nav > ul a:hover {
+    text-decoration: underline;
 }
 
 .layout {
@@ -41,14 +56,38 @@
     text-align: end;
 }
 
+.app-header .btn {
+    color: #fff;
+    background-color: #f6821f;
+    cursor: pointer;
+    border: none;
+    padding: .5rem 1rem;
+}
+
+.app-header .btn:hover {
+    background-color: #d86300;
+}
+
 .active {
     font-weight: bolder;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 100;
+    font-weight: 200;
 }
 
 .app-title {
     color: white;
+}
+
+.app-page-title {
+    margin: 2rem 0 0.3rem 0;
+}
+
+.app-page-sub-title {
+    margin: 0;
+}
+
+.app-page-heading {
+    margin-bottom: 1rem;
 }

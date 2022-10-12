@@ -7,7 +7,7 @@ function Header() {
 
   return (
     <header className="app-header">
-      <h1>Productivity Suite</h1>
+      <h1 className="app-title">Productivity Suite</h1>
       {auth.user && (
         <div>
           <span>{auth.user}</span>

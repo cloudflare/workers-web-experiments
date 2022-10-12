@@ -17,7 +17,7 @@
   "// React note for the blog post - 2": "and that for compatibility with the react-router-dom we need to add `-f` to `npm i`",
   "dependencies": {
     "cookie": "^0.5.0",
-    "piercing-lib": "file:../../piercing-lib",
+    "piercing-library": "file:../../piercing-library",
     "react": "0.0.0-experimental-65b3449c8-20221005",
     "react-dom": "0.0.0-experimental-65b3449c8-20221005",
     "react-router-dom": "^6.4.1"

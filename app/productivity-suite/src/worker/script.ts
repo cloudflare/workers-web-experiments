@@ -1,5 +1,5 @@
 import { parse } from "cookie";
-import { FragmentConfig, PiercingGateway } from "piercing-lib";
+import { FragmentConfig, PiercingGateway } from "piercing-library";
 
 export interface Env {
   APP_BASE_URL: string;

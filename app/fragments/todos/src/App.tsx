@@ -1,9 +1,9 @@
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { addTodo, editTodo, removeTodo } from "./api";
 import "./App.css";
 import { EnvContext } from "./env";
 
-enum TodoSelection {
+enum TodoType {
   all = "all",
   active = "active",
   completed = "completed",
@@ -17,9 +17,7 @@ const App: React.FC<{
     todos: todosListDetails?.todos ?? [],
   });
 
-  const [todosSelection, setTodosSelection] = useState<TodoSelection>(
-    TodoSelection.all
-  );
+  const [todosSelection, setTodosSelection] = useState<TodoType>(TodoType.all);
 
   const [newTodoDetails, setNewTodoDetails] = useState<{
     text: string;
@@ -31,10 +29,10 @@ const App: React.FC<{
   const activeTodos = todos.filter(({ done }) => !done);
   const completedTodos = todos.filter(({ done }) => done);
 
-  const todosMap: Record<TodoSelection, { text: string; done: boolean }[]> = {
-    [TodoSelection.all]: todos,
-    [TodoSelection.active]: activeTodos,
-    [TodoSelection.completed]: completedTodos,
+  const todosMap: Record<TodoType, { text: string; done: boolean }[]> = {
+    [TodoType.all]: todos,
+    [TodoType.active]: activeTodos,
+    [TodoType.completed]: completedTodos,
   };
 
   const todosToShow = todosMap[todosSelection];
@@ -101,8 +99,8 @@ const App: React.FC<{
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                       const allDone = event.target.checked;
                       const todosToToggle = allDone
-                        ? todosMap[TodoSelection.active]
-                        : todosMap[TodoSelection.completed];
+                        ? todosMap[TodoType.active]
+                        : todosMap[TodoType.completed];
                       for (const { text, done } of todosToToggle) {
                         editTodo(currentUser, listName, text, {
                           text,
@@ -245,7 +243,7 @@ const App: React.FC<{
                     {activeTodos.length !== 1 ? "s" : ""} left
                   </span>
                   <ul className="filters">
-                    {Object.values(TodoSelection).map((selection) => (
+                    {Object.values(TodoType).map((selection) => (
                       <li key={`selection-${selection}`}>
                         <button
                           className={
@@ -263,7 +261,7 @@ const App: React.FC<{
                       className="clear-completed"
                       onClick={() => {
                         for (const completedTodo of todosMap[
-                          TodoSelection.completed
+                          TodoType.completed
                         ]) {
                           removeTodo(currentUser, listName, completedTodo.text);
                         }

@@ -1,24 +1,29 @@
 {
-  "name": "piercing-productivity-suite",
+  "name": "productivity-suite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "deploy": "npm run build && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main"
+    "start": "echo '\\033[0;31m Run \"npm run fe:dev\" and \"npm run be:dev\" in two separate terminals to start the app \\033[0;0m'",
+    "dev": "npm run start",
+    "be:dev": "wrangler dev --local --env local",
+    "be:deploy": "wrangler publish",
+    "fe:dev": "vite",
+    "fe:build": "tsc && vite build",
+    "fe:deploy": "npm run fe:build && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main",
+    "deploy": "npm run fe:deploy; npm run be:deploy"
   },
   "// React note for the blog post - 1": "make sure to remember to mention that we need the react experimental packages",
   "// React note for the blog post - 2": "and that for compatibility with the react-router-dom we need to add `-f` to `npm i`",
   "dependencies": {
     "cookie": "^0.5.0",
-    "piercing-lib": "file:../piercing-lib",
+    "piercing-lib": "file:../../piercing-lib",
     "react": "0.0.0-experimental-65b3449c8-20221005",
     "react-dom": "0.0.0-experimental-65b3449c8-20221005",
     "react-router-dom": "^6.4.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^3.16.0",
     "@types/cookie": "^0.5.1",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",

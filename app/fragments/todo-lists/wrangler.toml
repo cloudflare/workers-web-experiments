@@ -1,4 +1,4 @@
-name = "piercing-productivity-suite-login-fragment"
+name = "productivity-suite-todo-lists-fragment"
 compatibility_date = "2022-10-05"
 main = "server/entry.ssr.js"
 assets = "./dist"

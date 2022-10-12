@@ -1,0 +1,33 @@
+name = "productivity-suite"
+main = "src/worker/script.ts"
+compatibility_date = "2022-10-05"
+
+[vars]
+APP_BASE_URL = "https://productivity-suite.pages.dev"
+
+[env.local.vars]
+APP_BASE_URL = "http://localhost:8585"
+
+[[services]]
+binding = "login-fragment"
+service = "productivity-suite-login-fragment"
+
+[[env.local.services]]
+binding = "login-fragment"
+service = "productivity-suite-login-fragment-local"
+
+[[services]]
+binding = "todo-lists-fragment"
+service = "productivity-suite-todo-lists-fragment"
+
+[[env.local.services]]
+binding = "todo-lists-fragment"
+service = "productivity-suite-todo-lists-fragment-local"
+
+[[services]]
+binding = "todos-fragment"
+service = "productivity-suite-todos-fragment"
+
+[[env.local.services]]
+binding = "todos-fragment"
+service = "productivity-suite-todos-fragment-local"

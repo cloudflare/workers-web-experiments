@@ -32,7 +32,7 @@
 }
 
 .app-header, .app-footer {
-    background-color: blue;
+    background-color: #0051c3;
     color: white;
 }
 
@@ -43,4 +43,12 @@
 
 .active {
     font-weight: bolder;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 100;
+}
+
+.app-title {
+    color: white;
 }

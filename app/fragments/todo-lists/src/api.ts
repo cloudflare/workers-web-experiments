@@ -44,15 +44,17 @@ function saveCookie(cookieName: string, value: string) {
   const expirationDate = new Date(
     new Date().getTime() + millisInAMonth
   ).toUTCString();
-  document.cookie = `${cookieName}=${value}; expires=${expirationDate}; path=/`;
+  document.cookie = `${encodeURIComponent(cookieName)}=${encodeURIComponent(
+    value
+  )}; expires=${expirationDate}; path=/`;
 }
 
 function getUserData(user: string) {
-  const cookieName = `piercingDemoSuite_userData_${user}`;
+  const cookieName = `piercingDemoSuite_userData_${encodeURIComponent(user)}`;
   const cookies = parse(document.cookie || "");
   const cookie = cookies[`${cookieName}`];
   const data: { todoLists: { name: string; todos: any[] }[] } = JSON.parse(
-    cookie ?? '{ "todoLists": [] }'
+    (cookie && decodeURIComponent(cookie)) ?? '{ "todoLists": [] }'
   );
   return data;
 }

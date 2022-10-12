@@ -15,15 +15,20 @@ export function saveCookie(name: string, value: string) {
   const expirationDate = new Date(
     new Date().getTime() + millisInAMonth
   ).toUTCString();
-  document.cookie = `${cookiesPrefix}${name}=${value}; expires=${expirationDate}; path=/`;
+  const cookieName = encodeURIComponent(`${cookiesPrefix}${name}`);
+  document.cookie = `${cookieName}=${encodeURIComponent(
+    value
+  )}; expires=${expirationDate}; path=/`;
 }
 
 export function deleteCookie(name: string) {
   const expirationDate = new Date(0).toUTCString();
-  document.cookie = `${cookiesPrefix}${name}=; expires=${expirationDate}; path=/`;
+  const cookieName = encodeURIComponent(`${cookiesPrefix}${name}`);
+  document.cookie = `${cookieName}=; expires=${expirationDate}; path=/`;
 }
 
 export function getCookie(name: string) {
   const cookie = parse(document.cookie || "");
-  return cookie[`${cookiesPrefix}${name}`] ?? null;
+  const cookieName = encodeURIComponent(`${cookiesPrefix}${name}`);
+  return cookie[cookieName] ?? null;
 }

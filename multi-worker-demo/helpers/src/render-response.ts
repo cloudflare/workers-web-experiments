@@ -31,6 +31,7 @@ export async function renderResponse(
     },
     manifest,
     containerTagName,
+    ...(!containerTagName ? { containerAttributes: { lang: "en" } } : {}),
     stream,
     envData: { request, env, fragmentBase },
     qwikLoader: { include: "auto" },

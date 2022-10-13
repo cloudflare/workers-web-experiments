@@ -2,7 +2,10 @@ name = "multi-worker-demo-main"
 account_id = "377c4d8c370d3a28e89f25ec1887fa71"
 
 compatibility_date = "2022-07-25"
-compatibility_flags = ["streams_enable_constructors", "transformstream_enable_standard_constructor"]
+compatibility_flags = [
+  "streams_enable_constructors",
+  "transformstream_enable_standard_constructor",
+]
 # The SSR code is generated in the `server` directory.
 main = "server/entry.ssr.js"
 # assets = { bucket = "./dist", include = ["**", "../../header/dist/**"] }
@@ -12,7 +15,8 @@ assets = "./dist"
 # The client code is generated in the `dist` directory.
 # We use the `assets` config to supply these static files as needed.
 command = "npm run build"
-watch_dir = "src"
+# Rebuild when the helper library changes
+watch_dir = ["src", "../helpers/src"]
 
 [[services]]
 binding = "header"

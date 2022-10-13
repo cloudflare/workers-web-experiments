@@ -2,10 +2,13 @@ name = "multi-worker-demo-filter"
 account_id = "377c4d8c370d3a28e89f25ec1887fa71"
 
 compatibility_date = "2022-07-25"
-# Build the SSR code that will run in the Worker.
-build.command = "npm run build"
-# The SSR code is generated in the `server` directory.
-main = "server/entry.ssr.js"
 # The client code is generated in the `dist` directory.
 # We use the `assets` config to supply these static files as needed.
 assets = "./dist"
+# The SSR code is generated in the `server` directory.
+main = "server/entry.ssr.js"
+[build]
+# Build the SSR code that will run in the Worker.
+command = "npm run build"
+# Rebuild when the helper library changes
+watch_dir = ["src", "../helpers/src"]

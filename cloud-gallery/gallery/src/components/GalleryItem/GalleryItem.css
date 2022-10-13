@@ -1,0 +1,23 @@
+.gallery-item {
+	position: relative;
+	overflow: hidden;
+	border-radius: 25px;
+	width: 18rem;
+}
+
+.gallery-item :global(img){
+	width: 100%;
+	height: auto;
+}
+
+.tags {
+	position: absolute;
+	bottom: 15px;
+	left: 15px;
+	font-weight: 700;
+	font-size: 16px;
+	background-color: #3d3d3d;
+	color: #ededed;
+	padding: 5px;
+	border-radius: 5px;
+}

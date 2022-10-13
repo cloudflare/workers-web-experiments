@@ -1,0 +1,38 @@
+{
+	"name": "footer",
+	"description": "Simple Qwik footer container component",
+	"scripts": {
+		"prebuild": "npm run -w helpers build",
+		"build": "npm run build.client && npm run build.ssr",
+		"build.client": "vite build",
+		"build.ssr": "vite build --ssr src/entry.ssr.tsx",
+		"lint": "eslint \"src/**/*.ts*\"",
+		"start": "npx wrangler dev --local",
+		"deploy": "npx wrangler publish",
+		"typecheck": "tsc --incremental --noEmit"
+	},
+	"devDependencies": {
+		"@builder.io/qwik": "^0.10.0",
+		"@cloudflare/workers-types": "^3.14.1",
+		"@types/eslint": "8.4.5",
+		"@types/express": "4.17.13",
+		"@types/node": "latest",
+		"@typescript-eslint/eslint-plugin": "5.30.6",
+		"@typescript-eslint/parser": "5.30.6",
+		"eslint": "8.20.0",
+		"eslint-plugin-qwik": "0.0.38",
+		"prettier": "2.7.1",
+		"typescript": "4.7.4",
+		"vite": "3.0.1",
+		"vite-tsconfig-paths": "3.5.0"
+	},
+	"engines": {
+		"node": ">=14"
+	},
+	"license": "",
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"@builder.io/qwik-city": "^0.0.111"
+	}
+}

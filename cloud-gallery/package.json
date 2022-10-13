@@ -1,0 +1,27 @@
+{
+	"name": "qwik-multi-worker",
+	"version": "0.0.0",
+	"description": "",
+	"workspaces": [
+		"helpers",
+		"footer",
+		"header",
+		"filter",
+		"gallery",
+		"body",
+		"main"
+	],
+	"scripts": {
+		"test": "npm run typecheck --workspaces --if-present &&  npm run lint --workspaces --if-present",
+		"deploy": "npm run deploy --workspaces --if-present"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"concurrently": "^7.4.0",
+		"wrangler": "^2.0.28"
+	},
+	"dependencies": {
+		"@builder.io/qwik-city": "^0.0.111"
+	}
+}

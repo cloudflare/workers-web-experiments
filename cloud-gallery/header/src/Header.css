@@ -1,0 +1,15 @@
+.container {
+	margin: 30px auto;
+	width: 85%;
+	padding-bottom: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #dadada;
+}
+
+.title {
+	width: fit-content;
+	font-family: Avenir Next, sans-serif;
+	font-size: 30px;
+}

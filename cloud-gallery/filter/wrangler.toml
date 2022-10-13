@@ -1,0 +1,15 @@
+name = "cloud-gallery-filter"
+# `web-experiments` account (replace this with your own account id)
+account_id = "8ed4d03ac99f77561d0e8c9cbcc76cb6"
+
+compatibility_date = "2022-07-25"
+# The client code is generated in the `dist` directory.
+# We use the `assets` config to supply these static files as needed.
+assets = "./dist"
+# The SSR code is generated in the `server` directory.
+main = "server/entry.ssr.js"
+[build]
+# Build the SSR code that will run in the Worker.
+command = "npm run build"
+# Rebuild when the helper library changes
+watch_dir = ["src", "../helpers/src"]

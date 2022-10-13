@@ -1,7 +1,10 @@
+import { UnimplementedDemoPage } from "../UnimplementedDemoPage";
+
 export function Contacts() {
   return (
-    <div className="placeholder">
-      <p>Contacts go here</p>
-    </div>
+    <UnimplementedDemoPage
+      imageSrc="/google-icons/contacts.svg"
+      imageAlt="Contacts Icon"
+    />
   );
 }

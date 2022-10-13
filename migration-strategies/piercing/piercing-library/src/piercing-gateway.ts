@@ -102,7 +102,9 @@ export class PiercingGateway<Env> {
   }
 
   private async handleFragmentFetch(request: Request, env: Env) {
-    const match = request.url.match(/\/piercing-fragment\/([^?/]*)[^/]*$/);
+    const match = request.url.match(
+      /^https?:\/\/[^/]*\/piercing-fragment\/([^?/]+)\/?(?:\?.+)?/
+    );
 
     if (match?.length !== 2) return null;
 

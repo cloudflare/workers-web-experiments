@@ -1,7 +1,10 @@
+import { UnimplementedDemoPage } from "../UnimplementedDemoPage";
+
 export function News() {
   return (
-    <div className="placeholder">
-      <p>News go here</p>
-    </div>
+    <UnimplementedDemoPage
+      imageSrc="/google-icons/feed.svg"
+      imageAlt="News Icon"
+    />
   );
 }

@@ -1,7 +1,10 @@
+import { UnimplementedDemoPage } from "../UnimplementedDemoPage";
+
 export function Calendar() {
   return (
-    <div className="placeholder">
-      <p>Calendar goes here</p>
-    </div>
+    <UnimplementedDemoPage
+      imageSrc="/google-icons/calendar.svg"
+      imageAlt="Calendar Icon"
+    />
   );
 }

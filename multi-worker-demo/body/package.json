@@ -2,6 +2,7 @@
 	"name": "body",
 	"description": "Simple Qwik body container component",
 	"scripts": {
+		"prebuild": "npm run -w helpers build",
 		"build": "npm run build.client && npm run build.ssr",
 		"build.client": "vite build",
 		"build.ssr": "vite build --ssr src/entry.ssr.tsx",

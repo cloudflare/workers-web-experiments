@@ -1,0 +1,27 @@
+.image-container {
+	position: relative;
+}
+
+/* Note the use of :global to pierce into the Image component. */ 
+.image-container :global(.cloud-image) {
+	margin-right: 10px;
+	border-radius: 25px;
+	width: 300px;
+	height: 450px;
+}
+
+.image-container :global(.cloud-image:last-child) {
+	margin-right: 0;
+}
+
+.tags {
+	position: absolute;
+	bottom: 15px;
+	left: 15px;
+	font-weight: 700;
+	font-size: 16px;
+	background-color: #3d3d3d;
+	color: #ededed;
+	padding: 5px;
+	border-radius: 5px;
+}

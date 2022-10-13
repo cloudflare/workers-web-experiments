@@ -2,18 +2,17 @@ import {
   component$,
   Resource,
   Slot,
-  useContextProvider,
   useResource$,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import { Img } from "./components/Img";
+import { GalleryItem } from "./components/GalleryItem/GalleryItem";
 import { images } from "../../constants";
-import { getCookie, useLocation, BaseContext } from "helpers";
+import { getCookie, useLocation, useFragmentRoot } from "helpers";
 import CSS from "./Gallery.css?inline";
 
-export const Gallery = component$(({ base }: { base: string }) => {
+export const Gallery = component$(() => {
   useStylesScoped$(CSS);
-  useContextProvider(BaseContext, { base });
+  useFragmentRoot();
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
@@ -37,7 +36,7 @@ export const Gallery = component$(({ base }: { base: string }) => {
         {filtered.length > 0 &&
           filtered.map((img, i) => (
             <Lag delay={delay * (i + 1)}>
-              <Img src={img.name} tags={img.tags} />
+              <GalleryItem src={img.name} tags={img.tags} />
             </Lag>
           ))}
       </div>

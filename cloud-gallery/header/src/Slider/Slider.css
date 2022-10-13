@@ -1,0 +1,28 @@
+.label {
+	font-size: 14px;
+	font-weight: 400;
+	margin-right: .5rem;
+}
+
+.slider-container {
+	display: flex;
+	justify-content: center;
+	background-color: #e1e1e1;
+	color: #494949;
+	border-bottom: 1px solid #bcbcbc;
+	padding: 5px;
+}
+
+.slider-content {
+	width: max(40%, 400px);
+	display: flex;
+	align-items: center;
+}
+
+.slider {
+	flex: 1;
+	align-self: stretch;
+	opacity: 0.5;
+	accent-color: #8a8a8a;
+	margin-right: .5rem;
+}

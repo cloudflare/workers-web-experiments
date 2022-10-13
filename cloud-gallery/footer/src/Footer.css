@@ -1,0 +1,18 @@
+.container {
+	background-color: #e9e9e9a8;
+	border-top: 1px solid #000000ad;
+	margin-top: 2rem;
+}
+
+.content {
+	width: 85%;
+	padding: 1.5rem;
+	margin: 1rem auto 0 auto;
+}
+
+.copyright {
+	display: flex;
+	padding-top: 1rem;
+	border-top: 1px solid #888;
+	justify-content: flex-end;
+}

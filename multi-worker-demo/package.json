@@ -4,6 +4,7 @@
 	"description": "",
 	"workspaces": [
 		"body",
+		"filter",
 		"footer",
 		"gallery",
 		"sidebar",

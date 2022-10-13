@@ -13,29 +13,3 @@
 	font-family: Avenir Next, sans-serif;
 	font-size: 30px;
 }
-
-.label {
-	font-size: 14px;
-	font-weight: 400;
-	margin-right: .5rem;
-}
-
-.github-icon {
-	width: 35px;
-	height: 35px;
-}
-
-.cf-icon {
-	width: 74px;
-	height: 35px;
-}
-
-.icon-tray-left { 
-	width: 100px;
-}
-
-.icon-tray-right { 
-	width: 100px;
-	display: flex;
-	flex-direction: row-reverse;
-}

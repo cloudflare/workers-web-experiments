@@ -1,26 +1,29 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
+import { Image, useFragmentRoot } from "helpers";
 import HeaderCSS from "./Header.css?inline";
 import { Slider } from "./Slider/Slider";
 
-export const Header = component$(({ base }: { base: string }) => {
+export const Header = component$(() => {
   useStylesScoped$(HeaderCSS);
+  useFragmentRoot();
 
   return (
-    <header>
+    <>
       <Slider />
 
       <div class="container">
-        <img alt="Cloudflare logo" class="cf-icon" src={base + "cf-logo.png"} />
+        <Image alt="Cloudflare logo" src="cf-logo.png" width="74" height="35" />
         <div class="title">Cloud Gallery</div>
-        <a href="https://github.com/cloudflare/workers-web-experiments">
-          <img
+        <a href="https://github.com/cloudflare/workers-web-experiments/tree/main/multi-worker-demo">
+          <Image
             alt="Github icon"
             aria-label="Link to Github repository"
-            class="github-icon"
-            src={base + "github-icon.svg"}
+            width="35px"
+            height="35px"
+            src="github-icon.svg"
           />
         </a>
       </div>
-    </header>
+    </>
   );
 });

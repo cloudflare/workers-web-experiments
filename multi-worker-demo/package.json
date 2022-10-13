@@ -1,0 +1,35 @@
+{
+	"name": "qwik-multi-worker",
+	"version": "0.0.0",
+	"description": "",
+	"workspaces": [
+		"body",
+		"footer",
+		"gallery",
+		"sidebar",
+		"header",
+		"helpers",
+		"sidebar",
+		"main"
+	],
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"deploy": "cd $npm_config_target && npm run deploy",
+		"deploy:header": "npm run deploy --target=header",
+		"deploy:body": "npm run deploy --target=body",
+		"deploy:footer": "npm run deploy --target=footer",
+		"deploy:filter": "npm run deploy --target=filter",
+		"deploy:main": "npm run deploy --target=main",
+		"deploy:gallery": "npm run deploy --target=gallery",
+		"deploy:all": "npm run deploy:header && npm run deploy:footer && npm run deploy:body && npm run deploy:filter && npm run deploy:main && npm run deploy:gallery"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"concurrently": "^7.4.0",
+		"wrangler": "^2.0.28"
+	},
+	"dependencies": {
+		"@builder.io/qwik-city": "^0.0.111"
+	}
+}

@@ -8,12 +8,35 @@
     grid-template-rows: min-content;
 }
 
-.unimplemented-demo-page img {
+.unimplemented-demo-page figure {
     margin: 0;
-    margin-top: 4rem;
+    margin-top: 5rem;
     height: 5rem;
     opacity: 0.5;
+    transform: scale(2.5);
 }
+
+.unimplemented-demo-page figure > svg {
+    animation: swing .5s cubic-bezier(0, 0.4, 1, 0.6) .1s;
+}
+
+@keyframes swing {
+    20% {
+      transform: rotate(10deg);
+    }
+    40% {
+        transform: rotate(-5deg);
+    }
+    60% {
+        transform: rotate(5deg);
+    }
+    80% {
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+  }
 
 .unimplemented-demo-page .text-wrapper {
     margin-top: 2rem;

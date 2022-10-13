@@ -29,6 +29,9 @@ export async function renderResponse(
         strategy: "auto",
       },
     },
+    prefetchStrategy: {
+      implementation: { linkInsert: "html-append" },
+    },
     manifest,
     containerTagName,
     ...(!containerTagName ? { containerAttributes: { lang: "en" } } : {}),

@@ -1,0 +1,37 @@
+.unimplemented-demo-page {
+    display: grid;
+    justify-items: center;
+    color: gray;
+    flex: 1;
+    margin: 1rem;
+    text-align: center;
+    grid-template-rows: min-content;
+}
+
+.unimplemented-demo-page img {
+    margin: 0;
+    margin-top: 4rem;
+    height: 5rem;
+    opacity: 0.5;
+}
+
+.unimplemented-demo-page .text-wrapper {
+    margin-top: 2rem;
+}
+
+.unimplemented-demo-page p {
+    max-width: 70ch;
+    align-self: center;
+}
+
+.unimplemented-demo-page button {
+    color: #fff;
+    background-color: #f6821f;
+    cursor: pointer;
+    border: none;
+    padding: .25rem .5rem;
+}
+
+.unimplemented-demo-page button:hover {
+    background-color: #d86300;
+}

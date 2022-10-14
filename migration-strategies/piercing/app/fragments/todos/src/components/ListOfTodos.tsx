@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { editTodo, removeTodo } from "shared";
+import { editTodo, removeTodo, Todo } from "shared";
 import "./ListOfTodos.css";
 
 export function ListOfTodos({
@@ -9,13 +9,10 @@ export function ListOfTodos({
   onTodoEdited,
   onTodoRemoved,
 }: {
-  todos: { text: string; done: boolean }[];
+  todos: Todo[];
   currentUser: string;
   listName: string;
-  onTodoEdited: (
-    oldTodoText: string,
-    updatedTodo: { text: string; done: boolean }
-  ) => void;
+  onTodoEdited: (oldTodoText: string, updatedTodo: Todo) => void;
   onTodoRemoved: (todoText: string) => void;
 }) {
   const [editingTodoDetails, setEditingTodoDetails] = useState<{
@@ -26,10 +23,10 @@ export function ListOfTodos({
 
   return (
     <ul className="todo-mvc-todos-list">
-      {todos.map(({ text, done }) => (
+      {todos.map(({ text, completed }) => (
         <li
           key={text}
-          className={`${done ? "completed" : ""} ${
+          className={`${completed ? "completed" : ""} ${
             editingTodoDetails?.oldTodoText === text ? "editing" : ""
           }`}
         >
@@ -37,17 +34,17 @@ export function ListOfTodos({
             <input
               className="toggle"
               type="checkbox"
-              checked={done}
+              checked={completed}
               onChange={async (event: ChangeEvent<HTMLInputElement>) => {
-                const done = event.target.checked;
+                const completed = event.target.checked;
                 const success = await editTodo(currentUser, listName, text, {
                   text,
-                  done,
+                  completed,
                 });
                 if (success) {
                   onTodoEdited(text, {
                     text,
-                    done,
+                    completed,
                   });
                 }
               }}
@@ -100,7 +97,7 @@ export function ListOfTodos({
                     editingTodoDetails.newTodoText.trim();
                   const updatedTodo = {
                     text: trimmedNewTodoText,
-                    done,
+                    completed,
                   };
                   const success = await editTodo(
                     currentUser,

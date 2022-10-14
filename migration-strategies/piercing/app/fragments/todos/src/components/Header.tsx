@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { addTodo } from "shared";
+import { addTodo, Todo } from "shared";
 import "./Header.css";
 
 export function Header({
@@ -8,7 +8,7 @@ export function Header({
   listName,
   onNewTodoAdded,
 }: {
-  todos: { text: string; done: boolean }[];
+  todos: Todo[];
   currentUser: string;
   listName: string;
   onNewTodoAdded: (newTodoText: string) => void;

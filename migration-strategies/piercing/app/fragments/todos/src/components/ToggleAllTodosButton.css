@@ -1,0 +1,28 @@
+
+.todo-mvc-toggle-all {
+	width: 1px;
+	height: 1px;
+	border: none;
+	opacity: 0;
+	position: absolute;
+	right: 100%;
+	bottom: 100%;
+}
+
+.todo-mvc-toggle-all + label {
+	font-size: 0px;
+    position: absolute;
+    top: -3.4rem;
+    left: 0.9rem;
+}
+
+.todo-mvc-toggle-all + label:before {
+    content: "\2304";
+	font-size: 2.5rem;
+	color: #e6e6e6;
+	cursor: pointer;
+}
+
+.todo-mvc-toggle-all:checked + label:before {
+	color: #737373;
+}

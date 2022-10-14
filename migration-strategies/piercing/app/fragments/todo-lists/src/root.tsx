@@ -87,6 +87,33 @@ export const Root = component$(() => {
               state.selectedList = event.target.value;
             }}
           />
+          {list.name === state.selectedList && (
+            <div class="options">
+              <button>edit</button>
+              <button
+                disabled={state.lists.length <= 1}
+                onClick$={async () => {
+                  const success = await removeTodoList(
+                    state.currentUser!,
+                    list.name
+                  );
+                  if (success) {
+                    state.lists = state.lists.filter(
+                      ({ name }) => name !== list.name
+                    );
+                    const selectedList = state.lists[state.lists.length - 1];
+                    dispatchPiercingEvent(ref.current!, {
+                      type: "todo-list-selected",
+                      payload: { list: selectedList },
+                    });
+                    state.selectedList = selectedList.name;
+                  }
+                }}
+              >
+                remove
+              </button>
+            </div>
+          )}
         </label>
       ))}
     </div>

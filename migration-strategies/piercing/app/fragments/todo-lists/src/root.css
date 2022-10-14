@@ -31,6 +31,7 @@ ul {
 }
 
 .list-card {
+    position: relative;
     display: inline-block;
     color: #4d4d4d;
     background-color: white;
@@ -75,4 +76,54 @@ ul {
 .list-card.add-new-list-btn:disabled {
     color: #80808047;
     cursor: not-allowed;
+}
+
+.list-card::before {
+    z-index: -1;
+    content: '';
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.list-card .options {
+    display: flex;
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    bottom: 0;
+    animation: options-enter .5s ease-in .1s forwards;
+    transform: translateY(-.5rem);
+    opacity: 0;
+    z-index: -2;
+}
+
+@keyframes options-enter {
+    from {
+        transform: translateY(-.5rem);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(1.3rem);
+        opacity: 1;
+    }
+  }
+
+
+.list-card .options button {
+    flex: 1;
+    font-family: inherit;
+    border: none;
+    font-weight: 100;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.list-card .options button:active,
+.list-card .options button:disabled
+ {
+    opacity: 0.5;
 }

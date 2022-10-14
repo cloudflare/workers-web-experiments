@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { editTodo } from "shared";
+import { editTodo, Todo } from "shared";
 import "./ToggleAllTodosButton.css";
 
 export function ToggleAllTodosButton({
@@ -9,8 +9,8 @@ export function ToggleAllTodosButton({
   listName,
   onToggle,
 }: {
-  activeTodos: { text: string; done: boolean }[];
-  completedTodos: { text: string; done: boolean }[];
+  activeTodos: Todo[];
+  completedTodos: Todo[];
   currentUser: string;
   listName: string;
   onToggle: (to: "completed" | "active") => void;
@@ -22,15 +22,15 @@ export function ToggleAllTodosButton({
         className="todo-mvc-toggle-all"
         type="checkbox"
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          const allDone = event.target.checked;
-          const todosToToggle = allDone ? activeTodos : completedTodos;
-          for (const { text, done } of todosToToggle) {
+          const allCompleted = event.target.checked;
+          const todosToToggle = allCompleted ? activeTodos : completedTodos;
+          for (const { text } of todosToToggle) {
             editTodo(currentUser, listName, text, {
               text,
-              done: !done,
+              completed: allCompleted,
             });
           }
-          onToggle(allDone ? "completed" : "active");
+          onToggle(allCompleted ? "completed" : "active");
         }}
       />
       <label htmlFor="todo-mvc-toggle-all">Mark all as complete</label>

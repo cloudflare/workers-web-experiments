@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { removeTodo } from "shared";
+import { removeTodo, Todo } from "shared";
 import "./App.css";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -9,22 +9,20 @@ import { EnvContext } from "./env";
 import { TodoType } from "./todoType";
 
 const App: React.FC<{
-  todosListDetails?: { name: string; todos: { text: string; done: boolean }[] };
+  todosListDetails?: { name: string; todos: Todo[] };
 }> = ({ todosListDetails }) => {
   const listName = todosListDetails?.name ?? null;
 
-  const [todos, setTodos] = useState<{ text: string; done: boolean }[]>(
-    todosListDetails?.todos ?? []
-  );
+  const [todos, setTodos] = useState<Todo[]>(todosListDetails?.todos ?? []);
 
   const [todosSelection, setTodosSelection] = useState<TodoType>(TodoType.all);
 
   const { currentUser } = useContext(EnvContext);
 
-  const activeTodos = todos.filter(({ done }) => !done);
-  const completedTodos = todos.filter(({ done }) => done);
+  const activeTodos = todos.filter(({ completed }) => !completed);
+  const completedTodos = todos.filter(({ completed }) => completed);
 
-  const todosMap: Record<TodoType, { text: string; done: boolean }[]> = {
+  const todosMap: Record<TodoType, Todo[]> = {
     [TodoType.all]: todos,
     [TodoType.active]: activeTodos,
     [TodoType.completed]: completedTodos,
@@ -42,7 +40,7 @@ const App: React.FC<{
           currentUser={currentUser}
           listName={listName}
           onNewTodoAdded={(newTodoText: string) => {
-            setTodos([...todos, { text: newTodoText, done: false }]);
+            setTodos([...todos, { text: newTodoText, completed: false }]);
           }}
         />
         {!!todos.length && (
@@ -57,7 +55,7 @@ const App: React.FC<{
                   setTodos(
                     todos.map(({ text }) => ({
                       text,
-                      done: to === "completed" ? true : false,
+                      completed: to === "completed" ? true : false,
                     }))
                   );
                 }}
@@ -89,7 +87,7 @@ const App: React.FC<{
                 for (const completedTodo of todosMap[TodoType.completed]) {
                   removeTodo(currentUser, listName, completedTodo.text);
                 }
-                setTodos(todos.filter(({ done }) => !done));
+                setTodos(todos.filter(({ completed }) => !completed));
               }}
             />
           </>

@@ -1,14 +1,12 @@
 import { renderToReadableStream } from "react-dom/server";
 import App from "../App";
 
-import { parse } from "cookie";
-
 import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 // @ts-ignore
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 import { wrapStreamInText } from "piercing-library";
 import { EnvContext } from "../env";
-import { getList, getLists } from "../api";
+import { getCurrentUser, getTodoList, getTodoLists } from "shared";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
@@ -27,8 +25,10 @@ export default {
     ctx: ExecutionContext
   ): Promise<Response> {
     globalThis.backendWorkerFetcher = env.backend;
-    const cookie = parse(request.headers.get("Cookie") || "");
-    const currentUser = cookie["piercingDemoSuite_currentUser"] ?? null;
+
+    const requestCookie = request.headers.get("Cookie") || "";
+
+    const currentUser = await getCurrentUser(requestCookie);
 
     const url = new URL(request.url);
     const pathname = url.pathname;
@@ -46,16 +46,16 @@ export default {
 
     if (currentUser) {
       if (listName) {
-        const list = await getList(
+        const list = await getTodoList(
           currentUser,
           decodeURIComponent(listName),
-          request.headers.get("Cookie") || ""
+          requestCookie
         );
         if (list) {
           todosListDetails = list;
         }
       } else {
-        const lists = await getLists(currentUser);
+        const lists = await getTodoLists(currentUser, requestCookie);
         if (lists.length) {
           todosListDetails = lists[lists.length - 1];
         }

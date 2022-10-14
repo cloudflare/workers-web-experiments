@@ -2,7 +2,10 @@ name = "productivity-suite-todo-lists-fragment"
 compatibility_date = "2022-10-05"
 main = "server/entry.ssr.js"
 assets = "./dist"
-build.command = "npm run build"
 
-[env.local]
-build.command = "npm run build-local"
+[build]
+watch_dir = ["src", "../../shared/src"]
+command = "npm run build"
+
+[build.env.local]
+command = "npm run build-local"

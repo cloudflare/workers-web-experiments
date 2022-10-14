@@ -1,5 +1,5 @@
-import { parse } from "cookie";
 import { FragmentConfig, PiercingGateway } from "piercing-library";
+import { getCurrentUser } from "shared";
 
 export interface Env {
   APP_BASE_URL: string;
@@ -9,11 +9,8 @@ const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
 });
 
-const cookiesPrefix = "piercingDemoSuite_";
-
-function isUserAuthenticated(request: Request) {
-  const cookie = parse(request.headers.get("Cookie") || "");
-  const currentUser = cookie[`${cookiesPrefix}currentUser`];
+async function isUserAuthenticated(request: Request) {
+  const currentUser = await getCurrentUser(request.headers.get("Cookie") || "");
   return !!currentUser;
 }
 
@@ -45,7 +42,7 @@ gateway.registerFragment({
       left: 1.5rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
-    isUserAuthenticated(request) &&
+    (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
   convertRequest: (
     request: Request,
@@ -80,7 +77,7 @@ gateway.registerFragment({
       left: 17.5rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
-    isUserAuthenticated(request) &&
+    (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
   convertRequest: (
     request: Request,

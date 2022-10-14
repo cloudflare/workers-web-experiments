@@ -211,7 +211,6 @@ function getCookie(cookieName: string, cookieToUse?: string): string | null {
   const cookie = parse(
     cookieToUse || (typeof document !== "undefined" && document.cookie) || ""
   );
-  console.log(`\x1b[43m ${JSON.stringify({ cookie })} \x1b[0m`);
 
   return (
     (cookie && decodeURIComponent(cookie[encodeURIComponent(cookieName)])) ??

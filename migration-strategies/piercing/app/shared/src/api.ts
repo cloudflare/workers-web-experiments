@@ -4,6 +4,7 @@
 //  in this file would communicate and have the data saved in a proper persistent database.
 
 import { parse } from "cookie";
+import { Todo } from "./todo";
 
 const cookiesPrefix = "piercingDemoSuite_";
 
@@ -89,7 +90,7 @@ export async function addTodo(
     throw new Error(`Todo List Not found: ${listName}`);
   }
 
-  list.todos.push({ text: todoText, done: false });
+  list.todos.push({ text: todoText, completed: false });
 
   const newDataStr = JSON.stringify(data);
 
@@ -129,7 +130,7 @@ export async function editTodo(
   user: string,
   listName: string,
   oldTodoText: string,
-  todoDetails: { text: string; done: boolean }
+  todoDetails: Todo
 ) {
   const cookieName = `${cookiesPrefix}userData_${user}`;
   const data = getDefinedUserData(user);
@@ -146,7 +147,7 @@ export async function editTodo(
   }
 
   todo.text = todoDetails.text;
-  todo.done = todoDetails.done;
+  todo.completed = todoDetails.completed;
 
   const newDataStr = JSON.stringify(data);
 
@@ -173,7 +174,7 @@ function getDefinedUserData(user: string, cookieToUse?: string) {
 export function getUserData(user: string, cookieToUse?: string) {
   const cookie = getCookie(`${cookiesPrefix}userData_${user}`, cookieToUse);
   const data: {
-    todoLists: { name: string; todos: { text: string; done: boolean }[] }[];
+    todoLists: { name: string; todos: Todo[] }[];
   } | null = (cookie && JSON.parse(cookie)) ?? null;
   return data;
 }

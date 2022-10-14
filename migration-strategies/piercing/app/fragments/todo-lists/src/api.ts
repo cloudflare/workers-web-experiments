@@ -37,6 +37,29 @@ export async function removeTodoList(user: string, listName: string) {
   return true;
 }
 
+export async function editTodoList(
+  user: string,
+  oldListName: string,
+  newListName: string
+) {
+  const data = getUserData(user);
+  const list = data.todoLists.find(({ name }) => name === oldListName);
+
+  if (!list) {
+    throw new Error(`Todo List Not found: ${oldListName}`);
+  }
+
+  data.todoLists = data.todoLists.map((list) => {
+    if (list.name !== oldListName) return list;
+    return { ...list, name: newListName };
+  });
+
+  const newDataStr = JSON.stringify(data);
+
+  saveCookie(`piercingDemoSuite_userData_${user}`, newDataStr);
+  return true;
+}
+
 const cookieBytesLimit = 4096;
 const millisInAMonth = 2628e6;
 

@@ -1,17 +1,7 @@
-.image-container {
+.gallery-item {
 	position: relative;
-}
-
-/* Note the use of :global to pierce into the Image component. */ 
-.image-container :global(.cloud-image) {
-	margin-right: 10px;
+	overflow: hidden;
 	border-radius: 25px;
-	width: 300px;
-	height: 450px;
-}
-
-.image-container :global(.cloud-image:last-child) {
-	margin-right: 0;
 }
 
 .tags {

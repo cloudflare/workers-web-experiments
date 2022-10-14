@@ -10,8 +10,8 @@ interface Props {
 export const GalleryItem = component$<Props>((props) => {
   useStylesScoped$(CSS);
   return (
-    <div class="image-container">
-      <Image class="cloud-image" alt="cloud picture" src={props.src} />
+    <div class="gallery-item">
+      <Image alt="cloud picture" src={props.src} width="300" height="450" />
       <div class="tags">{props.tags.join(", ")}</div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { FragmentPlaceholder } from "helpers";
 import "./global.css";
 import "./normalize.css";
+import "./layout.css";
 
 export default () => {
   return (
@@ -15,9 +16,17 @@ export default () => {
         <title>Qwik Multi Worker Demo</title>
       </head>
       <body>
-        <FragmentPlaceholder name="header" />
-        <FragmentPlaceholder name="body" />
-        <FragmentPlaceholder name="footer" />
+        <div class="page-container">
+          <div class="header-fragment">
+            <FragmentPlaceholder name="header" />
+          </div>
+          <div class="body-fragment">
+            <FragmentPlaceholder name="body" />
+          </div>
+          <div class="footer-fragment">
+            <FragmentPlaceholder name="footer" />
+          </div>
+        </div>
       </body>
     </>
   );

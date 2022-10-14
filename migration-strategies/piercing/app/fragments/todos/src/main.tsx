@@ -1,7 +1,6 @@
-import { parse } from "cookie";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { getList, getLists } from "./api";
+import { getCurrentUser, getTodoList, getTodoLists } from "shared";
 import App from "./App";
 import { EnvContext } from "./env";
 
@@ -10,17 +9,16 @@ import { EnvContext } from "./env";
   const listName = match?.[1] ?? null;
   let todosListDetails = undefined;
 
-  const cookie = parse(document.cookie);
-  const currentUser = cookie["piercingDemoSuite_currentUser"] ?? null;
+  const currentUser = await getCurrentUser();
 
   if (currentUser) {
     if (listName) {
-      const list = await getList(currentUser, decodeURIComponent(listName));
+      const list = await getTodoList(currentUser, decodeURIComponent(listName));
       if (list) {
         todosListDetails = list;
       }
     } else {
-      const lists = await getLists(currentUser);
+      const lists = await getTodoLists(currentUser);
       todosListDetails = lists[lists.length - 1];
     }
   }

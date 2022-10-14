@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "ESNext",
-		"useDefineForClassFields": true,
+		"declaration": false,
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"allowJs": false,
 		"skipLibCheck": true,
@@ -14,14 +14,6 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"jsxImportSource": "@builder.io/qwik",
-		"jsx": "react-jsx",
-		"typeRoots": ["./src/types"],
-		// "paths": {
-		// 	"~shared": [
-		// 	  "../../_shared/*"
-		// 	]
-		// }
 	},
-	"include": ["src", "api.ts"]
+	"include": ["src"]
 }

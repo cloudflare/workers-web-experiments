@@ -16,15 +16,14 @@
   "// React note for the blog post - 1": "make sure to remember to mention that we need the react experimental packages",
   "// React note for the blog post - 2": "and that for compatibility with the react-router-dom we need to add `-f` to `npm i`",
   "dependencies": {
-    "cookie": "^0.5.0",
     "piercing-library": "file:../../piercing-library",
     "react": "0.0.0-experimental-65b3449c8-20221005",
     "react-dom": "0.0.0-experimental-65b3449c8-20221005",
-    "react-router-dom": "^6.4.1"
+    "react-router-dom": "^6.4.1",
+    "shared": "file:../shared"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.16.0",
-    "@types/cookie": "^0.5.1",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",

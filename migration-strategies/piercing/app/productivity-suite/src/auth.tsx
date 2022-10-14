@@ -1,7 +1,12 @@
-import { parse } from "cookie";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { deleteCookie, getCookie, saveCookie } from "./cookies";
+import {
+  deleteCurrentUser,
+  getCurrentUser,
+  getUserData,
+  saveCurrentUser,
+  setUserData,
+} from "shared";
 
 interface AuthContextType {
   user: any;
@@ -13,16 +18,25 @@ let AuthContext = createContext<AuthContextType>(null!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  const user = getCookie("currentUser");
+
+  const [user, setUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    getCurrentUser().then((username) => {
+      setUser(username);
+    });
+  }, []);
 
   const login = async (username: string) => {
-    saveCookie("currentUser", username);
+    await saveCurrentUser(username);
     addUserDataIfMissing(username);
+    setUser(username);
   };
 
-  const logout = () => {
-    deleteCookie("currentUser");
+  const logout = async () => {
+    await deleteCurrentUser();
     navigate("/login");
+    setUser(null);
   };
 
   const value = { user, login, logout };
@@ -55,11 +69,7 @@ export function RequireNotAuth({ children }: { children: React.ReactNode }) {
 }
 
 async function addUserDataIfMissing(user: string) {
-  const cookieName = `piercingDemoSuite_userData_${encodeURIComponent(user)}`;
-  const cookies = parse(document.cookie || "");
-  const cookie = cookies[`${cookieName}`];
-  const data: { todoLists: { name: string; todos: any[] }[] } | null =
-    (cookie && JSON.parse(decodeURIComponent(cookie))) ?? null;
+  const data = getUserData(user);
   if (!data) {
     const newDataStr = JSON.stringify({
       todoLists: [
@@ -69,6 +79,6 @@ async function addUserDataIfMissing(user: string) {
         },
       ],
     });
-    saveCookie(`userData_${user}`, newDataStr);
+    setUserData(user, newDataStr);
   }
 }

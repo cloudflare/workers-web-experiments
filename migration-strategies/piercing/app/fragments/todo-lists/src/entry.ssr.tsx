@@ -1,29 +1,24 @@
 import { renderToStream } from "@builder.io/qwik/server";
 import { manifest } from "@qwik-client-manifest";
+import { getCurrentUser, getUserData } from "shared";
 import { Root } from "./root";
-import { parse } from "cookie";
 
 export default {
   async fetch(request: Request): Promise<Response> {
     const { writable, readable } = new TransformStream();
     const writer = writable.getWriter();
+    const requestCookie = request.headers.get("Cookie") || "";
 
-    const cookie = parse(request.headers.get("Cookie") || "");
-    const currentUser = cookie["piercingDemoSuite_currentUser"];
-    const userCookieName = encodeURIComponent(
-      `piercingDemoSuite_userData_${currentUser}`
-    );
+    const currentUser = await getCurrentUser(requestCookie);
+    const userData =
+      (currentUser && getUserData(currentUser, requestCookie)) || null;
 
-    const userData: { todoLists: { name: string; todos: any[] }[] } =
-      (cookie[userCookieName] &&
-        JSON.parse(decodeURIComponent(cookie[userCookieName]))) ??
-      null;
     const url = new URL(request.url);
     const listName = url.searchParams.get("listName") ?? null;
 
     const selectedListName =
       listName ??
-      (userData.todoLists &&
+      (userData?.todoLists &&
         userData.todoLists[userData.todoLists.length - 1].name);
 
     const stream = {

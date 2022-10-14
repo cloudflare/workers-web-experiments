@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext, useState } from "react";
-import { addTodo, editTodo, removeTodo } from "./api";
+import { addTodo, editTodo, removeTodo } from "shared";
 import "./App.css";
 import { EnvContext } from "./env";
 

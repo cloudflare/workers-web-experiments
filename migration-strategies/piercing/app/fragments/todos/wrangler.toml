@@ -5,9 +5,10 @@ main = "dist/server/index.js"
 
 [build]
     command = "npm run build"
+    watch_dir = ["src", "../../shared/src"]
 
 [site]
     bucket = "dist/client"
 
-[env.local]
-   build.command = "npm run build-local"
+[build.env.local]
+   command = "npm run build-local"

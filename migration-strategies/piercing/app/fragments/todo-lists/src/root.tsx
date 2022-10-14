@@ -8,7 +8,7 @@ import {
   useStylesScoped$,
 } from "@builder.io/qwik";
 import { dispatchPiercingEvent } from "piercing-library";
-import { addTodoList, editTodoList, removeTodoList } from "./api";
+import { addTodoList, editTodoList, removeTodoList } from "shared";
 
 import styles from "./root.css?inline";
 

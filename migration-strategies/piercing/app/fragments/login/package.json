@@ -15,7 +15,8 @@
 		"typecheck": "tsc --incremental --noEmit"
 	},
 	"dependencies": {
-		"piercing-library": "file:../../../piercing-library"
+		"piercing-library": "file:../../../piercing-library",
+		"shared": "file:../../shared"
 	},
 	"devDependencies": {
 		"@builder.io/qwik": "0.10.0",

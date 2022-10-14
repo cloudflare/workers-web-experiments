@@ -1,7 +1,7 @@
 import { parse } from "cookie";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { getList } from "./api";
+import { getList, getLists } from "./api";
 import App from "./App";
 import { EnvContext } from "./env";
 
@@ -13,10 +13,15 @@ import { EnvContext } from "./env";
   const cookie = parse(document.cookie);
   const currentUser = cookie["piercingDemoSuite_currentUser"] ?? null;
 
-  if (currentUser && listName) {
-    const list = await getList(currentUser, decodeURIComponent(listName));
-    if (list) {
-      todosListDetails = list;
+  if (currentUser) {
+    if (listName) {
+      const list = await getList(currentUser, decodeURIComponent(listName));
+      if (list) {
+        todosListDetails = list;
+      }
+    } else {
+      const lists = await getLists(currentUser);
+      todosListDetails = lists[lists.length - 1];
     }
   }
 

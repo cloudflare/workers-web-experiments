@@ -10,13 +10,21 @@ export default {
 
     const cookie = parse(request.headers.get("Cookie") || "");
     const currentUser = cookie["piercingDemoSuite_currentUser"];
+    const userCookieName = encodeURIComponent(
+      `piercingDemoSuite_userData_${currentUser}`
+    );
+
     const userData: { todoLists: { name: string; todos: any[] }[] } =
-      JSON.parse(
-        cookie[`piercingDemoSuite_userData_${currentUser}`] ??
-          '{ "todoLists": [] }'
-      );
+      (cookie[userCookieName] &&
+        JSON.parse(decodeURIComponent(cookie[userCookieName]))) ??
+      null;
     const url = new URL(request.url);
     const listName = url.searchParams.get("listName") ?? null;
+
+    const selectedListName =
+      listName ??
+      (userData.todoLists &&
+        userData.todoLists[userData.todoLists.length - 1].name);
 
     const stream = {
       write: (chunk: any) => {
@@ -38,7 +46,7 @@ export default {
       envData: {
         currentUser,
         userData,
-        listName,
+        selectedListName,
       },
     }).finally(() => writer.close());
 

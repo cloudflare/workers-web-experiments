@@ -1,4 +1,5 @@
 import {
+  $,
   component$,
   useEnvData,
   useMount$,
@@ -11,6 +12,23 @@ import { addTodoList, removeTodoList } from "./api";
 
 import styles from "./root.css?inline";
 
+export const getNewListName = $((lists: { name: string; todos: any[] }[]) => {
+  const newListAlreadyPresent = !!lists.find(({ name }) => name === "new list");
+  let newListSuffix = 0;
+  if (newListAlreadyPresent) {
+    do {
+      newListSuffix++;
+      const alreadyTaken = lists.find(
+        ({ name }) => name === `new list ${newListSuffix}`
+      );
+      if (!alreadyTaken) break;
+    } while (newListSuffix < 8);
+  }
+  const newListName = `new list${!newListSuffix ? "" : ` ${newListSuffix}`}`;
+
+  return newListName;
+});
+
 export const Root = component$(() => {
   useStylesScoped$(styles);
   const ref = useRef();
@@ -18,7 +36,8 @@ export const Root = component$(() => {
   const envCurrentUser: string = useEnvData("currentUser")!;
   const initialUserData: { todoLists: { name: string; todos: any[] }[] } =
     useEnvData("userData")!;
-  const initialListName: string | null = useEnvData("listName") ?? null;
+  const initialSelectedListName: string | null =
+    useEnvData("selectedListName") ?? null;
 
   const state = useStore<{
     currentUser?: string;
@@ -31,81 +50,45 @@ export const Root = component$(() => {
     selectedList: null,
   });
 
-  useMount$(() => {
+  useMount$(async () => {
     state.currentUser = envCurrentUser;
     state.lists = initialUserData.todoLists;
-    state.selectedList = initialListName;
+    state.selectedList = initialSelectedListName;
   });
 
-  const trimmedNewListName = state.newListName.trim();
-
-  const addButtonDisabled =
-    !trimmedNewListName.trim() ||
-    state.lists.some(({ name }) => name === trimmedNewListName);
-
   return (
-    <aside ref={ref}>
-      <h3>Your Lists:</h3>
-      <ul>
-        {state.lists.map((list) => (
-          <li key={list.name}>
-            <button
-              onClick$={() => {
-                dispatchPiercingEvent(ref.current!, {
-                  type: "todo-list-click",
-                  payload: { list },
-                });
-                state.selectedList = list.name;
-              }}
-              class={state.selectedList === list.name ? "selected-list" : ""}
-            >
-              {list.name}
-            </button>
-            <button
-              onClick$={async () => {
-                const success = await removeTodoList(
-                  state.currentUser!,
-                  list.name
-                );
-                if (success) {
-                  state.lists = state.lists.filter(
-                    ({ name }) => name !== list.name
-                  );
-                }
-              }}
-            >
-              x
-            </button>
-          </li>
-        ))}
-        <li>
-          <form
-            preventDefault:submit
-            onSubmit$={async () => {
-              const success = await addTodoList(
-                state.currentUser!,
-                trimmedNewListName
-              );
-              if (success) {
-                state.lists = [
-                  ...state.lists,
-                  { name: trimmedNewListName, todos: [] },
-                ];
-                state.newListName = "";
-              }
+    <div class="list-cards-wrapper" ref={ref}>
+      <button
+        disabled={state.lists.length > 7}
+        class="list-card add-new-list-btn"
+        onClick$={async () => {
+          const newListName = await getNewListName(state.lists);
+          const success = await addTodoList(state.currentUser!, newListName);
+          if (success) {
+            state.lists = [...state.lists, { name: newListName, todos: [] }];
+          }
+        }}
+      >
+        +
+      </button>
+      {state.lists.map((list) => (
+        <label class="list-card" key={list.name}>
+          {list.name}
+          <input
+            type="radio"
+            name="todo-list"
+            value={list.name}
+            checked={list.name === state.selectedList}
+            onChange$={(event: any) => {
+              dispatchPiercingEvent(ref.current!, {
+                type: "todo-list-selected",
+                payload: { list },
+              });
+              state.selectedList = event.target.value;
             }}
-          >
-            <input
-              type="text"
-              value={state.newListName}
-              onInput$={(event) => {
-                state.newListName = (event.target as HTMLInputElement).value;
-              }}
-            />
-            <button disabled={addButtonDisabled}>Add</button>
-          </form>
-        </li>
-      </ul>
-    </aside>
+          />
+        </label>
+      ))}
+    </div>
   );
 });

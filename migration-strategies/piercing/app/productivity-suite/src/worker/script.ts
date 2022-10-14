@@ -58,7 +58,10 @@ gateway.registerFragment({
     if (!match) return request;
 
     const listName = decodeURIComponent(match[1]);
-    const params = new URLSearchParams({ listName });
+    const params = new URLSearchParams();
+    if (listName) {
+      params.append("listName", listName);
+    }
 
     return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
   },
@@ -78,7 +81,7 @@ gateway.registerFragment({
     }`,
   shouldBeIncluded: async (request: Request) =>
     isUserAuthenticated(request) &&
-    /\/todos\/[^/]+/.test(new URL(request.url).pathname),
+    /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
   convertRequest: (
     request: Request,
     env: Env,
@@ -86,15 +89,15 @@ gateway.registerFragment({
   ) => {
     const url = new URL(request.url);
     const path = url.pathname;
-    const match = /\/todos\/([^/]+)$/.exec(path);
+    const match = /\/todos\/([^/]?)$/.exec(path);
     const listName =
       (match?.[1] && decodeURIComponent(match[1])) ??
       url.searchParams.get("listName");
 
-    if (!listName) return request;
-
-    const params = new URLSearchParams({ listName });
-
+    const params = new URLSearchParams();
+    if (listName) {
+      params.append("listName", listName);
+    }
     return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
   },
 });

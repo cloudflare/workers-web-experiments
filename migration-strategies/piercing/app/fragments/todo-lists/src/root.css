@@ -17,3 +17,62 @@
 .selected-list {
     font-weight: bolder;
 }
+
+ul {
+    list-style: none;
+    display: flex;
+}
+
+.list-cards-wrapper {
+    padding-left: 10rem;
+    margin-bottom: 5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.list-card {
+    display: inline-block;
+    color: #4d4d4d;
+    background-color: white;
+    padding: 2rem;
+    border: none;
+    height: .5rem;
+    width: 8rem;
+    margin-left: -9rem;
+    box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
+    box-sizing: content-box;
+}
+
+.list-card input {
+    display: none;
+}
+
+.list-card:has(input:checked) {
+    font-style: italic;
+    font-weight: 100;
+}
+
+.list-card:hover {
+    transform: translateX(-1rem) translateY(-1rem) rotate(-4deg);
+    transition: .3s;
+}
+
+.list-card:has(input:checked) {
+    transform: translateX(3rem) translateY(4rem) rotate(-6deg);
+    font-size: 2rem;
+    transition: .3s;
+}
+
+.list-card:hover:not(:has(input:checked)) ~ .list-card:not(:has(input:checked)) {
+    transition: .3s;
+    transform: translateX(7rem);
+}
+
+.list-card {
+    cursor: pointer;
+}
+
+.list-card.add-new-list-btn:disabled {
+    color: #80808047;
+    cursor: not-allowed;
+}

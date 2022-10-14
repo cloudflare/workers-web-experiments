@@ -44,13 +44,37 @@ ul {
     box-sizing: content-box;
 }
 
-.list-card input {
+.list-card label, .list-card input.edit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    place-content: center;
+}
+
+.list-card input.edit {
+    border: none;
+    font-family: inherit;
+    font-weight: 100;
+    outline: none;
+    font-size: inherit;
+    padding: 1rem;
+}
+
+.list-card input.edit.invalid {
+    color: #e5555555;
+}
+
+.list-card input[type="radio"] {
     display: none;
 }
 
 .list-card:has(input:checked) {
     font-style: italic;
     font-weight: 100;
+    z-index: 1;
 }
 
 .list-card:hover {
@@ -78,43 +102,13 @@ ul {
     cursor: not-allowed;
 }
 
-.list-card::before {
-    z-index: -1;
-    content: '';
-    background-color: white;
+.list-card .delete-btn {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.list-card .options {
-    display: flex;
-    position: absolute;
-    left: 5px;
-    right: 5px;
-    bottom: 0;
-    animation: options-enter .5s ease-in .1s forwards;
-    transform: translateY(-.5rem);
+    right: .3rem;
+    top: .8rem;
+    animation: delete-btn-enter .5s ease-in .1s forwards;
+    transform: translateY(-0.5rem);
     opacity: 0;
-    z-index: -2;
-}
-
-@keyframes options-enter {
-    from {
-        transform: translateY(-.5rem);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(1.3rem);
-        opacity: 1;
-    }
-  }
-
-
-.list-card .options button {
-    flex: 1;
     font-family: inherit;
     border: none;
     font-weight: 100;
@@ -122,8 +116,17 @@ ul {
     background-color: transparent;
 }
 
-.list-card .options button:active,
-.list-card .options button:disabled
+.list-card .delete-btn:active,
+.list-card .delete-btn:disabled
  {
     opacity: 0.5;
 }
+
+@keyframes delete-btn-enter {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+  }

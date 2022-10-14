@@ -66,12 +66,16 @@ function saveCookie(cookieName: string, value: string) {
   )}; expires=${expirationDate}; path=/`;
 }
 
+export async function getLists(user: string, cookieToUse?: string) {
+  return getUserData(user, cookieToUse).todoLists;
+}
+
 export async function getList(
   user: string,
   listName: string,
   cookieToUse?: string
 ) {
-  return getUserData(user, cookieToUse).todoLists.find(
+  return (await getLists(user, cookieToUse)).find(
     ({ name }) => name === listName
   );
 }

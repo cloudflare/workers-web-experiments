@@ -8,7 +8,7 @@ import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 import { wrapStreamInText } from "piercing-library";
 import { EnvContext } from "../env";
-import { getList } from "../api";
+import { getList, getLists } from "../api";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
@@ -43,14 +43,22 @@ export default {
 
     const listName = url.searchParams.get("listName");
     let todosListDetails = undefined;
-    if (currentUser && listName) {
-      const list = await getList(
-        currentUser,
-        decodeURIComponent(listName),
-        request.headers.get("Cookie") || ""
-      );
-      if (list) {
-        todosListDetails = list;
+
+    if (currentUser) {
+      if (listName) {
+        const list = await getList(
+          currentUser,
+          decodeURIComponent(listName),
+          request.headers.get("Cookie") || ""
+        );
+        if (list) {
+          todosListDetails = list;
+        }
+      } else {
+        const lists = await getLists(currentUser);
+        if (lists.length) {
+          todosListDetails = lists[lists.length - 1];
+        }
       }
     }
 

@@ -3,33 +3,30 @@ import { useNavigate } from "react-router-dom";
 import "./TodoLists.css";
 
 export function TodoLists() {
-  const [selectedList, setSelectedList] = useState<{
-    name: string;
-    todos: any[];
-  } | null>();
+  const [selectedListName, setSelectedListName] = useState<string | null>(null);
+
+  const [showTodos, setShowTodos] = useState<boolean>(true);
 
   useEffect(() => {
     const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
     if (match) {
-      setSelectedList({
-        name: decodeURIComponent(match[1]),
-        todos: [],
-      });
+      setSelectedListName(decodeURIComponent(match[1]));
     }
   }, []);
 
   const navigate = useNavigate();
 
-  const fragmentFetchParams = JSON.stringify({
-    listName: selectedList?.name ?? null,
-  });
+  const fragmentFetchParams = selectedListName
+    ? JSON.stringify({
+        listName: selectedListName,
+      })
+    : "null";
 
   const updateSelectedList = (list: { name: string; todos: any[] }) => {
-    // Set the selected list to null so to destroy the todo fragment
-    setSelectedList(null);
-    // After a short delay re-set the selected list, which triggers a refetch for the fragment
+    setShowTodos(false);
     setTimeout(() => {
-      setSelectedList(list);
+      setSelectedListName(list.name);
+      setShowTodos(true);
       navigate(`/todos/${list.name}`, { replace: true });
     }, 50);
   };
@@ -39,11 +36,14 @@ export function TodoLists() {
       <piercing-fragment-outlet
         fragment-id="todo-lists"
         fragment-fetch-params={fragmentFetchParams}
-        onTodoListClick={(event: {
-          detail: { list: { name: string; todos: any[] } };
+        onTodoListSelected={(event: {
+          detail: {
+            list: { name: string; todos: any[] };
+            initialListSelection?: boolean;
+          };
         }) => updateSelectedList(event.detail.list)}
       />
-      {selectedList && (
+      {showTodos && (
         <piercing-fragment-outlet
           fragment-id="todos"
           fragment-fetch-params={fragmentFetchParams}

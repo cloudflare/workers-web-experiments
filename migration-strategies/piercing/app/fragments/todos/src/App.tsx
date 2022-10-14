@@ -47,7 +47,6 @@ const App: React.FC<{
     <>
       {currentUser && listName && (
         <div className="todo-mvc-wrapper">
-          <h2>{listName}</h2>
           <section className="todo-mvc">
             <header className="header">
               <input

@@ -1,15 +1,51 @@
 .root {
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, "Helvetica Neue", Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-size-adjust: none;
+    margin: 2rem;
+}
+
+.login-form {
+    max-width: 50ch;
+    margin: auto;
+    margin-block: 3rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-control {
-    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-control label {
+    margin: 2rem 0 .25rem;
+    width: min-content;
+    display: block;
+}
+
+.form-control input {
+    margin: 0;
+    display: block;
+    justify-items: stretch;
+    border: 1px solid #0051c3;
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    outline: none;
+    letter-spacing: .1rem;
+}
+
+.form-control input:focus {
+    border-color: #0090de;
 }
 
 .submit-btn {
-    margin-top: 1rem;
-    display: block;
+    margin-top: 3rem;
+    align-self: flex-end;
+    color: #fff;
+    background-color: #f6821f;
+    cursor: pointer;
+    border: none;
+    padding: .5rem 1rem;
+}
+
+.submit-btn:hover {
+    background-color: #d86300;
 }

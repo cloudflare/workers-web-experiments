@@ -172,7 +172,11 @@ function getDefinedUserData(user: string, cookieToUse?: string) {
 }
 
 export function getUserData(user: string, cookieToUse?: string) {
-  const cookie = getCookie(`${cookiesPrefix}userData_${user}`, cookieToUse);
+  const cookie = getCookie(
+    encodeURIComponent(`${cookiesPrefix}userData_${user}`),
+    cookieToUse
+  );
+
   const data: {
     todoLists: { name: string; todos: Todo[] }[];
   } | null = (cookie && JSON.parse(cookie)) ?? null;
@@ -212,10 +216,7 @@ function getCookie(cookieName: string, cookieToUse?: string): string | null {
     cookieToUse || (typeof document !== "undefined" && document.cookie) || ""
   );
 
-  return (
-    (cookie && decodeURIComponent(cookie[encodeURIComponent(cookieName)])) ??
-    null
-  );
+  return (cookie[cookieName] && decodeURIComponent(cookie[cookieName])) ?? null;
 }
 
 function deleteCookie(cookieName: string) {

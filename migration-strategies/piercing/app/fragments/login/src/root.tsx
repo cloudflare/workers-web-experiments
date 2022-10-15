@@ -20,6 +20,7 @@ export const Root = component$(() => {
   return (
     <div class="root" ref={ref}>
       <form
+        class="login-form"
         preventdefault:submit
         onSubmit$={() => {
           dispatchPiercingEvent(ref.current!, {
@@ -31,8 +32,9 @@ export const Root = component$(() => {
         }}
       >
         <div class="form-control">
-          <label>Username</label>
+          <label for="username-input">Username</label>
           <input
+            id="username-input"
             type="text"
             onInput$={(event) => {
               const value = (event.target as HTMLInputElement).value;
@@ -46,8 +48,9 @@ export const Root = component$(() => {
           />
         </div>
         <div class="form-control">
-          <label>Password</label>
+          <label for="password-input">Password</label>
           <input
+            id="password-input"
             type="password"
             disabled
             value={userData.password}

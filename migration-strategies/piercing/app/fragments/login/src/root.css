@@ -36,6 +36,28 @@
     border-color: #0090de;
 }
 
+.form-control input:disabled {
+    color: gray;
+    border-color: currentColor;
+    background-color: rgba(197, 197, 197, 0.25);
+}
+
+.password-input-animate {
+    animation: password-change 500ms cubic-bezier(.5,0,0,.5);
+}
+
+@keyframes password-change {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.015);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 .submit-btn {
     margin-top: 3rem;
     align-self: flex-end;

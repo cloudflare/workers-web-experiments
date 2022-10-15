@@ -12,6 +12,10 @@ export const Root = component$(() => {
   const ref = useRef();
   useStylesScoped$(styles);
 
+  const inputsDetails = useStore<{ animatePasswordInput: boolean }>({
+    animatePasswordInput: false,
+  });
+
   const userData = useStore({
     username: "",
     password: "",
@@ -39,9 +43,16 @@ export const Root = component$(() => {
             onInput$={(event) => {
               const value = (event.target as HTMLInputElement).value;
               userData.username = value;
-              userData.password = [...value]
-                .map((s) => s.charCodeAt(0))
-                .join("");
+              const usernameLength = value.length;
+              const passwordLength = Math.ceil(
+                usernameLength ** 2 / 5 + usernameLength
+              );
+              userData.password = new Array(passwordLength).fill("_").join("");
+              inputsDetails.animatePasswordInput = true;
+              setTimeout(
+                () => (inputsDetails.animatePasswordInput = false),
+                500
+              );
             }}
             value={userData.username}
             autoComplete="true"
@@ -55,6 +66,9 @@ export const Root = component$(() => {
             disabled
             value={userData.password}
             autoComplete="true"
+            class={
+              inputsDetails.animatePasswordInput ? "password-input-animate" : ""
+            }
           />
           <button class="submit-btn">Login</button>
         </div>

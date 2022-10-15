@@ -42,6 +42,31 @@
     background-color: rgba(197, 197, 197, 0.25);
 }
 
+.form-control input.invalid {
+    border-color: red;
+}
+
+.input-error-message {
+    color: red;
+    bottom: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    animation: input-error-message-enter 100ms cubic-bezier(.5,0,0,.5) forwards;
+    opacity: 0;
+}
+
+@keyframes input-error-message-enter {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+        height: 0;
+    }
+    100% {
+        opacity: 1;
+        height: 100%;
+    }
+}
+
 .password-input-animate {
     animation: password-change 500ms cubic-bezier(.5,0,0,.5);
 }
@@ -70,4 +95,9 @@
 
 .submit-btn:hover {
     background-color: #d86300;
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

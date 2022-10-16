@@ -3,10 +3,11 @@
 }
 
 .login-form {
-    max-width: 50ch;
+    max-width: 40ch;
     margin: auto;
     display: flex;
     flex-direction: column;
+    font-size: 1.1rem;
 }
 
 .form-control {
@@ -29,6 +30,7 @@
     padding: .5rem 1rem;
     outline: none;
     letter-spacing: .1rem;
+    font-size: inherit;
 }
 
 .form-control input:focus {
@@ -49,6 +51,7 @@
     color: red;
     bottom: 0;
     margin: 0;
+    margin-top: 0.3rem;
     font-size: 0.9rem;
     animation: input-error-message-enter 100ms cubic-bezier(.5,0,0,.5) forwards;
     opacity: 0;

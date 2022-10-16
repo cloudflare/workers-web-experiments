@@ -9,7 +9,7 @@ import { EnvContext } from "./env";
   const listName = match?.[1] ?? null;
   let todosListDetails = undefined;
 
-  const currentUser = await getCurrentUser();
+  const currentUser = getCurrentUser();
 
   if (currentUser) {
     if (listName) {

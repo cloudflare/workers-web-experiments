@@ -76,7 +76,7 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
-      top: 26.6rem;
+      top: 24.6rem;
       left: 0;
       right: 0;
     }

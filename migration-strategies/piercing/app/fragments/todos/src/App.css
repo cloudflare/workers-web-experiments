@@ -2,8 +2,7 @@
 	line-height: 1.4rem;
 	background: #f5f5f5;
 	color: #4d4d4d;
-	min-width: 30rem;
-	max-width: 55rem;
+	max-width: min(55rem, 90vw);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-weight: 300;

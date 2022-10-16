@@ -31,6 +31,7 @@
     outline: none;
     letter-spacing: .1rem;
     font-size: inherit;
+    color: dimgrey;
 }
 
 .form-control input:focus {
@@ -75,13 +76,16 @@
 
 @keyframes password-change {
     0% {
-        transform: scale(1);
+        letter-spacing: .1rem;
+        padding-left: 1rem;
     }
     50% {
-        transform: scale(1.015);
+        letter-spacing: .2rem;
+        padding-left: 1.2rem;
     }
     100% {
-        transform: scale(1);
+        letter-spacing: .1rem;
+        padding-left: 1rem;
     }
 }
 

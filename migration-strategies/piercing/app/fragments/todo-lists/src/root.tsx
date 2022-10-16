@@ -82,6 +82,11 @@ export const Root = component$(() => {
     });
   });
 
+  const goToList = $((which: "previous" | "next") => {
+    state.idxOfSelectedList += which === "previous" ? -1 : 1;
+    dispatchSelectedListUpdated();
+  });
+
   return (
     <div class="todo-lists-section" ref={ref}>
       <button
@@ -102,21 +107,19 @@ export const Root = component$(() => {
         <button
           disabled={state.idxOfSelectedList === 0}
           class="btn nav-btn left"
-          onClick$={() => {
-            state.idxOfSelectedList--;
-            dispatchSelectedListUpdated();
-          }}
+          onClick$={() => goToList("previous")}
         >
           &lt;
         </button>
-        <div
+        <button
           class={`todo-list-card previous-list ${
             state.idxOfSelectedList === 0 ? "hidden" : ""
           }`}
+          onClick$={() => goToList("previous")}
         >
           {state.idxOfSelectedList > 0 &&
             state.todoLists[state.idxOfSelectedList - 1].name}
-        </div>
+        </button>
         <div
           class="todo-list-card selected-list"
           onClick$={() => {
@@ -205,23 +208,21 @@ export const Root = component$(() => {
             x
           </button>
         </div>
-        <div
+        <button
           class={`todo-list-card next-list ${
             state.idxOfSelectedList === state.todoLists.length - 1
               ? "hidden"
               : ""
           }`}
+          onClick$={() => goToList("next")}
         >
           {state.idxOfSelectedList < state.todoLists.length - 1 &&
             state.todoLists[state.idxOfSelectedList + 1].name}
-        </div>
+        </button>
         <button
           disabled={state.idxOfSelectedList === state.todoLists.length - 1}
           class="btn nav-btn right"
-          onClick$={() => {
-            state.idxOfSelectedList++;
-            dispatchSelectedListUpdated();
-          }}
+          onClick$={() => goToList("next")}
         >
           &gt;
         </button>

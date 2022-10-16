@@ -1,7 +1,7 @@
 .todo-lists-section {
     width: max-content;
     margin: auto;
-    max-width: 90vw;
+    max-width: calc(90vw - 2rem);
 }
 
 .todo-lists-carousel {
@@ -116,4 +116,20 @@
     cursor: pointer;
     background-color: transparent;
     border: none;
+}
+
+
+@media (max-width: 45rem) {
+    .todo-list-card.previous-list,
+    .todo-list-card.next-list {
+        display: none;
+    }
+
+    .selected-list {
+        margin: 0 1rem 0.15rem;
+    }
+
+    .add-btn {
+        transform: translateY(-.5rem);
+    }
 }

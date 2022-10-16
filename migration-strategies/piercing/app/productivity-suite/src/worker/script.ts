@@ -76,10 +76,11 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
-      top: 26.5rem;
+      top: 26.6rem;
       left: 0;
       right: 0;
-    }`,
+    }
+    `,
   shouldBeIncluded: async (request: Request) =>
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),

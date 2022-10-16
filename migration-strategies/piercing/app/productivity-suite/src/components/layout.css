@@ -44,7 +44,7 @@
 
 .app-main {
     flex: 1;
-    padding: 3rem 1rem 2rem;
+    padding: 3rem 1rem;
 }
 
 .app-header, .app-footer {
@@ -52,9 +52,60 @@
     color: white;
 }
 
-.app-footer > p {
-    margin: .5rem;
+.app-footer {
+    padding: 0.5rem 1rem;
+}
+
+.app-footer a {
+    cursor: pointer;
+    color: #fff;
+}
+
+.app-footer .copyright {
     text-align: end;
+}
+
+.app-footer .demo-details {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.app-footer .demo-details a {
+    text-decoration: underline;
+    display: inline-flex;
+    align-items: center;
+}
+
+.app-footer .demo-details a:hover {
+    opacity: 0.7;
+}
+
+.app-footer .demo-details svg {
+    fill: #fff;
+    height: 1rem;
+    width: 1rem;
+    margin-left: 0.2ch;
+}
+
+.app-footer hr {
+    border: none;
+    border-top: 1px solid #ffffff45;
+    margin-block: 1px;
+}
+
+.app-footer .social {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.social-link:hover {
+    transform: scale(1.1);
+}
+
+.social-link:active {
+    transform: scale(1.1) translateY(1px);
 }
 
 .app-header .btn {

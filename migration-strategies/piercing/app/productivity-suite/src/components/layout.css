@@ -2,7 +2,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-inline: .5rem;
+    padding-inline: 1.5rem;
+}
+
+.app-header a {
+    text-decoration: none;
 }
 
 .app-header button {
@@ -161,6 +165,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .app-title {
     color: white;
+    font-size: 2rem;
 }
 
 .app-page-heading {

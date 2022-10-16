@@ -7,7 +7,9 @@ function Header() {
 
   return (
     <header className="app-header">
-      <h1 className="app-title">Productivity Suite</h1>
+      <NavLink to="/">
+        <h1 className="app-title">Productivity Suite</h1>
+      </NavLink>
       {auth.user && (
         <div className="user-section">
           <div className="user-info">

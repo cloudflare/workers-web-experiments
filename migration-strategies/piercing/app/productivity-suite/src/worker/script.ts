@@ -22,9 +22,10 @@ gateway.registerFragment({
     `https://productivity-suite-login-fragment.devdash.workers.dev`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host {
-			position: absolute;
-      top: 7.2rem;
-      left: .5rem;
+      position: absolute;
+      top: 7.3rem;
+      left: 0;
+      right: 0;
     }`,
   shouldBeIncluded: async (request: Request) =>
     isUserAuthenticated(request).then((authenticated) => !authenticated),

@@ -60,9 +60,11 @@
 
 .todo-list-card.previous-list,
 .todo-list-card.next-list {
+    cursor: pointer;
     z-index: 1;
     transform: scale(0.7);
     opacity: 0.7;
+    font-weight: inherit;
 }
 
 .todo-list-card.previous-list {

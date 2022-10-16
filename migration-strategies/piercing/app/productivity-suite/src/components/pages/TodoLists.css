@@ -1,6 +1,8 @@
 .todo-lists-page {
-    flex: 1;
-    display: grid;
-    gap: 1rem;
     padding: 1rem;
+}
+
+piercing-fragment-outlet {
+    display: block;
+    margin-bottom: 2rem;
 }

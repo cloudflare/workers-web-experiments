@@ -26,7 +26,8 @@ gateway.registerFragment({
       top: 7.2rem;
       left: .5rem;
     }`,
-  shouldBeIncluded: async (request: Request) => !isUserAuthenticated(request),
+  shouldBeIncluded: async (request: Request) =>
+    isUserAuthenticated(request).then((authenticated) => !authenticated),
 });
 
 gateway.registerFragment({

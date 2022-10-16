@@ -1,11 +1,10 @@
 .root {
-    margin: 2rem;
+    margin: 0;
 }
 
 .login-form {
     max-width: 50ch;
     margin: auto;
-    margin-block: 3rem;
     display: flex;
     flex-direction: column;
 }

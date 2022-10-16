@@ -8,22 +8,24 @@ import {
   useStylesScoped$,
 } from "@builder.io/qwik";
 import { dispatchPiercingEvent } from "piercing-library";
-import { addTodoList, editTodoList, removeTodoList } from "shared";
+import { addTodoList, editTodoList, removeTodoList, Todo } from "shared";
 
 import styles from "./root.css?inline";
 
 export const getNewListName = $((lists: { name: string; todos: any[] }[]) => {
   const newListAlreadyPresent = !!lists.find(({ name }) => name === "new list");
   let newListSuffix = 0;
+  let matchFound = false;
   if (newListAlreadyPresent) {
     do {
       newListSuffix++;
       const alreadyTaken = lists.find(
         ({ name }) => name === `new list ${newListSuffix}`
       );
-      if (!alreadyTaken) break;
-    } while (newListSuffix < 8);
+      if (!alreadyTaken) matchFound = true;
+    } while (!matchFound);
   }
+
   const newListName = `new list${!newListSuffix ? "" : ` ${newListSuffix}`}`;
 
   return newListName;
@@ -31,212 +33,205 @@ export const getNewListName = $((lists: { name: string; todos: any[] }[]) => {
 
 export const Root = component$(() => {
   useStylesScoped$(styles);
-  const ref = useRef();
 
   const envCurrentUser: string = useEnvData("currentUser")!;
-  const initialUserData: { todoLists: { name: string; todos: any[] }[] } =
+  const initialUserData: { todoLists: { name: string; todos: Todo[] }[] } =
     useEnvData("userData")!;
   const initialSelectedListName: string | null =
     useEnvData("selectedListName") ?? null;
 
   const state = useStore<{
     currentUser?: string;
-    lists: { name: string; todos: any[] }[];
-    newListName: string;
-    selectedList: string | null;
+    todoLists: { name: string; todos: any[] }[];
+    idxOfSelectedList: number;
     editingSelectedList: boolean;
-    newSelectedListName: string | null;
-    newSelectedListNameIsValid: boolean;
-  }>({
-    lists: [],
-    newListName: "",
-    selectedList: null,
-    editingSelectedList: false,
-    newSelectedListName: null,
-    newSelectedListNameIsValid: false,
-  });
+    newNameForSelectedList: string | null;
+    newNameForSelectedListIsInvalid: boolean;
+  }>(
+    {
+      todoLists: [],
+      idxOfSelectedList: 0,
+      editingSelectedList: false,
+      newNameForSelectedList: null,
+      newNameForSelectedListIsInvalid: false,
+    },
+    { recursive: true }
+  );
 
   useMount$(async () => {
     state.currentUser = envCurrentUser;
-    state.lists = initialUserData.todoLists;
-    state.selectedList = initialSelectedListName;
+    state.todoLists = initialUserData.todoLists;
+    if (initialSelectedListName) {
+      const idx = state.todoLists.findIndex(
+        ({ name }) => name === initialSelectedListName
+      );
+      state.idxOfSelectedList = idx !== -1 ? idx : 0;
+    }
+  });
+
+  const ref = useRef();
+  const editRef = useRef<HTMLInputElement>();
+  editRef.current?.focus();
+
+  const dispatchSelectedListUpdated = $(() => {
+    dispatchPiercingEvent(ref.current!, {
+      type: "todo-list-selected",
+      payload: {
+        list: state.todoLists[state.idxOfSelectedList],
+      },
+    });
   });
 
   return (
-    <div class="list-cards-wrapper" ref={ref}>
+    <div class="todo-lists-section" ref={ref}>
       <button
-        disabled={state.lists.length > 7}
-        class="list-card add-new-list-btn"
+        class="btn add-btn"
         onClick$={async () => {
-          const newListName = await getNewListName(state.lists);
+          const newListName = await getNewListName(state.todoLists);
           const success = await addTodoList(state.currentUser!, newListName);
           if (success) {
-            state.lists = [...state.lists, { name: newListName, todos: [] }];
+            state.todoLists.push({ name: newListName, todos: [] });
+            state.idxOfSelectedList = state.todoLists.length - 1;
+            dispatchSelectedListUpdated();
           }
         }}
       >
-        +
+        Add List
       </button>
-      {state.lists.map((list) => (
-        <div class="list-card" key={list.name}>
-          <label
-            onClick$={() => {
-              if (state.selectedList === list.name) {
-                state.editingSelectedList = true;
-                state.newSelectedListName = list.name;
-                state.newSelectedListNameIsValid = true;
-              }
-            }}
-          >
-            {list.name}
+      <div class="todo-lists-carousel">
+        <button
+          disabled={state.idxOfSelectedList === 0}
+          class="btn nav-btn left"
+          onClick$={() => {
+            state.idxOfSelectedList--;
+            dispatchSelectedListUpdated();
+          }}
+        >
+          &lt;
+        </button>
+        <div
+          class={`todo-list-card previous-list ${
+            state.idxOfSelectedList === 0 ? "hidden" : ""
+          }`}
+        >
+          {state.idxOfSelectedList > 0 &&
+            state.todoLists[state.idxOfSelectedList - 1].name}
+        </div>
+        <div
+          class="todo-list-card selected-list"
+          onClick$={() => {
+            state.editingSelectedList = true;
+            state.newNameForSelectedList =
+              state.todoLists[state.idxOfSelectedList].name;
+            state.newNameForSelectedListIsInvalid = false;
+          }}
+        >
+          {!state.editingSelectedList && (
+            <span>{state.todoLists[state.idxOfSelectedList].name}</span>
+          )}
+          {state.editingSelectedList && (
             <input
-              type="radio"
-              name="todo-list"
-              value={list.name}
-              checked={list.name === state.selectedList}
-              onChange$={(event: any) => {
-                setTimeout(() => {
-                  dispatchPiercingEvent(ref.current!, {
-                    type: "todo-list-selected",
-                    payload: { list },
-                  });
-                  state.selectedList = event.target.value;
-                });
-              }}
-            />
-            {list.name === state.selectedList && (
-              <button
-                class="delete-btn"
-                disabled={state.lists.length <= 1}
-                onClick$={async () => {
-                  const success = await removeTodoList(
-                    state.currentUser!,
-                    list.name
-                  );
-                  if (success) {
-                    state.lists = state.lists.filter(
-                      ({ name }) => name !== list.name
-                    );
-                    const selectedList = state.lists[state.lists.length - 1];
-                    dispatchPiercingEvent(ref.current!, {
-                      type: "todo-list-selected",
-                      payload: { list: selectedList },
-                    });
-                    state.selectedList = selectedList.name;
-                  }
-                }}
-              >
-                x
-              </button>
-            )}
-          </label>
-          {list.name === state.selectedList && state.editingSelectedList && (
-            <input
+              ref={editRef}
               type="text"
-              className={`edit ${
-                state.newSelectedListNameIsValid ? "" : "invalid"
+              class={`selected-list-edit ${
+                state.newNameForSelectedListIsInvalid ? "invalid" : ""
               }`}
-              autoFocus
-              value={state.selectedList!}
+              value={state.newNameForSelectedList ?? undefined}
               onInput$={(event: any) => {
-                state.newSelectedListName = event.target.value;
-                const trimmedName = state.newSelectedListName!.trim();
+                const value = event.target.value;
+                state.newNameForSelectedList = value;
+                const trimmedValue = value.trim();
                 if (
-                  !trimmedName ||
-                  (state.selectedList !== trimmedName &&
-                    !!state.lists.filter(({ name }) => name === trimmedName)
-                      .length)
+                  trimmedValue === state.todoLists[state.idxOfSelectedList].name
                 ) {
-                  state.newSelectedListNameIsValid = false;
-                } else {
-                  state.newSelectedListNameIsValid = true;
+                  state.newNameForSelectedListIsInvalid = false;
+                  return;
                 }
-              }}
-              // onInput={(event: ChangeEvent<HTMLInputElement>) => {
-              //   const newTodoText = event.target.value;
-              //   const trimmedNewTodoText = newTodoText.trim();
-              //   const oldTodoText =
-              //     editingTodoDetails.oldTodoText;
-              //   const invalid = !trimmedNewTodoText
-              //     ? true
-              //     : oldTodoText === trimmedNewTodoText
-              //     ? false
-              //     : !!todos.filter(
-              //         ({ text }) => text === trimmedNewTodoText
-              //       ).length;
-              //   setEditingTodoDetails({
-              //     oldTodoText,
-              //     newTodoText,
-              //     invalid,
-              //   });
-              // }}
-              onKeyUp$={async (event: any) => {
-                if (event.key === "Enter" && state.newSelectedListNameIsValid) {
-                  const trimmedName = state.newSelectedListName!.trim();
-                  const success = await editTodoList(
-                    state.currentUser!,
-                    state.selectedList!,
-                    trimmedName
-                  );
-                  if (success) {
-                    state.lists = state.lists.map((list) =>
-                      list.name !== state.selectedList
-                        ? list
-                        : { ...list, name: trimmedName }
-                    );
-                    state.editingSelectedList = false;
-                    const selectedList = trimmedName;
-                    dispatchPiercingEvent(ref.current!, {
-                      type: "todo-list-selected",
-                      payload: {
-                        list: state.lists.find(
-                          ({ name }) => name === selectedList
-                        ),
-                      },
-                    });
-                    state.selectedList = selectedList;
-                    state.newSelectedListName = null;
-                  }
+                if (
+                  !trimmedValue ||
+                  trimmedValue.length > 20 ||
+                  !!state.todoLists.find(({ name }) => name === trimmedValue)
+                ) {
+                  state.newNameForSelectedListIsInvalid = true;
+                  return;
                 }
+                state.newNameForSelectedListIsInvalid = false;
               }}
-              // onKeyUp={(
-              //   event: React.KeyboardEvent<HTMLInputElement>
-              // ) => {
-              //   if (
-              //     event.key === "Enter" &&
-              //     !editingTodoDetails.invalid
-              //   ) {
-              //     const trimmedNewTodoText =
-              //       editingTodoDetails.newTodoText.trim();
-              //     editTodo(
-              //       currentUser,
-              //       listName,
-              //       editingTodoDetails.oldTodoText,
-              //       {
-              //         text: trimmedNewTodoText,
-              //         done,
-              //       }
-              //     );
-              //     setTodosListDetails({
-              //       listName,
-              //       todos: todos.map(({ text, done }) => ({
-              //         text:
-              //           text === editingTodoDetails.oldTodoText
-              //             ? trimmedNewTodoText
-              //             : text,
-              //         done,
-              //       })),
-              //     });
-              //     setEditingTodoDetails(null);
-              //   }
-              // }}
               onBlur$={() => {
                 state.editingSelectedList = false;
               }}
+              onKeyUp$={async (event: any) => {
+                if (
+                  event.key === "Enter" &&
+                  !state.newNameForSelectedListIsInvalid
+                ) {
+                  const oldListName =
+                    state.todoLists[state.idxOfSelectedList].name;
+                  const newListName = state.newNameForSelectedList!.trim();
+                  const success = await editTodoList(
+                    state.currentUser!,
+                    oldListName,
+                    newListName
+                  );
+                  if (success) {
+                    state.todoLists[state.idxOfSelectedList].name = newListName;
+                    state.editingSelectedList = false;
+                    dispatchPiercingEvent(ref.current!, {
+                      type: "todo-list-renamed",
+                      payload: {
+                        oldListName,
+                        newListName,
+                      },
+                    });
+                  }
+                }
+              }}
             />
           )}
+          <button
+            class="btn delete-btn"
+            disabled={state.editingSelectedList || state.todoLists.length <= 1}
+            onClick$={async (event) => {
+              const success = await removeTodoList(
+                state.currentUser!,
+                state.todoLists[state.idxOfSelectedList].name
+              );
+              if (success) {
+                state.todoLists = state.todoLists
+                  .slice(0, state.idxOfSelectedList)
+                  .concat(state.todoLists.slice(state.idxOfSelectedList + 1));
+                if (state.idxOfSelectedList > 0) {
+                  state.idxOfSelectedList--;
+                }
+                dispatchSelectedListUpdated();
+              }
+              event.stopPropagation();
+            }}
+          >
+            x
+          </button>
         </div>
-      ))}
+        <div
+          class={`todo-list-card next-list ${
+            state.idxOfSelectedList === state.todoLists.length - 1
+              ? "hidden"
+              : ""
+          }`}
+        >
+          {state.idxOfSelectedList < state.todoLists.length - 1 &&
+            state.todoLists[state.idxOfSelectedList + 1].name}
+        </div>
+        <button
+          disabled={state.idxOfSelectedList === state.todoLists.length - 1}
+          class="btn nav-btn right"
+          onClick$={() => {
+            state.idxOfSelectedList++;
+            dispatchSelectedListUpdated();
+          }}
+        >
+          &gt;
+        </button>
+      </div>
     </div>
   );
 });

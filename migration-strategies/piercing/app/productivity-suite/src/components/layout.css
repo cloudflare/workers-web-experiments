@@ -17,11 +17,14 @@
     border-bottom: 1px solid currentColor;
     list-style: none;
     display: flex;
-    justify-content: space-evenly;
+    align-items: center;
 }
 
 .app-nav > ul > li {
     margin: .5rem;
+    height: min-content;
+    flex: 1;
+    text-align: center;
 }
 
 .app-nav > ul a {
@@ -68,6 +71,7 @@
 
 .active {
     font-weight: bolder;
+    font-size: 1.2rem;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -35,12 +35,6 @@ export function TodoLists() {
     }, 50);
   };
 
-  const handleListRenamed = (oldListName: string, newListName: string) => {
-    if (selectedListName === oldListName) {
-      updateSelectedListName(newListName);
-    }
-  };
-
   return (
     <div className="todo-lists-page">
       <piercing-fragment-outlet
@@ -52,14 +46,6 @@ export function TodoLists() {
             initialListSelection?: boolean;
           };
         }) => updateSelectedList(event.detail.list)}
-        onTodoListRenamed={(event: {
-          detail: {
-            oldListName: string;
-            newListName: string;
-          };
-        }) =>
-          handleListRenamed(event.detail.oldListName, event.detail.newListName)
-        }
       />
       {showTodos && (
         <piercing-fragment-outlet

@@ -176,13 +176,7 @@ export const Root = component$(() => {
                   if (success) {
                     state.todoLists[state.idxOfSelectedList].name = newListName;
                     state.editingSelectedList = false;
-                    dispatchPiercingEvent(ref.current!, {
-                      type: "todo-list-renamed",
-                      payload: {
-                        oldListName,
-                        newListName,
-                      },
-                    });
+                    dispatchSelectedListUpdated();
                   }
                 }
               }}

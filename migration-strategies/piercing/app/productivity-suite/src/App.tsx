@@ -1,4 +1,10 @@
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+} from "react-router-dom";
 import "./App.css";
 import { AuthProvider, RequireAuth, RequireNotAuth } from "./auth";
 import { Layout } from "./components/layout";
@@ -37,7 +43,7 @@ const ProtectedRoutes = (
       </RequireAuth>
     }
   >
-    <Route path="/" element={<TodoLists />} />
+    <Route path="/" element={<Navigate to="/todos" />} />
     <Route path="/todos" element={<TodoLists />} />
     <Route path="/todos/:listName" element={<TodoLists />} />
     <Route path="/calendar" element={<Calendar />} />

@@ -19,13 +19,7 @@ let AuthContext = createContext<AuthContextType>(null!);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<string | null>(null);
-
-  useEffect(() => {
-    getCurrentUser().then((username) => {
-      setUser(username);
-    });
-  }, []);
+  const [user, setUser] = useState<string | null>(getCurrentUser());
 
   const login = async (username: string) => {
     await saveCurrentUser(username);

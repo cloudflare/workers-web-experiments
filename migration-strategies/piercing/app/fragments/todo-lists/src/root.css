@@ -1,12 +1,14 @@
 .todo-lists-section {
     width: max-content;
     margin: auto;
+    max-width: 90vw;
 }
 
 .todo-lists-carousel {
     display: flex;
     width: max-content;
     margin: auto;
+    max-width: 100%;
 }
 
 .todo-list-card {

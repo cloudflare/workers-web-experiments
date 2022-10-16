@@ -40,8 +40,9 @@ gateway.registerFragment({
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
-      top: 16.5rem;
-      left: 1.5rem;
+      top: 14.8rem;
+      left: 2rem;
+      right: 2rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
     (await isUserAuthenticated(request)) &&
@@ -73,10 +74,11 @@ gateway.registerFragment({
   getBaseUrl: () =>
     `https://productivity-suite-todos-fragment.devdash.workers.dev/_fragment/todos`,
   prePiercingStyles: `
-		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
+    :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
-      top: 16.5rem;
-      left: 17.5rem;
+      top: 26.5rem;
+      left: 0;
+      right: 0;
     }`,
   shouldBeIncluded: async (request: Request) =>
     (await isUserAuthenticated(request)) &&

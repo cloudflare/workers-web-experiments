@@ -22,13 +22,23 @@ export function TodoLists() {
       })
     : "null";
 
+  const updateSelectedListName = (newListName: string) => {
+    setSelectedListName(newListName);
+    navigate(`/todos/${newListName}`, { replace: true });
+  };
+
   const updateSelectedList = (list: { name: string; todos: any[] }) => {
     setShowTodos(false);
     setTimeout(() => {
-      setSelectedListName(list.name);
       setShowTodos(true);
-      navigate(`/todos/${list.name}`, { replace: true });
+      updateSelectedListName(list.name);
     }, 50);
+  };
+
+  const handleListRenamed = (oldListName: string, newListName: string) => {
+    if (selectedListName === oldListName) {
+      updateSelectedListName(newListName);
+    }
   };
 
   return (
@@ -42,6 +52,14 @@ export function TodoLists() {
             initialListSelection?: boolean;
           };
         }) => updateSelectedList(event.detail.list)}
+        onTodoListRenamed={(event: {
+          detail: {
+            oldListName: string;
+            newListName: string;
+          };
+        }) =>
+          handleListRenamed(event.detail.oldListName, event.detail.newListName)
+        }
       />
       {showTodos && (
         <piercing-fragment-outlet

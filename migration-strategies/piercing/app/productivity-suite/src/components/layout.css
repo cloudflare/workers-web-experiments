@@ -5,6 +5,13 @@
     padding-inline: 1.5rem;
 }
 
+@media (max-width: 35rem) {
+    .app-header {
+        flex-direction: column;
+        padding-bottom: 1.7rem;
+    }
+}
+
 .app-header a {
     text-decoration: none;
 }
@@ -22,6 +29,12 @@
     list-style: none;
     display: flex;
     align-items: center;
+}
+
+@media (max-width: 35rem) {
+    .app-nav > ul {
+        flex-direction: column;
+    }
 }
 
 .app-nav > ul > li {

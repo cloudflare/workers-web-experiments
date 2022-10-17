@@ -7,6 +7,41 @@
     <meta name="description" content="Productivity Suite demo application" />
     <title>Productivity Suite</title>
     <style>
+      /* styles for responsiveness */
+      html {
+        font-size: 100%;
+      }
+
+      .mobile-text {
+         display: none;
+      }
+
+      @media (max-width: 45rem) {
+        html {
+          font-size: 90%;
+        }
+        .desktop-text {
+         display: none;
+        }
+        .mobile-text {
+         display: initial;
+        }
+      }
+
+      @media (max-width: 35rem) {
+        html {
+          font-size: 85%;
+        }
+      }
+
+      @media (max-width: 25rem) {
+        html {
+          font-size: 75%;
+        }
+      }
+    </style>
+    <style>
+      /* basic styles */
       body {
         margin: 0;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -22,6 +57,7 @@
       }
     </style>
     <style>
+      /* spe-delay-slider styles */
       .spa-delay-slider-wrapper {
         background-color: #e1e1e1;
         color: gray;
@@ -30,15 +66,12 @@
         align-items: center;
       }
 
-      @media (max-width: 500px){
-        .spa-delay-slider-wrapper {
-
-        flex-direction: column;
-        }
-      }
-
       .spa-delay-slider-wrapper > * {
         margin: .5rem;
+      }
+
+      .spa-delay-slider-wrapper > span {
+        flex-shrink: 0;
       }
 
       #spa-delay-slider-input {
@@ -46,10 +79,11 @@
         align-self: stretch;
         opacity: 0.5;
         accent-color: #8a8a8a;
+        max-width: calc(100vw - 9rem);
       }
 
       #spa-delay-slider-output {
-        width: 9ch;
+        width: max-content;
         text-align: end;
         margin-left: 0;
       }
@@ -57,7 +91,7 @@
   </head>
   <body>
     <div class="spa-delay-slider-wrapper">
-      <span>SPA bootstrap delay: </span>
+      <span>SPA <span class="desktop-text">bootstrap</span> delay: </span>
       <input type="range" min="0" max="10" value="3" id="spa-delay-slider-input">
       <span id="spa-delay-slider-output"></span>
     </div>
@@ -76,9 +110,12 @@
 
       function updateSpaDelaySliderOutput() {
         const value = +spaDelaySliderInput.value;
-        spaDelaySliderOutput.textContent = `${value} second${
+
+        spaDelaySliderOutput.innerHTML = `
+          ${value} <span class="desktop-text">second${
           value === 0 || value > 1 ? 's' : ''
-        }`;
+        }</span><span class="mobile-text">s</span>
+        `;
       }
     </script>
   </body>

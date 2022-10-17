@@ -64,6 +64,12 @@
     padding: 3rem 1rem;
 }
 
+@media (max-width: 25rem) {
+    .app-main {
+        padding-inline: 0;
+    }
+}
+
 .app-header, .app-footer {
     background-color: #0051c3;
     color: white;
@@ -116,6 +122,11 @@
     justify-content: flex-end;
     gap: 1rem;
     margin: 0.5rem 0 1rem;
+}
+
+.app-footer svg {
+    height: 1.5rem;
+    width: 1.5rem;
 }
 
 .social-link:hover {

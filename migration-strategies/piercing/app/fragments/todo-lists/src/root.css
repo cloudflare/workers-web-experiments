@@ -29,6 +29,20 @@
     position: relative;
 }
 
+@media (max-width: 25rem) {
+    .todo-list-card {
+        font-size: 1.8rem;
+    }
+
+    .selected-list {
+        height: 9rem;
+    }
+
+    .selected-list > span {
+        padding: 2.5rem .5rem;
+    }
+}
+
 .selected-list-edit {
     width: 100%;
     height: 100%;

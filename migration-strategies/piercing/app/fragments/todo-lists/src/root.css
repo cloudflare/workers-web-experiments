@@ -94,12 +94,15 @@
     font-size: 2rem;
 }
 
-.add-btn {
-    font-size: 1.3rem;
-}
-
-.add-btn:hover {
-    text-decoration: underline;
+.todo-list-card.next-list.add-btn {
+    background: #c7c7c780;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 1.45rem;
+    font-style: italic;
+    border: 1px dashed #808080;
+    height: calc(6rem - 2px);
+    width: calc(17rem - 2px);
 }
 
 .btn:hover {

@@ -8,7 +8,8 @@
 @media (max-width: 35rem) {
     .app-header {
         flex-direction: column;
-        padding-bottom: 1.7rem;
+        padding-block: 0.5rem 1.7rem;
+        gap: 0.5rem;
     }
 }
 
@@ -31,12 +32,6 @@
     align-items: center;
 }
 
-@media (max-width: 35rem) {
-    .app-nav > ul {
-        flex-direction: column;
-    }
-}
-
 .app-nav > ul > li {
     margin: .5rem;
     height: min-content;
@@ -51,6 +46,17 @@
 
 .app-nav > ul a:hover {
     text-decoration: underline;
+}
+
+@media (max-width: 35rem) {
+    .app-nav > ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .app-nav > ul > li > a {
+        padding: 0.5rem;
+    }
 }
 
 .layout {
@@ -89,7 +95,7 @@
 }
 
 .app-footer .demo-details {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 0;
     text-align: center;
 }

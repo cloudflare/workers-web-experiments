@@ -46,7 +46,7 @@
 
 .todo-mvc-footer .filters li button {
 	color: inherit;
-	margin: 0 .3rem;
+	margin: 0 .5rem;
 	padding: 0 .5rem;
 	text-decoration: none;
 	border: 1px solid transparent;
@@ -90,5 +90,10 @@
 	.todo-mvc-footer .filters {
 		position: static;
 		height: max-content;
+	}
+
+	.todo-mvc-footer .filters li button {
+		padding: 0.5rem 1rem;
+		margin: 0.5rem;
 	}
 }

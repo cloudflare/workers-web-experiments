@@ -7,7 +7,7 @@
 		"build.client": "vite build",
 		"build.ssr": "vite build --ssr src/entry.ssr.tsx",
 		"lint": "eslint \"src/**/*.ts*\"",
-		"start": "npx wrangler dev",
+		"start": "npx wrangler dev --local",
 		"deploy": "npx wrangler publish",
 		"typecheck": "tsc --incremental --noEmit"
 	},

@@ -14,7 +14,7 @@ export const Header = component$(() => {
       <div class="container">
         <Image alt="Cloudflare logo" src="cf-logo.png" width="74" height="35" />
         <div class="title">Cloud Gallery</div>
-        <a href="https://github.com/cloudflare/workers-web-experiments/tree/main/multi-worker-demo">
+        <a href="https://github.com/cloudflare/workers-web-experiments/tree/main/cloud-gallery">
           <Image
             alt="Github icon"
             aria-label="Link to Github repository"

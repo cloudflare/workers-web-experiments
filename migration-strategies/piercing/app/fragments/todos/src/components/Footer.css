@@ -72,3 +72,23 @@
 .todo-mvc-footer .clear-completed:hover {
 	text-decoration: underline;
 }
+
+
+@media (max-width: 35rem) {
+	.todo-mvc-footer {
+	  display: flex;
+	  flex-direction: column;
+	  gap: 0.5rem;
+	  height: max-content;
+	}
+
+	.todo-mvc-footer .todo-count {
+		float: none;
+		text-align: center;
+	}
+
+	.todo-mvc-footer .filters {
+		position: static;
+		height: max-content;
+	}
+}

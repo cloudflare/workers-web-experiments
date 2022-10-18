@@ -1,12 +1,13 @@
 .container {
 	margin-top: 45px;
-	width: 85vw;
+	width: 65vw;
 }
 
 .cloud-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 18rem));
 	justify-items: center;
+	justify-content: center;
 	grid-gap: 1rem;
 }
 

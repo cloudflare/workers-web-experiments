@@ -2,19 +2,15 @@
 
 ## How to run the app locally
 
-### build the piercing-library
+### Install workspace
 
 ```terminal
-    cd piercing-library
     npm i
-    npm run build
 ```
 
-### build the shared library
+### Build all the necessary packages
 
 ```terminal
-    cd app/shared
-    npm i
     npm run build
 ```
 
@@ -22,7 +18,6 @@
 
 ```terminal
     cd app/productivity-suite
-    npm i
     npm run fe:dev
     npm run be:dev (in a separate terminal)
 ```
@@ -30,9 +25,8 @@
 ### run fragments
 
 ```terminal
-    cd app/fragments/F
-    npm i
+    cd app/fragments/fragmentName
     npm run dev
 ```
 
-where `F = login|todo-lists|todos`
+where `fragmentName` is `login`, `todo-lists` and `todos`

@@ -9,6 +9,7 @@
     "be:dev": "wrangler dev --local --env local",
     "be:deploy": "wrangler publish",
     "fe:dev": "vite",
+    "build": "npm run fe:build",
     "fe:build": "tsc && vite build",
     "fe:deploy": "npm run fe:build && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main",
     "deploy": "npm run fe:deploy; npm run be:deploy"

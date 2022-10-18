@@ -49,12 +49,12 @@
 
 .unimplemented-demo-page button {
     color: #fff;
-    background-color: #f6821f;
+    background-color: var(--secondary-color);
     cursor: pointer;
     border: none;
     padding: .25rem .5rem;
 }
 
 .unimplemented-demo-page button:hover {
-    background-color: #d86300;
+    background-color: var(--secondary-color);
 }

@@ -31,9 +31,13 @@ export function ListOfTodos({
           }`}
         >
           <div className="view">
+            <label className="hidden-label" htmlFor={`checkbox-toggle-${text}`}>
+              Toggle for {text}
+            </label>
             <input
               className="toggle"
               type="checkbox"
+              id={`checkbox-toggle-${text}`}
               checked={completed}
               onChange={async (event: ChangeEvent<HTMLInputElement>) => {
                 const completed = event.target.checked;

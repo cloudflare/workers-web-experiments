@@ -108,3 +108,10 @@
 .todo-mvc-todos-list li.editing:last-child {
 	margin-bottom: -1px;
 }
+
+.hidden-label {
+	font-size: 0px;
+	position: absolute;
+	top: 0.5rem;
+	left: 0.9rem;
+}

@@ -23,6 +23,7 @@
 		"express": "4.17.3",
 		"node-fetch": "3.2.9",
 		"prettier": "2.7.1",
+		"sharp": "^0.31.1",
 		"typescript": "4.7.4",
 		"vite": "3.0.2",
 		"vite-tsconfig-paths": "3.5.0"

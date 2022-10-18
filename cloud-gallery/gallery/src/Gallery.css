@@ -1,11 +1,13 @@
 .container {
 	margin-top: 45px;
+	width: 85vw;
 }
 
 .cloud-grid {
 	display: grid;
-	grid-template-columns: 300px 300px 300px;
-	grid-gap: 10px;
+	grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+	justify-items: center;
+	grid-gap: 1rem;
 }
 
 .spinner-container {

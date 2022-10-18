@@ -9,9 +9,10 @@ interface Props {
 
 export const GalleryItem = component$<Props>((props) => {
   useStylesScoped$(styles);
+
   return (
     <div class="gallery-item">
-      <Image alt="cloud picture" src={props.src} width="300" height="450" />
+      <Image class="gallery-image" alt="cloud picture" src={props.src} />
       <div class="tags">{props.tags.join(", ")}</div>
     </div>
   );

@@ -2,6 +2,12 @@
 	position: relative;
 	overflow: hidden;
 	border-radius: 25px;
+	width: 18rem;
+}
+
+.gallery-item :global(img){
+	width: 100%;
+	height: auto;
 }
 
 .tags {

@@ -1,6 +1,6 @@
 .input {
 	padding: 10px;
-	width: 400px;
+	width: 350px;
 	font-size: 16px;
 	border: 1px solid #333;
 	border-radius: 2px;
@@ -12,7 +12,7 @@
 }
 
 .result-list {
-	width: 400px;
+	width: 350px;
 	box-sizing: border-box;
 	border-radius: 3px;
 	border: 1px solid #777;

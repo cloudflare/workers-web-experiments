@@ -14,7 +14,7 @@
 }
 
 .slider-content {
-	width: 40%;
+	width: max(40%, 400px);
 	display: flex;
 	align-items: center;
 }

@@ -14,6 +14,14 @@ async function isUserAuthenticated(request: Request) {
   return !!currentUser;
 }
 
+function isPiercingEnabled(request: Request) {
+  const match = request.headers
+    .get("Cookie")
+    ?.match(/piercingEnabled=(true|false)/);
+  const piercingEnabled = !match ? null : match[1] === "true" ? true : false;
+  return piercingEnabled === null ? true : piercingEnabled;
+}
+
 gateway.registerFragment({
   fragmentId: "login",
   // Note: deployment part of the url is fine also for local development since then
@@ -28,6 +36,7 @@ gateway.registerFragment({
       right: 0;
     }`,
   shouldBeIncluded: async (request: Request) =>
+    isPiercingEnabled(request) &&
     isUserAuthenticated(request).then((authenticated) => !authenticated),
 });
 
@@ -45,6 +54,7 @@ gateway.registerFragment({
       right: 2rem;
     }`,
   shouldBeIncluded: async (request: Request) =>
+    isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
   convertRequest: (
@@ -82,6 +92,7 @@ gateway.registerFragment({
     }
     `,
   shouldBeIncluded: async (request: Request) =>
+    isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
   convertRequest: (

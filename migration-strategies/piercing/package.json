@@ -1,0 +1,23 @@
+{
+	"name": "migration-strategies-piercing-demo",
+	"version": "0.0.0",
+	"description": "workspace for the piercing migration strategy demo",
+	"workspaces": [
+		"piercing-library",
+		"app/shared",
+		"app/productivity-suite",
+		"app/fragments/login",
+		"app/fragments/todo-lists",
+		"app/fragments/todos"
+	],
+	"scripts": {
+		"deploy": "npm run deploy --workspaces",
+        "build": "npm run build --workspaces"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+	},
+	"dependencies": {
+	}
+}

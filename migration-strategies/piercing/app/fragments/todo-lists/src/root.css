@@ -9,6 +9,7 @@
     width: max-content;
     margin: auto;
     max-width: 100%;
+    position: relative;
 }
 
 .todo-list-card {
@@ -21,7 +22,7 @@
     height: 6rem;
     width: 17rem;
     box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
-    box-sizing: content-box;
+    box-sizing: border-box;
     z-index: 2;
 }
 
@@ -104,11 +105,15 @@
     font-weight: 300;
 }
 
+.btn:hover {
+    opacity: 0.7;
+}
+
 .nav-btn {
     font-size: 2rem;
 }
 
-.todo-list-card.next-list.add-btn {
+.todo-list-card.add-btn {
     background: #c7c7c780;
     text-decoration: none;
     font-weight: 400;
@@ -123,8 +128,14 @@
     opacity: 0.7;
 }
 
-.delete-btn:disabled,
 .nav-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.delete-btn:disabled,
+.nav-btn.hidden {
+    opacity: 0;
     visibility: hidden;
 }
 
@@ -136,7 +147,7 @@
 }
 
 
-@media (max-width: 45rem) {
+@media (max-width: 52rem) {
     .todo-list-card.previous-list,
     .todo-list-card.next-list {
         display: none;
@@ -148,5 +159,167 @@
 
     .add-btn {
         transform: translateY(-.5rem);
+    }
+}
+
+.previous-previous-list, .next-next-list {
+    position: absolute;
+    z-index: -1;
+    transform: scale(0.2);
+    opacity: 0;
+}
+
+.previous-previous-list {
+    left: -4rem;
+}
+
+.next-next-list {
+    right: -4rem;
+}
+
+.todo-lists-carousel {
+    --animation-speed: 0.4s;
+    --animation-easing: cubic-bezier(.55,.51,.47,.99);
+}
+
+@media (max-width: 52rem) {
+    .todo-lists-carousel.animating-next .selected-list {
+        animation: simple-move-selected-list-left var(--animation-speed) var(--animation-easing);
+    }
+    @keyframes simple-move-selected-list-left {
+        50%{
+            opacity: 0;
+            transform: translateX(-2rem);
+        }
+        51%{
+            opacity: 0;
+            transform: translateX(2rem);
+        }
+        100%{
+            color: transparent;
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .todo-lists-carousel.animating-previous .selected-list {
+        animation: simple-move-selected-list-right var(--animation-speed) var(--animation-easing);
+    }
+    @keyframes simple-move-selected-list-right {
+        50%{
+            opacity: 0;
+            transform: translateX(2rem);
+        }
+        51%{
+            opacity: 0;
+            transform: translateX(-2rem);
+        }
+        100%{
+            color: transparent;
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+}
+@media (min-width: 52rem) {
+    .todo-lists-carousel.animating-next .previous-list {
+        animation: move-previous-list-left var(--animation-speed) var(--animation-easing);
+    }
+    .todo-lists-carousel.animating-next .selected-list {
+        animation: move-selected-list-left var(--animation-speed) var(--animation-easing);
+    }
+    .todo-lists-carousel.animating-next .next-list {
+        animation: move-next-list-left var(--animation-speed) var(--animation-easing);
+    }
+    .todo-lists-carousel.animating-next .next-next-list {
+        animation: move-next-next-list-left var(--animation-speed) var(--animation-easing);
+    }
+    @keyframes move-previous-list-left {
+        to {
+            transform: scale(.3) translateX(-3rem);
+            opacity: 0;
+        }
+    }
+    @keyframes move-selected-list-left {
+        to {
+            transform: scale(.7) translateX(-17rem);
+        }
+    }
+    @keyframes move-next-list-left {
+        70%{
+            box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
+        }
+        100% {
+            opacity: 1;
+            z-index: 2;
+            transform: scale(1) translate(-12rem);
+            box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
+        }
+    }
+    @keyframes move-next-next-list-left {
+        100% {
+            z-index: 1;
+            transform: scale(0.7) translateX(-8.5rem);
+            box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
+            opacity: 1;
+        }
+    }
+
+    .todo-lists-carousel.animating-previous .previous-previous-list {
+        animation: move-previous-previous-list-right var(--animation-speed) var(--animation-easing);
+    }
+    .todo-lists-carousel.animating-previous .previous-list {
+        animation: move-previous-list-right var(--animation-speed) var(--animation-easing);
+    }
+    .todo-lists-carousel.animating-previous .selected-list {
+        animation: move-selected-list-right var(--animation-speed) var(--animation-easing);
+    }
+    .todo-lists-carousel.animating-previous .next-list {
+        animation: move-next-list-right var(--animation-speed) var(--animation-easing);
+    }
+    @keyframes move-previous-previous-list-right {
+        78% {
+            z-index: 1;
+        }
+        100% {
+            padding-left: 0;
+            z-index: 1;
+            opacity: 1;
+            transform: scale(0.7) translateX(8.6rem);
+        }
+    }
+    @keyframes move-previous-list-right {
+        33% {
+            z-index: 1;
+        }
+        34%{
+            z-index: 2;
+        }
+        100% {
+            z-index: 2;
+            opacity: 1;
+            transform: scale(1) translateX(12rem);
+        }
+    }
+    @keyframes move-selected-list-right {
+        to {
+            z-index: 1;
+            transform: scale(.7) translateX(17rem);
+        }
+    }
+    @keyframes move-next-list-right {
+        50% {
+            z-index: 0;
+        }
+        to {
+            z-index: 0;
+            transform: scale(.3) translateX(3rem);
+            opacity: 0;
+        }
+    }
+    @keyframes move-next-next-list-right {
+        from, to {
+            opacity: 0;
+        }
     }
 }

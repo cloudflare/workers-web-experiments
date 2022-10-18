@@ -7,7 +7,7 @@ import {
   $,
   useOnDocument,
 } from "@builder.io/qwik";
-import CSS from "./Filter.css?inline";
+import styles from "./Filter.css?inline";
 import { tags } from "../../constants";
 import { useLocation, isBrowser } from "helpers";
 interface State {
@@ -23,7 +23,7 @@ export const findTags = (query: string): string[] => {
 };
 
 export const Filter = component$(() => {
-  useStylesScoped$(CSS);
+  useStylesScoped$(styles);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -114,7 +114,7 @@ export const Filter = component$(() => {
 
 export const SearchResults = component$(
   (props: { state: State; listRef: Ref }) => {
-    useStylesScoped$(CSS);
+    useStylesScoped$(styles);
 
     const searchResults = props.state.searchResults;
 

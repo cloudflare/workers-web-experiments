@@ -1,10 +1,10 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
 import { Image, useFragmentRoot } from "helpers";
-import HeaderCSS from "./Header.css?inline";
+import styles from "./Header.css?inline";
 import { Slider } from "./Slider/Slider";
 
 export const Header = component$(() => {
-  useStylesScoped$(HeaderCSS);
+  useStylesScoped$(styles);
   useFragmentRoot();
 
   return (

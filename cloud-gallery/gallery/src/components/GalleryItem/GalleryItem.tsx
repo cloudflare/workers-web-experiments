@@ -1,6 +1,6 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
 import { Image } from "helpers";
-import CSS from "./GalleryItem.css?inline";
+import styles from "./GalleryItem.css?inline";
 
 interface Props {
   src: string;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const GalleryItem = component$<Props>((props) => {
-  useStylesScoped$(CSS);
+  useStylesScoped$(styles);
   console.log("");
   return (
     <div class="gallery-item">

@@ -8,10 +8,10 @@ import {
 import { GalleryItem } from "./components/GalleryItem/GalleryItem";
 import { images } from "../../constants";
 import { getCookie, useLocation, useFragmentRoot } from "helpers";
-import CSS from "./Gallery.css?inline";
+import styles from "./Gallery.css?inline";
 
 export const Gallery = component$(() => {
-  useStylesScoped$(CSS);
+  useStylesScoped$(styles);
   useFragmentRoot();
   const location = useLocation();
 

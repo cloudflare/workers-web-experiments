@@ -82,35 +82,66 @@ export const Root = component$(() => {
     });
   });
 
-  const goToList = $((which: "previous" | "next") => {
-    state.idxOfSelectedList += which === "previous" ? -1 : 1;
-    dispatchSelectedListUpdated();
-  });
+  const animationState = useStore<{
+    animating: boolean;
+    currentAnimation: "previous" | "next" | null;
+  }>({ animating: false, currentAnimation: null });
+
+  const animationDuration = 400;
 
   const addNewList = $(async () => {
     const newListName = await getNewListName(state.todoLists);
     const success = await addTodoList(state.currentUser!, newListName);
     if (success) {
+      animationState.animating = true;
       state.todoLists.push({ name: newListName, todos: [] });
-      state.idxOfSelectedList = state.todoLists.length - 1;
+      animationState.currentAnimation = "next";
+      setTimeout(() => {
+        animationState.animating = false;
+        state.idxOfSelectedList = state.todoLists.length - 1;
+      }, animationDuration);
       dispatchSelectedListUpdated();
     }
   });
 
+  const goToList = $((which: "previous" | "next") => {
+    animationState.animating = true;
+    animationState.currentAnimation = which;
+    setTimeout(() => {
+      animationState.animating = false;
+      state.idxOfSelectedList += which === "previous" ? -1 : 1;
+    }, animationDuration);
+    dispatchSelectedListUpdated();
+  });
+
   return (
     <div class="todo-lists-section" ref={ref}>
-      <div class="todo-lists-carousel">
+      <div
+        class={`todo-lists-carousel ${
+          animationState.animating
+            ? `animating-${animationState.currentAnimation}`
+            : ""
+        }`}
+      >
         <button
-          disabled={state.idxOfSelectedList === 0}
-          class="btn nav-btn left"
+          disabled={state.idxOfSelectedList === 0 || animationState.animating}
+          class={`btn nav-btn left ${
+            state.idxOfSelectedList === 0 ? "hidden" : ""
+          }`}
           onClick$={() => goToList("previous")}
         >
           &lt;
         </button>
+        {state.idxOfSelectedList > 1 && (
+          <div class={"todo-list-card previous-previous-list"}>
+            {state.todoLists[state.idxOfSelectedList - 2].name}
+          </div>
+        )}
         <button
           class={`todo-list-card previous-list ${
             state.idxOfSelectedList === 0 ? "hidden" : ""
           }`}
+          disabled={animationState.animating}
           onClick$={() => goToList("previous")}
         >
           {state.idxOfSelectedList > 0 &&
@@ -211,6 +242,7 @@ export const Root = component$(() => {
                 ? "hidden"
                 : ""
             }`}
+            disabled={animationState.animating}
             onClick$={() => goToList("next")}
           >
             {state.idxOfSelectedList < state.todoLists.length - 1 &&
@@ -219,22 +251,45 @@ export const Root = component$(() => {
         )}
         {state.idxOfSelectedList === state.todoLists.length - 1 && (
           <button
-            class="todo-list-card next-list add-btn"
+            class={`todo-list-card next-list add-btn`}
+            disabled={animationState.animating}
             onClick$={addNewList}
           >
             Add List
           </button>
         )}
+        <div
+          class={`todo-list-card next-next-list ${
+            state.idxOfSelectedList >= state.todoLists.length - 2
+              ? "add-btn"
+              : ""
+          }`}
+        >
+          {state.idxOfSelectedList <= state.todoLists.length - 3
+            ? state.todoLists[state.idxOfSelectedList + 2].name
+            : "Add List"}
+        </div>
         {state.idxOfSelectedList !== state.todoLists.length - 1 ? (
           <button
-            disabled={state.idxOfSelectedList === state.todoLists.length - 1}
-            class="btn nav-btn right"
+            disabled={
+              state.idxOfSelectedList === state.todoLists.length - 1 ||
+              animationState.animating
+            }
+            class={`btn nav-btn right ${
+              state.idxOfSelectedList === state.todoLists.length - 1
+                ? "hidden"
+                : ""
+            }`}
             onClick$={() => goToList("next")}
           >
             &gt;
           </button>
         ) : (
-          <button class="btn nav-btn right" onClick$={addNewList}>
+          <button
+            class="btn nav-btn right"
+            onClick$={addNewList}
+            disabled={animationState.animating}
+          >
             +
           </button>
         )}

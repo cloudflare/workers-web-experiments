@@ -182,7 +182,7 @@
 }
 
 .app-header .btn:hover {
-    background-color: var(--secondary-color-darker);
+    background-color: var(--secondary-color-lighter);
 }
 
 .active {

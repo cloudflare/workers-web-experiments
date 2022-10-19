@@ -13,7 +13,7 @@ export default () => {
           name="description"
           content="A demo showcasing the Qwik framework on Cloudflare Workers"
         />
-        <title>Qwik Multi Worker Demo</title>
+        <title>Cloud Gallery</title>
       </head>
       <body>
         <div class="page-container">

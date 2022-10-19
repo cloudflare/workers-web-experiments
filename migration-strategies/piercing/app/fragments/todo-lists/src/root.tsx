@@ -40,20 +40,26 @@ export const Root = component$(() => {
   const initialSelectedListName: string | null =
     useEnvData("selectedListName") ?? null;
 
+  const newTodoInputState = useStore<{
+    value: string | null;
+    valid: boolean;
+    dirty: boolean;
+  }>({
+    value: null,
+    valid: false,
+    dirty: false,
+  });
+
   const state = useStore<{
     currentUser?: string;
     todoLists: { name: string; todos: any[] }[];
     idxOfSelectedList: number;
     editingSelectedList: boolean;
-    newNameForSelectedList: string | null;
-    newNameForSelectedListIsInvalid: boolean;
   }>(
     {
       todoLists: [],
       idxOfSelectedList: 0,
       editingSelectedList: false,
-      newNameForSelectedList: null,
-      newNameForSelectedListIsInvalid: false,
     },
     { recursive: true }
   );
@@ -147,13 +153,16 @@ export const Root = component$(() => {
           {state.idxOfSelectedList > 0 &&
             state.todoLists[state.idxOfSelectedList - 1].name}
         </button>
-        <div
+        <button
           class="todo-list-card selected-list"
           onClick$={() => {
-            state.editingSelectedList = true;
-            state.newNameForSelectedList =
-              state.todoLists[state.idxOfSelectedList].name;
-            state.newNameForSelectedListIsInvalid = false;
+            if (!state.editingSelectedList) {
+              state.editingSelectedList = true;
+              newTodoInputState.value =
+                state.todoLists[state.idxOfSelectedList].name;
+              newTodoInputState.valid = true;
+              newTodoInputState.dirty = false;
+            }
           }}
         >
           {!state.editingSelectedList && (
@@ -164,17 +173,18 @@ export const Root = component$(() => {
               ref={editRef}
               type="text"
               class={`selected-list-edit ${
-                state.newNameForSelectedListIsInvalid ? "invalid" : ""
+                newTodoInputState.valid ? "" : "invalid"
               }`}
-              value={state.newNameForSelectedList ?? undefined}
+              value={newTodoInputState.value ?? undefined}
               onInput$={(event: any) => {
                 const value = event.target.value;
-                state.newNameForSelectedList = value;
+                newTodoInputState.value = value;
+                newTodoInputState.dirty = true;
                 const trimmedValue = value.trim();
                 if (
                   trimmedValue === state.todoLists[state.idxOfSelectedList].name
                 ) {
-                  state.newNameForSelectedListIsInvalid = false;
+                  newTodoInputState.valid = true;
                   return;
                 }
                 if (
@@ -182,10 +192,10 @@ export const Root = component$(() => {
                   trimmedValue.length > 20 ||
                   !!state.todoLists.find(({ name }) => name === trimmedValue)
                 ) {
-                  state.newNameForSelectedListIsInvalid = true;
+                  newTodoInputState.valid = false;
                   return;
                 }
-                state.newNameForSelectedListIsInvalid = false;
+                newTodoInputState.valid = true;
               }}
               onBlur$={() => {
                 state.editingSelectedList = false;
@@ -193,11 +203,12 @@ export const Root = component$(() => {
               onKeyUp$={async (event: any) => {
                 if (
                   event.key === "Enter" &&
-                  !state.newNameForSelectedListIsInvalid
+                  newTodoInputState.dirty &&
+                  newTodoInputState.valid
                 ) {
                   const oldListName =
                     state.todoLists[state.idxOfSelectedList].name;
-                  const newListName = state.newNameForSelectedList!.trim();
+                  const newListName = newTodoInputState.value!.trim();
                   const success = await editTodoList(
                     state.currentUser!,
                     oldListName,
@@ -234,7 +245,7 @@ export const Root = component$(() => {
           >
             x
           </button>
-        </div>
+        </button>
         {state.idxOfSelectedList < state.todoLists.length - 1 && (
           <button
             class={`todo-list-card next-list ${

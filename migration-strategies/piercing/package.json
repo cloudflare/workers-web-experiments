@@ -11,7 +11,7 @@
 		"app/fragments/todos"
 	],
 	"scripts": {
-		"deploy": "npm run deploy --workspaces",
+		"deploy": "npm run deploy --workspaces --if-present",
         "build": "npm run build --workspaces"
 	},
 	"author": "",

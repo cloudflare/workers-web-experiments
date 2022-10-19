@@ -3,6 +3,9 @@
 This project demonstrates how we can architect an application built from
 a tree of "fragments", each independently deployed to Cloudflare Workers.
 
+See it in action: https://cloud-gallery.web-experiments.workers.dev.
+Read about it: https://blog.cloudflare.com/better-micro-frontends
+
 ## Installation
 
 The project uses Wrangler running on Node.js.

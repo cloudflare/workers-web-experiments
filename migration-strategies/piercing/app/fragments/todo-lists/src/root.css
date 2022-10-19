@@ -178,7 +178,7 @@
 }
 
 .todo-lists-carousel {
-    --animation-speed: 0.4s;
+    --animation-speed: 0.15s;
     --animation-easing: cubic-bezier(.55,.51,.47,.99);
 }
 

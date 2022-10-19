@@ -56,5 +56,5 @@
 }
 
 .unimplemented-demo-page button:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color-lighter);
 }

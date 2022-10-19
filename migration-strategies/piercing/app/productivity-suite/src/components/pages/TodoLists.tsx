@@ -5,6 +5,9 @@ import "./TodoLists.css";
 export function TodoLists() {
   const [selectedListName, setSelectedListName] = useState<string | null>(null);
 
+  const [todoEnteringAnimation, setTodoEnteringAnimation] = useState<
+    "previous" | "next" | undefined
+  >();
   const [showTodos, setShowTodos] = useState<boolean>(true);
 
   useEffect(() => {
@@ -27,12 +30,17 @@ export function TodoLists() {
     navigate(`/todos/${newListName}`, { replace: true });
   };
 
-  const updateSelectedList = (list: { name: string; todos: any[] }) => {
+  const updateSelectedList = (
+    list: { name: string; todos: any[] },
+    which?: "previous" | "next"
+  ) => {
     setShowTodos(false);
+    setTodoEnteringAnimation(which);
     setTimeout(() => {
       setShowTodos(true);
       updateSelectedListName(list.name);
     }, 50);
+    setTimeout(() => setTodoEnteringAnimation(undefined), 250);
   };
 
   return (
@@ -43,12 +51,15 @@ export function TodoLists() {
         onTodoListSelected={(event: {
           detail: {
             list: { name: string; todos: any[] };
-            initialListSelection?: boolean;
+            which?: "previous" | "next";
           };
-        }) => updateSelectedList(event.detail.list)}
+        }) => updateSelectedList(event.detail.list, event.detail.which)}
       />
       {showTodos && (
         <piercing-fragment-outlet
+          className={`todos ${
+            todoEnteringAnimation ? `todos-${todoEnteringAnimation}` : ""
+          }`}
           fragment-id="todos"
           fragment-fetch-params={fragmentFetchParams}
         />

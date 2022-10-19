@@ -105,8 +105,8 @@ export const Root = component$(() => {
       setTimeout(() => {
         animationState.animating = false;
         state.idxOfSelectedList = state.todoLists.length - 1;
+        dispatchSelectedListUpdated();
       }, animationDuration);
-      dispatchSelectedListUpdated();
     }
   });
 
@@ -116,8 +116,8 @@ export const Root = component$(() => {
     setTimeout(() => {
       animationState.animating = false;
       state.idxOfSelectedList += which === "previous" ? -1 : 1;
+      dispatchSelectedListUpdated();
     }, animationDuration);
-    dispatchSelectedListUpdated();
   });
 
   return (

@@ -53,11 +53,12 @@
 	border-radius: 3px;
 }
 
-.todo-mvc-footer .filters li button:hover {
-	border-color: rgba(175, 47, 47, 0.1);
+.todo-mvc-footer .filters li button:hover,
+.todo-mvc-footer .filters li button:focus {
+	border-color: var(--primary-color);
 }
 
-.todo-mvc-footer .filters li button.selected {
+.todo-mvc-footer .filters li button:not(:hover, :focus).selected {
 	border-color: rgba(175, 47, 47, 0.2);
 }
 
@@ -69,7 +70,8 @@
 	cursor: pointer;
 }
 
-.todo-mvc-footer .clear-completed:hover {
+.todo-mvc-footer .clear-completed:hover,
+.todo-mvc-footer .clear-completed:focus {
 	text-decoration: underline;
 }
 

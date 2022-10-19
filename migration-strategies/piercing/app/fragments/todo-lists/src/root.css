@@ -27,6 +27,7 @@
 }
 
 .selected-list {
+    font-weight: inherit;
     position: relative;
 }
 
@@ -44,9 +45,13 @@
     }
 }
 
+.selected-list:has(.selected-list-edit) {
+    padding: 0;
+}
+
 .selected-list-edit {
-    width: 100%;
-    height: 100%;
+    height: 6rem;
+    width: 17rem;
     font-family: inherit;
     font-size: inherit;
     padding: 2rem;

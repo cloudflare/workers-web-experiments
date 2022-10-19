@@ -11,7 +11,7 @@ export default () => {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta
           name="description"
-          content="A demo showcasing the Qwik framework on Cloudflare Workers"
+          content="A demo showcasing a fragments architecture on Cloudflare Workers"
         />
         <title>Cloud Gallery</title>
       </head>

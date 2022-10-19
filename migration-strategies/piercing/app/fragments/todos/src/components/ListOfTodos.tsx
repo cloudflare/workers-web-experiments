@@ -19,6 +19,7 @@ export function ListOfTodos({
     oldTodoText: string;
     newTodoText: string;
     invalid: boolean;
+    dirty: boolean;
   } | null>(null);
 
   return (
@@ -53,17 +54,21 @@ export function ListOfTodos({
                 }
               }}
             />
-            <label
+            <button
+              className="todo-text"
               onClick={() =>
-                setEditingTodoDetails({
-                  oldTodoText: text,
-                  newTodoText: text,
-                  invalid: false,
-                })
+                setTimeout(() =>
+                  setEditingTodoDetails({
+                    oldTodoText: text,
+                    newTodoText: text,
+                    invalid: false,
+                    dirty: false,
+                  })
+                )
               }
             >
               {text}
-            </label>
+            </button>
             <button
               className="destroy"
               onClick={async () => {
@@ -93,10 +98,15 @@ export function ListOfTodos({
                   oldTodoText,
                   newTodoText,
                   invalid,
+                  dirty: true,
                 });
               }}
               onKeyUp={async (event: React.KeyboardEvent<HTMLInputElement>) => {
-                if (event.key === "Enter" && !editingTodoDetails.invalid) {
+                if (
+                  event.key === "Enter" &&
+                  editingTodoDetails.dirty &&
+                  !editingTodoDetails.invalid
+                ) {
                   const trimmedNewTodoText =
                     editingTodoDetails.newTodoText.trim();
                   const updatedTodo = {

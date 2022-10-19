@@ -87,7 +87,7 @@ export const Root = component$(() => {
     currentAnimation: "previous" | "next" | null;
   }>({ animating: false, currentAnimation: null });
 
-  const animationDuration = 400;
+  const animationDuration = 150;
 
   const addNewList = $(async () => {
     const newListName = await getNewListName(state.todoLists);

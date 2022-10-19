@@ -3,6 +3,7 @@ import {
   component$,
   useRef,
   useStore,
+  useStyles$,
   useStylesScoped$,
 } from "@builder.io/qwik";
 import { dispatchPiercingEvent } from "piercing-library";
@@ -66,6 +67,8 @@ export const Root = component$(() => {
     }
   );
 
+  const loadingState = useStore({ loading: false });
+
   return (
     <div class="root" ref={ref}>
       <form
@@ -78,6 +81,7 @@ export const Root = component$(() => {
               ...userData,
             },
           });
+          loadingState.loading = true;
         }}
       >
         <div class="form-control">
@@ -131,10 +135,15 @@ export const Root = component$(() => {
             }
           />
           <button
-            disabled={!userData.username || !!inputsDetails.usernameInputError}
-            class="submit-btn"
+            disabled={
+              loadingState.loading ||
+              !userData.username ||
+              !!inputsDetails.usernameInputError
+            }
+            class={`submit-btn ${loadingState.loading ? "loading" : ""}`}
           >
-            Login
+            <span class="text">Login</span>
+            <span class="loading-spinner"></span>
           </button>
         </div>
       </form>

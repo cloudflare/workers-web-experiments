@@ -79,14 +79,20 @@ export const Root = component$(() => {
   const editRef = useRef<HTMLInputElement>();
   editRef.current?.focus();
 
-  const dispatchSelectedListUpdated = $(() => {
-    dispatchPiercingEvent(ref.current!, {
-      type: "todo-list-selected",
-      payload: {
-        list: state.todoLists[state.idxOfSelectedList],
-      },
-    });
-  });
+  const dispatchSelectedListUpdated = $(
+    (
+      listSelected: { name: string; todos: any[] },
+      which?: "previous" | "next"
+    ) => {
+      dispatchPiercingEvent(ref.current!, {
+        type: "todo-list-selected",
+        payload: {
+          list: listSelected,
+          which,
+        },
+      });
+    }
+  );
 
   const animationState = useStore<{
     animating: boolean;
@@ -102,22 +108,25 @@ export const Root = component$(() => {
       animationState.animating = true;
       state.todoLists.push({ name: newListName, todos: [] });
       animationState.currentAnimation = "next";
+      const newTodoListIdx = state.todoLists.length - 1;
       setTimeout(() => {
         animationState.animating = false;
-        state.idxOfSelectedList = state.todoLists.length - 1;
-        dispatchSelectedListUpdated();
+        state.idxOfSelectedList = newTodoListIdx;
       }, animationDuration);
+      dispatchSelectedListUpdated(state.todoLists[newTodoListIdx], "next");
     }
   });
 
   const goToList = $((which: "previous" | "next") => {
     animationState.animating = true;
     animationState.currentAnimation = which;
+    const newTodoListIdx =
+      state.idxOfSelectedList + (which === "previous" ? -1 : 1);
     setTimeout(() => {
       animationState.animating = false;
-      state.idxOfSelectedList += which === "previous" ? -1 : 1;
-      dispatchSelectedListUpdated();
+      state.idxOfSelectedList = newTodoListIdx;
     }, animationDuration);
+    dispatchSelectedListUpdated(state.todoLists[newTodoListIdx], which);
   });
 
   return (
@@ -217,7 +226,9 @@ export const Root = component$(() => {
                   if (success) {
                     state.todoLists[state.idxOfSelectedList].name = newListName;
                     state.editingSelectedList = false;
-                    dispatchSelectedListUpdated();
+                    dispatchSelectedListUpdated(
+                      state.todoLists[state.idxOfSelectedList]
+                    );
                   }
                 }
               }}
@@ -238,7 +249,9 @@ export const Root = component$(() => {
                 if (state.idxOfSelectedList > 0) {
                   state.idxOfSelectedList--;
                 }
-                dispatchSelectedListUpdated();
+                dispatchSelectedListUpdated(
+                  state.todoLists[state.idxOfSelectedList]
+                );
               }
               event.stopPropagation();
             }}

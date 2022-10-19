@@ -97,13 +97,44 @@
     cursor: pointer;
     border: none;
     padding: .5rem 1rem;
+    display: grid;
+    place-items: center;
 }
 
 .submit-btn:hover {
     background-color: var(--secondary-color-lighter);
 }
 
-.submit-btn:disabled {
+.submit-btn:not(.loading):disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.submit-btn.loading .text {
+    grid-column: 1;
+    grid-row: 1;
+    visibility: hidden;
+}
+
+.submit-btn.loading .loading-spinner {
+    grid-column: 1;
+    grid-row: 1;
+    width: 0.75rem;
+    height: 0.75rem;
+    opacity: 0.8;
+    border: 0.18rem solid currentColor;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: spin-animation 0.7s linear infinite;
+}
+
+@keyframes spin-animation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

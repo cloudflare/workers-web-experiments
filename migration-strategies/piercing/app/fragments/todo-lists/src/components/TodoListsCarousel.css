@@ -26,8 +26,8 @@
     }
 }
 
-.todo-list-card.previous-list,
-.todo-list-card.next-list {
+.todo-lists-carousel :global(.todo-list-card.previous-list),
+.todo-lists-carousel :global(.todo-list-card.next-list) {
     cursor: pointer;
     z-index: 1;
     transform: scale(0.7);
@@ -35,16 +35,16 @@
     font-weight: inherit;
 }
 
-.todo-list-card.previous-list {
+.todo-lists-carousel :global(.todo-list-card.previous-list) {
     margin-right: -5rem;
 }
 
-.todo-list-card.next-list {
+.todo-lists-carousel :global(.todo-list-card.next-list) {
     margin-left: -5rem;
     box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d, inset 8rem 0 2rem -5rem #4d4d4d35;
 }
 
-.todo-list-card.hidden {
+.todo-lists-carousel :global(.todo-list-card.hidden) {
     visibility: hidden;
 }
 
@@ -62,11 +62,21 @@
     opacity: 0.7;
 }
 
-.nav-btn {
+.todo-lists-carousel :global(.nav-btn) {
     font-size: 2rem;
 }
 
-.todo-list-card.add-btn {
+.todo-lists-carousel :global(.nav-btn:disabled) {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.todo-lists-carousel :global(.nav-btn.hidden) {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.todo-lists-carousel :global(.todo-list-card.add-btn) {
     background: #c7c7c780;
     text-decoration: none;
     font-weight: 400;
@@ -77,50 +87,40 @@
     width: calc(17rem - 2px);
 }
 
-.nav-btn:disabled {
-    opacity: 0.5;
-    cursor: default;
-}
-
-.nav-btn.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.add-list-btn {
+.todo-lists-carousel :global(.add-list-btn) {
     font-family: inherit;
     cursor: pointer;
     background-color: transparent;
     border: none;
 }
 
-
 @media (max-width: 52rem) {
-    .todo-list-card.previous-list,
-    .todo-list-card.next-list {
+    .todo-lists-carousel :global(.todo-list-card.previous-list),
+    .todo-lists-carousel :global(.todo-list-card.next-list) {
         display: none;
     }
 
-    .selected-list-wrapper {
+    .todo-lists-carousel :global(.selected-list-wrapper) {
         margin: 0 1rem 0.15rem;
     }
 
-    .add-btn {
+    .todo-lists-carousel :global(.add-btn) {
         transform: translateY(-.5rem);
     }
 }
 
-.previous-previous-list, .next-next-list {
+.todo-lists-carousel :global(.previous-previous-list),
+.todo-lists-carousel :global(.next-next-list) {
     position: absolute;
     z-index: -1;
     transform: scale(0.2);
     opacity: 0;
 }
 
-.previous-previous-list {
+.todo-lists-carousel :global(.previous-previous-list) {
     left: -4rem;
 }
 
-.next-next-list {
+.todo-lists-carousel :global(.next-next-list) {
     right: -4rem;
 }

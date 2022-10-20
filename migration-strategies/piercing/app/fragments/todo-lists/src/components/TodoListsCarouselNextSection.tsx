@@ -43,15 +43,14 @@ export const TodoListsCarouselNextSection = component$(
         >
           {nextNextListName || "Add List"}
         </div>
-        {nextHidden ? (
-          <button
-            disabled={nextDisabled}
-            class={`btn nav-btn right ${nextHidden ? "hidden" : ""}`}
-            onClick$={onGoToNext$}
-          >
-            &gt;
-          </button>
-        ) : (
+        <button
+          disabled={nextDisabled}
+          class={`btn nav-btn right ${nextHidden ? "hidden" : ""}`}
+          onClick$={onGoToNext$}
+        >
+          &gt;
+        </button>
+        {nextHidden && (
           <button
             class="btn nav-btn right"
             onClick$={onAddNewList$}

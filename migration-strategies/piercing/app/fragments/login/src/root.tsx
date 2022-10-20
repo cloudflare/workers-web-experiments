@@ -3,123 +3,95 @@ import {
   component$,
   useRef,
   useStore,
-  useStyles$,
   useStylesScoped$,
 } from "@builder.io/qwik";
 import { dispatchPiercingEvent } from "piercing-library";
 
 import styles from "./root.css?inline";
 
+const enum InputErrorMessages {
+  noSpaces = "Spaces are not allowed",
+  noSpecialCharacters = "Special characters are not allowed",
+  maxLength = "The provided username is too long, it needs not to be longer than 20 characters",
+  emptyInput = "Please provide a username",
+}
+interface LoginState {
+  animatePassword: boolean;
+  usernameError: InputErrorMessages | null;
+  usernameTouched: boolean;
+  username: string;
+  password: string;
+  loading: boolean;
+}
+
+export const getUsernameInputError = (
+  input: string,
+  inputTouched: boolean
+): InputErrorMessages | null => {
+  if (input.includes(" ")) return InputErrorMessages.noSpaces;
+  if (/[^a-zA-Z0-9]/.test(input)) return InputErrorMessages.noSpecialCharacters;
+  if (input.length > 20) return InputErrorMessages.maxLength;
+  if (inputTouched && !input) return InputErrorMessages.emptyInput;
+  return null;
+};
+
 export const Root = component$(() => {
-  const possibleInputErrors = {
-    noSpaces: "noSpaces",
-    noSpecialCharacters: "noSpecialCharacters",
-    maxLength: "maxLength",
-    emptyInput: "emptyInput",
-  } as const;
-
-  const inputErrorMessages: Record<
-    typeof possibleInputErrors[keyof typeof possibleInputErrors],
-    string
-  > = {
-    [possibleInputErrors.noSpaces]: "Spaces are not allowed",
-    [possibleInputErrors.noSpecialCharacters]:
-      "Special characters are not allowed",
-    [possibleInputErrors.maxLength]:
-      "The provided username is too long, it needs not to be longer than 20 characters",
-    [possibleInputErrors.emptyInput]: "Please provide a username",
-  };
-
   const ref = useRef();
   useStylesScoped$(styles);
 
-  const inputsDetails = useStore<{
-    animatePasswordInput: boolean;
-    usernameInputError:
-      | null
-      | typeof possibleInputErrors[keyof typeof possibleInputErrors];
-    usernameInputTouched: boolean;
-  }>({
-    animatePasswordInput: false,
-    usernameInputError: null,
-    usernameInputTouched: false,
-  });
-
-  const userData = useStore({
+  const state = useStore<LoginState>({
+    animatePassword: false,
+    usernameError: null,
+    usernameTouched: false,
     username: "",
     password: "",
+    loading: false,
   });
 
-  const getUsernameInputError = $(
-    (
-      input: string
-    ): typeof possibleInputErrors[keyof typeof possibleInputErrors] | null => {
-      if (input.includes(" ")) return possibleInputErrors.noSpaces;
-      if (/[^a-zA-Z0-9]/.test(input))
-        return possibleInputErrors.noSpecialCharacters;
-      if (input.length > 15) {
-        return possibleInputErrors.maxLength;
-      }
-      if (inputsDetails.usernameInputTouched && !userData.username) {
-        return possibleInputErrors.emptyInput;
-      }
-      return null;
-    }
-  );
+  const dispatchLoginEvent = $(() => {
+    dispatchPiercingEvent(ref.current!, {
+      type: "login",
+      payload: {
+        username: state.username,
+        password: state.password,
+      },
+    });
+    state.loading = true;
+  });
 
-  const loadingState = useStore({ loading: false });
+  const handleFocus = $(() => (state.usernameTouched = true));
+
+  const handleInput = $((event: Event) => {
+    const value = (event.target as HTMLInputElement).value;
+    state.username = value;
+    const usernameLength = value.length;
+    const passwordLength = Math.ceil(usernameLength ** 2 / 5 + usernameLength);
+    state.password = new Array(passwordLength).fill("_").join("");
+    state.animatePassword = true;
+    setTimeout(() => (state.animatePassword = false), 500);
+    state.usernameError = getUsernameInputError(value, state.usernameTouched);
+  });
 
   return (
     <div class="root" ref={ref}>
       <form
         class="login-form"
         preventdefault:submit
-        onSubmit$={() => {
-          dispatchPiercingEvent(ref.current!, {
-            type: "login",
-            payload: {
-              ...userData,
-            },
-          });
-          loadingState.loading = true;
-        }}
+        onSubmit$={dispatchLoginEvent}
       >
         <div class="form-control">
           <label for="username-input">Username</label>
           <input
             id="username-input"
-            class={inputsDetails.usernameInputError ? "invalid" : ""}
+            class={state.usernameError ? "invalid" : ""}
             type="text"
-            onFocus$={() => (inputsDetails.usernameInputTouched = true)}
-            onInput$={async (event) => {
-              const value = (event.target as HTMLInputElement).value;
-              userData.username = value;
-              const usernameLength = value.length;
-              const passwordLength = Math.ceil(
-                usernameLength ** 2 / 5 + usernameLength
-              );
-              userData.password = new Array(passwordLength).fill("_").join("");
-              inputsDetails.animatePasswordInput = true;
-              setTimeout(
-                () => (inputsDetails.animatePasswordInput = false),
-                500
-              );
-              inputsDetails.animatePasswordInput = true;
-              inputsDetails.usernameInputError = await getUsernameInputError(
-                value
-              );
-              setTimeout(
-                () => (inputsDetails.animatePasswordInput = false),
-                500
-              );
-            }}
-            value={userData.username}
+            onFocus$={handleFocus}
+            onInput$={handleInput}
+            value={state.username}
             autoComplete="true"
           />
-          {inputsDetails.usernameInputError && (
-            <p class="input-error-message">
-              {inputErrorMessages[inputsDetails.usernameInputError]}
-            </p>
+          {state.usernameError && (
+            <p class="input-error-message">{state.usernameError}</p>
           )}
         </div>
         <div class="form-control">
@@ -128,19 +100,13 @@ export const Root = component$(() => {
             id="password-input"
             type="password"
             disabled
-            value={userData.password}
+            value={state.password}
             autoComplete="true"
-            class={
-              inputsDetails.animatePasswordInput ? "password-input-animate" : ""
-            }
+            class={state.animatePassword ? "password-input-animate" : ""}
           />
           <button
-            disabled={
-              loadingState.loading ||
-              !userData.username ||
-              !!inputsDetails.usernameInputError
-            }
-            class={`submit-btn ${loadingState.loading ? "loading" : ""}`}
+            disabled={state.loading || !state.username || !!state.usernameError}
+            class={`submit-btn ${state.loading ? "loading" : ""}`}
           >
             <span class="text">Login</span>
             <span class="loading-spinner"></span>

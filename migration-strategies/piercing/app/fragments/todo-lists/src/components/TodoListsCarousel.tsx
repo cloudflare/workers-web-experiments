@@ -13,7 +13,7 @@ import { getNewListName } from "../getNewListName";
 import { SelectedListCard } from "./SelectedListCard";
 
 import styles from "./TodoListsCarousel.css?inline";
-import listsAnimationStyles from "./listsAnimation.css?inline";
+import listsAnimationStyles from "./ListsAnimation.css?inline";
 import { TodoListsCarouselPreviousSection } from "./TodoListsCarouselPreviousSection";
 import { TodoListsCarouselNextSection } from "./TodoListsCarouselNextSection";
 

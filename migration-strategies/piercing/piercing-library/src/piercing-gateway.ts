@@ -5,7 +5,7 @@ export interface FragmentConfig<Env> {
   fragmentId: string;
   getBaseUrl: (env: Env) => string;
   prePiercingStyles: string;
-  convertRequest?: (
+  transformRequest?: (
     request: Request,
     env: Env,
     fragmentConfig: FragmentConfig<Env>
@@ -255,9 +255,9 @@ export class PiercingGateway<Env> {
       request.url.replace(`piercing-fragment/${fragmentConfig.fragmentId}`, "")
     );
 
-    const convertRequest =
-      fragmentConfig.convertRequest ?? this.defaultConvertRequest;
-    const newRequest = convertRequest(
+    const transformRequest =
+      fragmentConfig.transformRequest ?? this.defaultTransformRequest;
+    const newRequest = transformRequest(
       new Request(url, request),
       env,
       fragmentConfig
@@ -304,7 +304,7 @@ export class PiercingGateway<Env> {
     }
   }
 
-  private defaultConvertRequest(
+  private defaultTransformRequest(
     request: Request,
     env: Env,
     fragmentConfig: FragmentConfig<Env>

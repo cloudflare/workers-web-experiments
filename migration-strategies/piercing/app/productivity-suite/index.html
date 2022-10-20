@@ -106,6 +106,34 @@
         border-left: 1px solid currentColor;
         padding-left: 0.5rem;
       }
+
+      body.show-seams #root,
+      body.show-seams piercing-fragment-host,
+      body.show-seams piercing-fragment-outlet {
+        outline: 3px dashed #fc9003;
+      }
+
+      body.show-seams #root,
+      body.show-seams piercing-fragment-outlet {
+        position: relative;
+      }
+
+      body.show-seams #root {
+        outline-offset: -2px;
+      }
+
+      body.show-seams #root::after,
+      body.show-seams piercing-fragment-host::before {
+        content: 'fragment';
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #F6F6F6;
+        background-color: #fc9003;
+        padding: .5rem;
+        font-weight: 500;
+        z-index: 1401;
+      }
     </style>
   </head>
   <body>
@@ -116,6 +144,9 @@
       <label for="enable-piercing-input">
         <input type="checkbox" id="enable-piercing-input">
       Piercing Enabled</label>
+      <label for="enable-seams-input">
+        <input type="checkbox" id="enable-seams-input">
+      Show Seams</label>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -154,6 +185,26 @@
         ).toUTCString();
         document.cookie = `piercingEnabled=${enable}; expires=${expirationDate}; path=/`;
       }
+
+
+      const enableSeamsInput = document.getElementById('enable-seams-input');
+
+      const toggleSeams = (enabled) => {
+        if (enabled) {
+          document.body.classList.add('show-seams')
+        } else {
+          document.body.classList.remove('show-seams')
+        }
+      }
+      enableSeamsInput.addEventListener('input', (event) => {
+        toggleSeams(event.target.checked);
+        document.cookie = `seamsEnabled=${event.target.checked}`;
+      });
+
+      const seamsEnabledMatch = document.cookie.match(/seamsEnabled=(true|false)/);
+      const initialSeamsEnabledValue = !seamsEnabledMatch ? null : seamsEnabledMatch[1] === 'true' ? true : false;
+      enableSeamsInput.checked = initialSeamsEnabledValue;
+      toggleSeams(initialSeamsEnabledValue);
     </script>
   </body>
 </html>

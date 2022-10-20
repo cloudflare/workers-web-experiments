@@ -26,9 +26,13 @@
     z-index: 2;
 }
 
+.selected-list-wrapper {
+    position: relative;
+}
+
 .selected-list {
     font-weight: inherit;
-    position: relative;
+    height: 100%;
 }
 
 @media (max-width: 25rem) {
@@ -36,7 +40,7 @@
         font-size: 1.8rem;
     }
 
-    .selected-list {
+    .selected-list-wrapper {
         height: 9rem;
     }
 
@@ -76,6 +80,7 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
+    z-index: inherit;
 }
 
 .todo-list-card.previous-list,
@@ -158,7 +163,7 @@
         display: none;
     }
 
-    .selected-list {
+    .selected-list-wrapper {
         margin: 0 1rem 0.15rem;
     }
 
@@ -188,7 +193,7 @@
 }
 
 @media (max-width: 52rem) {
-    .todo-lists-carousel.animating-next .selected-list {
+    .todo-lists-carousel.animating-next .selected-list-wrapper {
         animation: simple-move-selected-list-left var(--animation-speed) var(--animation-easing);
     }
     @keyframes simple-move-selected-list-left {
@@ -207,7 +212,7 @@
         }
     }
 
-    .todo-lists-carousel.animating-previous .selected-list {
+    .todo-lists-carousel.animating-previous .selected-list-wrapper {
         animation: simple-move-selected-list-right var(--animation-speed) var(--animation-easing);
     }
     @keyframes simple-move-selected-list-right {
@@ -230,7 +235,7 @@
     .todo-lists-carousel.animating-next .previous-list {
         animation: move-previous-list-left var(--animation-speed) var(--animation-easing);
     }
-    .todo-lists-carousel.animating-next .selected-list {
+    .todo-lists-carousel.animating-next .selected-list-wrapper {
         animation: move-selected-list-left var(--animation-speed) var(--animation-easing);
     }
     .todo-lists-carousel.animating-next .next-list {
@@ -276,7 +281,7 @@
     .todo-lists-carousel.animating-previous .previous-list {
         animation: move-previous-list-right var(--animation-speed) var(--animation-easing);
     }
-    .todo-lists-carousel.animating-previous .selected-list {
+    .todo-lists-carousel.animating-previous .selected-list-wrapper {
         animation: move-selected-list-right var(--animation-speed) var(--animation-easing);
     }
     .todo-lists-carousel.animating-previous .next-list {

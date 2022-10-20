@@ -4,7 +4,7 @@
 //  in this file would communicate and have the data saved in a proper persistent database.
 
 import { parse } from "cookie";
-import { Todo } from "./todo";
+import { Todo } from "./todos";
 
 const cookiesPrefix = "piercingDemoSuite_";
 

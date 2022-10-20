@@ -1,8 +1,9 @@
 import { dispatchPiercingEvent } from "piercing-library";
+import type { TodoList } from "shared";
 
 export function dispatchSelectedListUpdated(
   el: Element,
-  listSelected: { name: string; todos: any[] },
+  listSelected: TodoList,
   which?: "previous" | "next"
 ) {
   dispatchPiercingEvent(el, {

@@ -66,8 +66,8 @@ export const SelectedListCard = component$(
                 newTodoInputState.valid ? "" : "invalid"
               }`}
               value={newTodoInputState.value ?? undefined}
-              onInput$={(event: any) => {
-                const value = event.target.value;
+              onInput$={(event) => {
+                const value = (event.target as HTMLInputElement).value;
                 newTodoInputState.value = value;
                 newTodoInputState.dirty = true;
                 const trimmedValue = value.trim();
@@ -88,7 +88,7 @@ export const SelectedListCard = component$(
               onBlur$={() => {
                 newTodoInputState.editing = false;
               }}
-              onKeyUp$={async (event: any) => {
+              onKeyUp$={async (event) => {
                 if (
                   event.key === "Enter" &&
                   newTodoInputState.dirty &&

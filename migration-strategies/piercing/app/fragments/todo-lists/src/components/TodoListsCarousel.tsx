@@ -7,7 +7,8 @@ import {
   useStylesScoped$,
   useWatch$,
 } from "@builder.io/qwik";
-import { addTodoList, editTodoList, removeTodoList, Todo } from "shared";
+import { addTodoList, editTodoList, removeTodoList } from "shared";
+import type { Todo, TodoList } from "shared";
 import { getNewListName } from "../getNewListName";
 import { SelectedListCard } from "./SelectedListCard";
 
@@ -27,17 +28,14 @@ export const TodoListsCarousel = component$(
     initialTodoLists: { name: string; todos: Todo[] }[];
     initialIdxOfSelectedList: number;
     onDispatchSelectedListUpdated$: PropFunction<
-      (
-        listSelected: { name: string; todos: any[] },
-        which?: "previous" | "next"
-      ) => void
+      (listSelected: TodoList, which?: "previous" | "next") => void
     >;
   }) => {
     useStylesScoped$(styles);
     useStyles$(listsAnimationStyles);
 
     const state = useStore<{
-      todoLists: { name: string; todos: any[] }[];
+      todoLists: TodoList[];
       idxOfSelectedList: number;
       selectedListName: string;
     }>(

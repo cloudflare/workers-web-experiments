@@ -162,8 +162,8 @@ export const Root = component$(() => {
           {state.idxOfSelectedList > 0 &&
             state.todoLists[state.idxOfSelectedList - 1].name}
         </button>
-        <button
-          class="todo-list-card selected-list"
+        <div
+          class="todo-list-card selected-list-wrapper"
           onClick$={() => {
             if (!state.editingSelectedList) {
               state.editingSelectedList = true;
@@ -174,66 +174,70 @@ export const Root = component$(() => {
             }
           }}
         >
-          {!state.editingSelectedList && (
-            <span>{state.todoLists[state.idxOfSelectedList].name}</span>
-          )}
-          {state.editingSelectedList && (
-            <input
-              ref={editRef}
-              type="text"
-              class={`selected-list-edit ${
-                newTodoInputState.valid ? "" : "invalid"
-              }`}
-              value={newTodoInputState.value ?? undefined}
-              onInput$={(event: any) => {
-                const value = event.target.value;
-                newTodoInputState.value = value;
-                newTodoInputState.dirty = true;
-                const trimmedValue = value.trim();
-                if (
-                  trimmedValue === state.todoLists[state.idxOfSelectedList].name
-                ) {
-                  newTodoInputState.valid = true;
-                  return;
-                }
-                if (
-                  !trimmedValue ||
-                  trimmedValue.length > 20 ||
-                  !!state.todoLists.find(({ name }) => name === trimmedValue)
-                ) {
-                  newTodoInputState.valid = false;
-                  return;
-                }
-                newTodoInputState.valid = true;
-              }}
-              onBlur$={() => {
-                state.editingSelectedList = false;
-              }}
-              onKeyUp$={async (event: any) => {
-                if (
-                  event.key === "Enter" &&
-                  newTodoInputState.dirty &&
-                  newTodoInputState.valid
-                ) {
-                  const oldListName =
-                    state.todoLists[state.idxOfSelectedList].name;
-                  const newListName = newTodoInputState.value!.trim();
-                  const success = await editTodoList(
-                    state.currentUser!,
-                    oldListName,
-                    newListName
-                  );
-                  if (success) {
-                    state.todoLists[state.idxOfSelectedList].name = newListName;
-                    state.editingSelectedList = false;
-                    dispatchSelectedListUpdated(
-                      state.todoLists[state.idxOfSelectedList]
-                    );
+          <button class="todo-list-card selected-list">
+            {!state.editingSelectedList && (
+              <span>{state.todoLists[state.idxOfSelectedList].name}</span>
+            )}
+            {state.editingSelectedList && (
+              <input
+                ref={editRef}
+                type="text"
+                class={`selected-list-edit ${
+                  newTodoInputState.valid ? "" : "invalid"
+                }`}
+                value={newTodoInputState.value ?? undefined}
+                onInput$={(event: any) => {
+                  const value = event.target.value;
+                  newTodoInputState.value = value;
+                  newTodoInputState.dirty = true;
+                  const trimmedValue = value.trim();
+                  if (
+                    trimmedValue ===
+                    state.todoLists[state.idxOfSelectedList].name
+                  ) {
+                    newTodoInputState.valid = true;
+                    return;
                   }
-                }
-              }}
-            />
-          )}
+                  if (
+                    !trimmedValue ||
+                    trimmedValue.length > 20 ||
+                    !!state.todoLists.find(({ name }) => name === trimmedValue)
+                  ) {
+                    newTodoInputState.valid = false;
+                    return;
+                  }
+                  newTodoInputState.valid = true;
+                }}
+                onBlur$={() => {
+                  state.editingSelectedList = false;
+                }}
+                onKeyUp$={async (event: any) => {
+                  if (
+                    event.key === "Enter" &&
+                    newTodoInputState.dirty &&
+                    newTodoInputState.valid
+                  ) {
+                    const oldListName =
+                      state.todoLists[state.idxOfSelectedList].name;
+                    const newListName = newTodoInputState.value!.trim();
+                    const success = await editTodoList(
+                      state.currentUser!,
+                      oldListName,
+                      newListName
+                    );
+                    if (success) {
+                      state.todoLists[state.idxOfSelectedList].name =
+                        newListName;
+                      state.editingSelectedList = false;
+                      dispatchSelectedListUpdated(
+                        state.todoLists[state.idxOfSelectedList]
+                      );
+                    }
+                  }
+                }}
+              />
+            )}
+          </button>
           <button
             class="btn delete-btn"
             disabled={state.editingSelectedList || state.todoLists.length <= 1}
@@ -258,7 +262,7 @@ export const Root = component$(() => {
           >
             x
           </button>
-        </button>
+        </div>
         {state.idxOfSelectedList < state.todoLists.length - 1 && (
           <button
             class={`todo-list-card next-list ${

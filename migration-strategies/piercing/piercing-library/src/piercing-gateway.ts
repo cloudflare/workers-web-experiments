@@ -2,15 +2,47 @@ import { piercingFragmentHostInlineScript } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 
+/**
+ * Configuration object for the integration of a fragment in the app's gateway worker.
+ */
 export interface FragmentConfig<Env> {
+  /**
+   * Unique Id for the fragment.
+   */
   fragmentId: string;
+  /**
+   * Function which based on the current environment returns
+   * the base url for the fragment's requests.
+   */
   getBaseUrl: (env: Env) => string;
+  /**
+   * Styles to apply to the fragment before it gets pierced, their purpose
+   * is to style the fragment in such a way to make it look as close as possible
+   * to the final pierced view (so that the piercing operation can look seamless).
+   *
+   * For best results they should use the following selector:
+   * :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="fragmentId"]
+   */
   prePiercingStyles: string;
+  /**
+   * Function which transforms all the requests for the fetching of a fragment using
+   * custom logic. This can be used to convert url paths into search parameters (or
+   * vice versa), to provide to the fragment request in the format more convenient
+   * for it to consume (instead of delegating any conversions to the fragment itself).
+   *
+   * Note: this only applies to requests that are fetching the fragment view, requests
+   * to specific assets (such as js, css, images, etc...) don't get transformed.
+   */
   transformRequest?: (
     request: Request,
     env: Env,
     fragmentConfig: FragmentConfig<Env>
   ) => Request;
+  /**
+   * Function which on HTML requests, based on the current request, environment and
+   * context returns a boolean (or a promise of a boolean) indicating whether the
+   * fragment should be included ("pre-pierced") in the current HTML response.
+   */
   shouldBeIncluded: (
     request: Request,
     env: Env,

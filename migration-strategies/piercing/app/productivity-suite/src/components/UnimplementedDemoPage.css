@@ -11,12 +11,11 @@
 .unimplemented-demo-page figure {
     margin: 0;
     margin-top: 5rem;
-    height: 5rem;
     opacity: 0.5;
-    transform: scale(2.5);
 }
 
 .unimplemented-demo-page figure > svg {
+    height: 8rem;
     animation: swing .5s cubic-bezier(0, 0.4, 1, 0.6) .1s;
 }
 

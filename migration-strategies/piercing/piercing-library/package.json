@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "prebuild": "rm -rf ./dist",
     "build": "npm run build.host-inline-script; npm run build.lib",

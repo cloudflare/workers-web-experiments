@@ -57,7 +57,7 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
-  convertRequest: (
+  transformRequest: (
     request: Request,
     env: Env,
     thisConfig: FragmentConfig<Env>
@@ -68,7 +68,7 @@ gateway.registerFragment({
     if (!match) return request;
 
     const listName = decodeURIComponent(match[1]);
-    const params = new URLSearchParams();
+    const params = new URL(request.url).searchParams;
     if (listName) {
       params.append("listName", listName);
     }
@@ -95,7 +95,7 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
-  convertRequest: (
+  transformRequest: (
     request: Request,
     env: Env,
     thisConfig: FragmentConfig<Env>
@@ -103,11 +103,9 @@ gateway.registerFragment({
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/todos\/([^/]+)$/.exec(path);
-    const listName =
-      (match?.[1] && decodeURIComponent(match[1])) ??
-      url.searchParams.get("listName");
+    const listName = match?.[1] && decodeURIComponent(match[1]);
 
-    const params = new URLSearchParams();
+    const params = url.searchParams;
     if (listName) {
       params.append("listName", listName);
     }

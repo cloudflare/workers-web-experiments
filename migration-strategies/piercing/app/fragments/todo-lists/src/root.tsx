@@ -6,7 +6,7 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import type { Todo } from "shared";
+import type { TodoList } from "shared";
 
 import styles from "./root.css?inline";
 import { dispatchSelectedListUpdated } from "./dispatchSelectedListUpdated";
@@ -16,14 +16,13 @@ export const Root = component$(() => {
   useStylesScoped$(styles);
 
   const envCurrentUser: string = useEnvData("currentUser")!;
-  const initialUserData: { todoLists: { name: string; todos: Todo[] }[] } =
-    useEnvData("userData")!;
+  const initialUserData: { todoLists: TodoList[] } = useEnvData("userData")!;
   const initialSelectedListName: string | null =
     useEnvData("selectedListName") ?? null;
 
   const state = useStore<{
     currentUser?: string;
-    todoLists: { name: string; todos: any[] }[];
+    todoLists: TodoList[];
     idxOfSelectedList: number;
     selectedListName: string;
   }>({
@@ -53,7 +52,7 @@ export const Root = component$(() => {
           initialTodoLists={state.todoLists}
           initialIdxOfSelectedList={state.idxOfSelectedList}
           onDispatchSelectedListUpdated$={(
-            listSelected: { name: string; todos: any[] },
+            listSelected: TodoList,
             which?: "previous" | "next"
           ) => dispatchSelectedListUpdated(ref.current!, listSelected, which)}
         />

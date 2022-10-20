@@ -1,4 +1,6 @@
-export function getNewListName(lists: { name: string; todos: any[] }[]) {
+import type { TodoList } from "shared";
+
+export function getNewListName(lists: TodoList[]) {
   const newListAlreadyPresent = !!lists.find(({ name }) => name === "new list");
   let newListSuffix = 0;
   let matchFound = false;

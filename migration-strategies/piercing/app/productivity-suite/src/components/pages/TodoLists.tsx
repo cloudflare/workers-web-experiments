@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { TodoList } from "shared";
 import "./TodoLists.css";
 
 export function TodoLists() {
@@ -30,10 +31,7 @@ export function TodoLists() {
     navigate(`/todos/${newListName}`, { replace: true });
   };
 
-  const updateSelectedList = (
-    list: { name: string; todos: any[] },
-    which?: "previous" | "next"
-  ) => {
+  const updateSelectedList = (list: TodoList, which?: "previous" | "next") => {
     setShowTodos(false);
     setTodoEnteringAnimation(which);
     setTimeout(() => {
@@ -50,7 +48,7 @@ export function TodoLists() {
         fragment-fetch-params={fragmentFetchParams}
         onTodoListSelected={(event: {
           detail: {
-            list: { name: string; todos: any[] };
+            list: TodoList;
             which?: "previous" | "next";
           };
         }) => updateSelectedList(event.detail.list, event.detail.which)}

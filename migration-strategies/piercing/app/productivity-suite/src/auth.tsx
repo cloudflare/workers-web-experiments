@@ -9,7 +9,7 @@ import {
 } from "shared";
 
 interface AuthContextType {
-  user: any;
+  user: string | null;
   login: (userName: string) => void;
   logout: () => void;
 }

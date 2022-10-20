@@ -1,3 +1,3 @@
 export * from "./api";
 
-export type { Todo } from "./todo";
+export type { Todo, TodoList } from "./todos";

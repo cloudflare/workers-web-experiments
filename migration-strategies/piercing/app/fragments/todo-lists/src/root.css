@@ -12,7 +12,7 @@
     position: relative;
 }
 
-.todo-list-card {
+.todo-lists-section :global(.todo-list-card) {
     font-size: 2rem;
     display: grid;
     place-items: center;
@@ -26,61 +26,10 @@
     z-index: 2;
 }
 
-.selected-list-wrapper {
-    position: relative;
-}
-
-.selected-list {
-    font-weight: inherit;
-    height: 100%;
-}
-
 @media (max-width: 25rem) {
-    .todo-list-card {
+    .todo-lists-section :global(.todo-list-card) {
         font-size: 1.8rem;
     }
-
-    .selected-list-wrapper {
-        height: 9rem;
-    }
-
-    .selected-list > span {
-        padding: 2.5rem .5rem;
-    }
-}
-
-.selected-list:has(.selected-list-edit) {
-    padding: 0;
-}
-
-.selected-list-edit {
-    height: 6rem;
-    width: 17rem;
-    font-family: inherit;
-    font-size: inherit;
-    padding: 2rem;
-    box-sizing: border-box;
-    font-weight: 100;
-    border: none;
-}
-
-
-.selected-list-edit:focus {
-    outline: 1px solid #00000075;
-}
-
-.selected-list-edit.invalid {
-    color: #e5555555;
-    outline: 1px solid red;
-}
-
-.delete-btn {
-    font-family: inherit;
-    font-size: 1.1rem;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: inherit;
 }
 
 .todo-list-card.previous-list,
@@ -105,7 +54,7 @@
     visibility: hidden;
 }
 
-.btn {
+.todo-lists-section :global(.btn) {
     color: #4d4d4d;
     cursor: pointer;
     background-color: transparent;
@@ -115,7 +64,7 @@
     font-weight: 300;
 }
 
-.btn:hover {
+.todo-lists-section :global(.btn:hover) {
     opacity: 0.7;
 }
 
@@ -134,16 +83,11 @@
     width: calc(17rem - 2px);
 }
 
-.btn:hover {
-    opacity: 0.7;
-}
-
 .nav-btn:disabled {
     opacity: 0.5;
     cursor: default;
 }
 
-.delete-btn:disabled,
 .nav-btn.hidden {
     opacity: 0;
     visibility: hidden;
@@ -185,151 +129,4 @@
 
 .next-next-list {
     right: -4rem;
-}
-
-.todo-lists-carousel {
-    --animation-speed: 0.15s;
-    --animation-easing: cubic-bezier(.55,.51,.47,.99);
-}
-
-@media (max-width: 52rem) {
-    .todo-lists-carousel.animating-next .selected-list-wrapper {
-        animation: simple-move-selected-list-left var(--animation-speed) var(--animation-easing);
-    }
-    @keyframes simple-move-selected-list-left {
-        50%{
-            opacity: 0;
-            transform: translateX(-2rem);
-        }
-        51%{
-            opacity: 0;
-            transform: translateX(2rem);
-        }
-        100%{
-            color: transparent;
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    .todo-lists-carousel.animating-previous .selected-list-wrapper {
-        animation: simple-move-selected-list-right var(--animation-speed) var(--animation-easing);
-    }
-    @keyframes simple-move-selected-list-right {
-        50%{
-            opacity: 0;
-            transform: translateX(2rem);
-        }
-        51%{
-            opacity: 0;
-            transform: translateX(-2rem);
-        }
-        100%{
-            color: transparent;
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-}
-@media (min-width: 52rem) {
-    .todo-lists-carousel.animating-next .previous-list {
-        animation: move-previous-list-left var(--animation-speed) var(--animation-easing);
-    }
-    .todo-lists-carousel.animating-next .selected-list-wrapper {
-        animation: move-selected-list-left var(--animation-speed) var(--animation-easing);
-    }
-    .todo-lists-carousel.animating-next .next-list {
-        animation: move-next-list-left var(--animation-speed) var(--animation-easing);
-    }
-    .todo-lists-carousel.animating-next .next-next-list {
-        animation: move-next-next-list-left var(--animation-speed) var(--animation-easing);
-    }
-    @keyframes move-previous-list-left {
-        to {
-            transform: scale(.3) translateX(-3rem);
-            opacity: 0;
-        }
-    }
-    @keyframes move-selected-list-left {
-        to {
-            transform: scale(.7) translateX(-17rem);
-        }
-    }
-    @keyframes move-next-list-left {
-        70%{
-            box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
-        }
-        100% {
-            opacity: 1;
-            z-index: 2;
-            transform: scale(1) translate(-12rem);
-            box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
-        }
-    }
-    @keyframes move-next-next-list-left {
-        100% {
-            z-index: 1;
-            transform: scale(0.7) translateX(-8.5rem);
-            box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
-            opacity: 1;
-        }
-    }
-
-    .todo-lists-carousel.animating-previous .previous-previous-list {
-        animation: move-previous-previous-list-right var(--animation-speed) var(--animation-easing);
-    }
-    .todo-lists-carousel.animating-previous .previous-list {
-        animation: move-previous-list-right var(--animation-speed) var(--animation-easing);
-    }
-    .todo-lists-carousel.animating-previous .selected-list-wrapper {
-        animation: move-selected-list-right var(--animation-speed) var(--animation-easing);
-    }
-    .todo-lists-carousel.animating-previous .next-list {
-        animation: move-next-list-right var(--animation-speed) var(--animation-easing);
-    }
-    @keyframes move-previous-previous-list-right {
-        78% {
-            z-index: 1;
-        }
-        100% {
-            padding-left: 0;
-            z-index: 1;
-            opacity: 1;
-            transform: scale(0.7) translateX(8.6rem);
-        }
-    }
-    @keyframes move-previous-list-right {
-        33% {
-            z-index: 1;
-        }
-        34%{
-            z-index: 2;
-        }
-        100% {
-            z-index: 2;
-            opacity: 1;
-            transform: scale(1) translateX(12rem);
-        }
-    }
-    @keyframes move-selected-list-right {
-        to {
-            z-index: 1;
-            transform: scale(.7) translateX(17rem);
-        }
-    }
-    @keyframes move-next-list-right {
-        50% {
-            z-index: 0;
-        }
-        to {
-            z-index: 0;
-            transform: scale(.3) translateX(3rem);
-            opacity: 0;
-        }
-    }
-    @keyframes move-next-next-list-right {
-        from, to {
-            opacity: 0;
-        }
-    }
 }

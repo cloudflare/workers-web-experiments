@@ -1,0 +1,107 @@
+
+.selected-list-wrapper {
+    position: relative;
+}
+
+.selected-list {
+    font-weight: inherit;
+    height: 100%;
+}
+
+
+@media (max-width: 25rem) {
+    .selected-list-wrapper {
+        height: 9rem;
+    }
+
+    .selected-list > span {
+        padding: 2.5rem .5rem;
+    }
+}
+
+
+.selected-list:has(.selected-list-edit) {
+    padding: 0;
+}
+
+.selected-list-edit {
+    height: 6rem;
+    width: 17rem;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 2rem;
+    box-sizing: border-box;
+    font-weight: 100;
+    border: none;
+}
+
+
+.selected-list-edit:focus {
+    outline: 1px solid #00000075;
+}
+
+.selected-list-edit.invalid {
+    color: #e5555555;
+    outline: 1px solid red;
+}
+
+.delete-btn {
+    font-family: inherit;
+    font-size: 1.1rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: inherit;
+}
+
+.delete-btn:disabled {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@media (max-width: 52rem) {
+    .selected-list-wrapper {
+        margin: 0 1rem 0.15rem;
+    }
+}
+
+
+@media (max-width: 52rem) {
+    .todo-lists-carousel.animating-next .selected-list-wrapper {
+        animation: simple-move-selected-list-left var(--animation-speed) var(--animation-easing);
+    }
+    @keyframes simple-move-selected-list-left {
+        50%{
+            opacity: 0;
+            transform: translateX(-2rem);
+        }
+        51%{
+            opacity: 0;
+            transform: translateX(2rem);
+        }
+        100%{
+            color: transparent;
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .todo-lists-carousel.animating-previous .selected-list-wrapper {
+        animation: simple-move-selected-list-right var(--animation-speed) var(--animation-easing);
+    }
+    @keyframes simple-move-selected-list-right {
+        50%{
+            opacity: 0;
+            transform: translateX(2rem);
+        }
+        51%{
+            opacity: 0;
+            transform: translateX(-2rem);
+        }
+        100%{
+            color: transparent;
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+}

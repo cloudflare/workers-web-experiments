@@ -76,6 +76,10 @@
     visibility: hidden;
 }
 
+.todo-lists-carousel :global(.nav-btn.right.hidden) {
+    display: none;
+}
+
 .todo-lists-carousel :global(.todo-list-card.add-btn) {
     background: #c7c7c780;
     text-decoration: none;

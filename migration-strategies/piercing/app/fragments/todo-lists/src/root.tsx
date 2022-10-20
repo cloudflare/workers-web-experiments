@@ -7,11 +7,29 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
+import { dispatchPiercingEvent } from "piercing-library";
 import { addTodoList, editTodoList, removeTodoList, Todo } from "shared";
-import { dispatchSelectedListUpdated } from "./dispatchSelectedListUpdated";
-import { getNewListName } from "./getNewListName";
 
 import styles from "./root.css?inline";
+
+export const getNewListName = $((lists: { name: string; todos: any[] }[]) => {
+  const newListAlreadyPresent = !!lists.find(({ name }) => name === "new list");
+  let newListSuffix = 0;
+  let matchFound = false;
+  if (newListAlreadyPresent) {
+    do {
+      newListSuffix++;
+      const alreadyTaken = lists.find(
+        ({ name }) => name === `new list ${newListSuffix}`
+      );
+      if (!alreadyTaken) matchFound = true;
+    } while (!matchFound);
+  }
+
+  const newListName = `new list${!newListSuffix ? "" : ` ${newListSuffix}`}`;
+
+  return newListName;
+});
 
 export const Root = component$(() => {
   useStylesScoped$(styles);
@@ -61,6 +79,21 @@ export const Root = component$(() => {
   const editRef = useRef<HTMLInputElement>();
   editRef.current?.focus();
 
+  const dispatchSelectedListUpdated = $(
+    (
+      listSelected: { name: string; todos: any[] },
+      which?: "previous" | "next"
+    ) => {
+      dispatchPiercingEvent(ref.current!, {
+        type: "todo-list-selected",
+        payload: {
+          list: listSelected,
+          which,
+        },
+      });
+    }
+  );
+
   const animationState = useStore<{
     animating: boolean;
     currentAnimation: "previous" | "next" | null;
@@ -80,11 +113,7 @@ export const Root = component$(() => {
         animationState.animating = false;
         state.idxOfSelectedList = newTodoListIdx;
       }, animationDuration);
-      dispatchSelectedListUpdated(
-        ref.current!,
-        state.todoLists[newTodoListIdx],
-        "next"
-      );
+      dispatchSelectedListUpdated(state.todoLists[newTodoListIdx], "next");
     }
   });
 
@@ -97,11 +126,7 @@ export const Root = component$(() => {
       animationState.animating = false;
       state.idxOfSelectedList = newTodoListIdx;
     }, animationDuration);
-    dispatchSelectedListUpdated(
-      ref.current!,
-      state.todoLists[newTodoListIdx],
-      which
-    );
+    dispatchSelectedListUpdated(state.todoLists[newTodoListIdx], which);
   });
 
   return (
@@ -205,7 +230,6 @@ export const Root = component$(() => {
                         newListName;
                       state.editingSelectedList = false;
                       dispatchSelectedListUpdated(
-                        ref.current!,
                         state.todoLists[state.idxOfSelectedList]
                       );
                     }
@@ -230,7 +254,6 @@ export const Root = component$(() => {
                   state.idxOfSelectedList--;
                 }
                 dispatchSelectedListUpdated(
-                  ref.current!,
                   state.todoLists[state.idxOfSelectedList]
                 );
               }

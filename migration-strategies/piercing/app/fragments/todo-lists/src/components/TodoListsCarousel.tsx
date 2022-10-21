@@ -65,8 +65,11 @@ export const TodoListsCarousel = component$(
           animationState.animating = false;
           state.idxOfSelectedList = newTodoListIdx;
           state.selectedListName = state.todoLists[newTodoListIdx].name;
+          onDispatchSelectedListUpdated$(
+            state.todoLists[newTodoListIdx],
+            "next"
+          );
         }, animationDuration);
-        onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx], "next");
       }
     });
 

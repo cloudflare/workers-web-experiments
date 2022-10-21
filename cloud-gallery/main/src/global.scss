@@ -23,11 +23,12 @@ body.show-seams {
     &::before {
       content: 'fragment';
       position: absolute;
-      color: #F6F6F6;
-      background-color: #fc9003;
+      background-color: #FcFcFca8;
+      color: #e38202;
       padding: .5rem;
-      font-weight: 500;
-      top: 0;
+      font-weight: 400;
+      font-size: 12px;
+      top: 3px;
     }
   }
 
@@ -35,10 +36,10 @@ body.show-seams {
   .body-fragment::before,
   .gallery-fragment::before,
   .footer-fragment::before {
-    left: 0;
+    left: 3px;
   }
 
   .filter-fragment::before {
-    right: 0;
+    right: 2px;
   }
 }

@@ -122,17 +122,38 @@
         outline-offset: -3px;
       }
 
+      body.show-seams piercing-fragment-outlet {
+        outline-offset: 10px;
+      }
+
       body.show-seams #root::after,
       body.show-seams piercing-fragment-host::before {
         content: 'fragment';
         position: absolute;
-        top: 0;
-        left: 0;
-        color: #F6F6F6;
-        background-color: #fc9003;
+        top: 3px;
+        left: 3px;
+        background-color: #FeFeFee8;
+        color: #e38202;
+        font-weight: 400;
+        font-size: 12px;
         padding: .5rem;
         font-weight: 500;
       }
+
+      body.show-seams #root::after {
+        top: 3px;
+        left: 3px;
+      }
+
+      body.show-seams piercing-fragment-host::before {
+        top: -10px;
+        left: -10px;
+      }
+
+      body.show-seams #root::after {
+        content: 'Legacy app';
+      }
+
     </style>
   </head>
   <body>

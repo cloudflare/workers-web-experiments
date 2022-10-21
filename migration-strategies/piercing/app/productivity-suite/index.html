@@ -107,28 +107,29 @@
         padding-left: 0.5rem;
       }
 
+      body.show-seams {
+        --seams-color: transparent;
+      }
+
       body.show-seams #root,
       body.show-seams piercing-fragment-host,
       body.show-seams piercing-fragment-outlet {
-        outline: 3px dashed #fc9003;
-      }
-
-      body.show-seams piercing-fragment-outlet[fragment-id="todos"] {
-        outline: 3px dashed #31909b;
-      }
-
-      body.show-seams piercing-fragment-outlet[fragment-id="login"],
-      body.show-seams piercing-fragment-outlet[fragment-id="todo-lists"] {
-        outline: 3px dashed #4f2574;
-      }
-
-      body.show-seams #root,
-      body.show-seams piercing-fragment-outlet {
+        outline: 3px dashed var(--seams-color);
         position: relative;
       }
 
       body.show-seams #root {
+        --seams-color: #fc9003;
         outline-offset: -3px;
+      }
+
+      body.show-seams piercing-fragment-outlet[fragment-id="todos"] {
+        --seams-color: #31909b;
+      }
+
+      body.show-seams piercing-fragment-outlet[fragment-id="login"],
+      body.show-seams piercing-fragment-outlet[fragment-id="todo-lists"] {
+        --seams-color: #4f2574;
       }
 
       body.show-seams piercing-fragment-outlet {
@@ -142,26 +143,23 @@
         top: 3px;
         left: 3px;
         background-color: #FeFeFee8;
-        color: #e38202;
-        font-weight: 400;
-        font-size: 12px;
-        padding: .5rem;
+        color: var(--seams-color);
         font-weight: 500;
+        font-size: 0.8rem;
+        padding: .5rem;
+        z-index: 999;
       }
 
       body.show-seams piercing-fragment-host[fragment-id="todos"]::before {
         content: 'todos fragment';
-        color: #31909b;
       }
 
       body.show-seams piercing-fragment-host[fragment-id="todo-lists"]::before {
         content: 'list picker fragment';
-        color: #4f2574;
       }
 
       body.show-seams piercing-fragment-host[fragment-id="login"]::before {
         content: 'login fragment';
-        color: #4f2574;
       }
 
       body.show-seams #root::after {

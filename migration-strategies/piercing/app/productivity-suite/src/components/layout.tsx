@@ -54,15 +54,69 @@ function NavBar() {
 function Footer() {
   return (
     <footer className="app-footer">
+      <div>
+        Demo application for the piercing migration strategy implemented using{" "}
+        {/* href to update when the blog-post url is known */}
+        <a
+          target="_blank"
+          className="external-link"
+          href="https://workers.cloudflare.com/"
+        >
+          Cloudflare Workers {openInNewIcon}
+        </a>
+        . For more see the accompanying{" "}
+        <a
+          target="_blank"
+          className="external-link"
+          href="https://blog.cloudflare.com/404/"
+        >
+          blog post {openInNewIcon}
+        </a>
+        .
+      </div>
+      <div className="links-and-copyright">
+        <div className="link-icons">
+          <a
+            className="gh-link"
+            target="_blank"
+            href="https://github.com/cloudflare/workers-web-experiments/tree/productivity-suite-demo/migration-strategies/piercing"
+          >
+            {githubIcon}
+          </a>
+          <a
+            className="cloudflare-link"
+            target="_blank"
+            href="https://www.cloudflare.com/"
+          >
+            {cloudflareIcon}
+          </a>
+        </div>
+        <span>&copy; 2022 Cloudflare.com</span>
+      </div>
+    </footer>
+  );
+}
+
+function OldFooter() {
+  return (
+    <footer className="app-footer">
       <p className="demo-details">
         This is a demo application for the piercing migration strategy
         implemented using{" "}
-        <a target="_blank" href="https://workers.cloudflare.com/">
+        <a
+          target="_blank"
+          className="external-link"
+          href="https://workers.cloudflare.com/"
+        >
           Cloudflare Workers {openInNewIcon}
         </a>
         {/* href to update when the blog-post url is known */}. For more
         information check out the accompanying{" "}
-        <a target="_blank" href="https://blog.cloudflare.com/404/">
+        <a
+          target="_blank"
+          className="external-link"
+          href="https://blog.cloudflare.com/404/"
+        >
           blog post {openInNewIcon}
         </a>
         .

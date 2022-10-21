@@ -1,5 +1,5 @@
 import { FragmentPlaceholder } from "helpers";
-import "./global.css";
+import "./global.scss";
 import "./normalize.css";
 import "./layout.css";
 

@@ -7,8 +7,12 @@ export default component$(() => {
 
   return (
     <div class="content">
-      <FragmentPlaceholder name="filter" />
-      <FragmentPlaceholder name="gallery" />
+      <div class="filter-fragment">
+        <FragmentPlaceholder name="filter" />
+      </div>
+      <div class="gallery-fragment">
+        <FragmentPlaceholder name="gallery" />
+      </div>
     </div>
   );
 });

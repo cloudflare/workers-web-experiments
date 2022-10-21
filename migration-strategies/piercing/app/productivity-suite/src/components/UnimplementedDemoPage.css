@@ -38,7 +38,7 @@
   }
 
 .unimplemented-demo-page .text-wrapper {
-    margin-top: 2rem;
+    margin-block: 2rem 5rem;
 }
 
 .unimplemented-demo-page p {

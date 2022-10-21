@@ -1,4 +1,5 @@
 import {
+  $,
   component$,
   PropFunction,
   useRef,
@@ -43,6 +44,51 @@ export const SelectedListCard = component$(
       newTodoInputState.editing = false;
     });
 
+    const handleInputChange = $((event: Event) => {
+      const value = (event.target as HTMLInputElement).value;
+      newTodoInputState.value = value;
+      newTodoInputState.dirty = true;
+      const trimmedValue = value.trim();
+      if (trimmedValue === listName) {
+        newTodoInputState.valid = true;
+        return;
+      }
+      if (
+        !trimmedValue ||
+        trimmedValue.length > 20 ||
+        !!todoListsNames.includes(trimmedValue)
+      ) {
+        newTodoInputState.valid = false;
+        return;
+      }
+      newTodoInputState.valid = true;
+    });
+
+    const editListNameIfValid = $(async () => {
+      const newListName = newTodoInputState.value!.trim();
+      if (
+        listName !== newListName &&
+        newTodoInputState.dirty &&
+        newTodoInputState.valid
+      ) {
+        const success = await onEditListName$(newListName);
+        if (success) {
+          newTodoInputState.editing = false;
+        }
+      }
+    });
+
+    const handleInputBlur = $(() => {
+      editListNameIfValid();
+      newTodoInputState.editing = false;
+    });
+
+    const handleInputKeyUp = $((event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        editListNameIfValid();
+      }
+    });
+
     return (
       <div class="todo-list-card selected-list-wrapper">
         <button
@@ -66,50 +112,20 @@ export const SelectedListCard = component$(
                 newTodoInputState.valid ? "" : "invalid"
               }`}
               value={newTodoInputState.value ?? undefined}
-              onInput$={(event) => {
-                const value = (event.target as HTMLInputElement).value;
-                newTodoInputState.value = value;
-                newTodoInputState.dirty = true;
-                const trimmedValue = value.trim();
-                if (trimmedValue === listName) {
-                  newTodoInputState.valid = true;
-                  return;
-                }
-                if (
-                  !trimmedValue ||
-                  trimmedValue.length > 20 ||
-                  !!todoListsNames.includes(trimmedValue)
-                ) {
-                  newTodoInputState.valid = false;
-                  return;
-                }
-                newTodoInputState.valid = true;
-              }}
-              onBlur$={() => {
-                newTodoInputState.editing = false;
-              }}
-              onKeyUp$={async (event) => {
-                if (
-                  event.key === "Enter" &&
-                  newTodoInputState.dirty &&
-                  newTodoInputState.valid
-                ) {
-                  const newListName = newTodoInputState.value!.trim();
-                  const success = await onEditListName$(newListName);
-                  if (success) {
-                    newTodoInputState.editing = false;
-                  }
-                }
-              }}
+              onInput$={handleInputChange}
+              onBlur$={handleInputBlur}
+              onKeyUp$={handleInputKeyUp}
             />
           )}
         </button>
         <button
           class="btn delete-btn"
           disabled={newTodoInputState.editing || todoListsNames.length <= 1}
-          onClick$={() => onDeleteList$()}
+          onClick$={onDeleteList$}
           aria-label="delete list"
-        ></button>
+        >
+          x
+        </button>
       </div>
     );
   }

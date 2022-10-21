@@ -61,11 +61,9 @@ body.show-seams {
     }
   }
   .footer-fragment {
-    // outline: 3px dashed #25744E;
     outline: 3px dashed #74256c;
     &::before {
       content: 'footer';
-      // color: #25744E;
       color: #74256c;
     }
   }

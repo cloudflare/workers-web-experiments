@@ -14,7 +14,7 @@
     background-color: white;
     border: none;
     height: 6rem;
-    width: 17rem;
+    width: min(17rem, 50vw);
     box-shadow: -3px 3px 5px 0px #4d4d4d47, 0px 0px 20px 0px #4d4d4d0d;
     box-sizing: border-box;
     z-index: 2;
@@ -23,6 +23,7 @@
 @media (max-width: 25rem) {
     .todo-lists-carousel :global(.todo-list-card) {
         font-size: 1.8rem;
+        height: 9rem;
     }
 }
 

@@ -87,9 +87,19 @@
       }
 
       #spa-delay-slider-output {
-        width: max-content;
+        display: inline-block;
         text-align: end;
         margin-left: 0;
+      }
+
+      #spa-delay-slider-output {
+        width: 9ch;
+      }
+
+      @media (max-width: 45rem) {
+        #spa-delay-slider-output {
+          width: 4ch;
+        }
       }
 
       label[for="enable-piercing-input"] {

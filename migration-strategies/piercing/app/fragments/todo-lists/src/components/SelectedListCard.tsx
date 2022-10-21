@@ -39,8 +39,7 @@ export const SelectedListCard = component$(
     editRef.current?.focus();
 
     useWatch$(({ track }) => {
-      const list = track(() => listName);
-      console.log({ list });
+      track(() => listName);
       newTodoInputState.editing = false;
     });
 
@@ -60,6 +59,7 @@ export const SelectedListCard = component$(
           {!newTodoInputState.editing && <span>{listName}</span>}
           {newTodoInputState.editing && (
             <input
+              enterKeyHint="done"
               ref={editRef}
               type="text"
               class={`selected-list-edit ${

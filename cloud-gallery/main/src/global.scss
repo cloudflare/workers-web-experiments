@@ -32,6 +32,44 @@ body.show-seams {
     }
   }
 
+  .header-fragment {
+    outline: 3px dashed #4f2574;
+    &::before {
+      content: 'header';
+      color: #4f2574;
+    }
+  }
+  .body-fragment {
+    outline: 3px dashed #31909b;
+    &::before {
+      content: 'body';
+      color: #31909b;
+    }
+  }
+  .filter-fragment {
+    outline: 3px dashed #fc9003;
+    &::before {
+      content: 'filter';
+      color: #fc9003;
+    }
+  }
+  .gallery-fragment {
+    outline: 3px dashed #A53627;
+    &::before {
+      content: 'gallery';
+      color: #A53627;
+    }
+  }
+  .footer-fragment {
+    // outline: 3px dashed #25744E;
+    outline: 3px dashed #74256c;
+    &::before {
+      content: 'footer';
+      // color: #25744E;
+      color: #74256c;
+    }
+  }
+
   .header-fragment::before, 
   .body-fragment::before,
   .gallery-fragment::before,

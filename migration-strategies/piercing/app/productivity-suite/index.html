@@ -113,6 +113,15 @@
         outline: 3px dashed #fc9003;
       }
 
+      body.show-seams piercing-fragment-outlet[fragment-id="todos"] {
+        outline: 3px dashed #31909b;
+      }
+
+      body.show-seams piercing-fragment-outlet[fragment-id="login"],
+      body.show-seams piercing-fragment-outlet[fragment-id="todo-lists"] {
+        outline: 3px dashed #4f2574;
+      }
+
       body.show-seams #root,
       body.show-seams piercing-fragment-outlet {
         position: relative;
@@ -138,6 +147,21 @@
         font-size: 12px;
         padding: .5rem;
         font-weight: 500;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="todos"]::before {
+        content: 'todos fragment';
+        color: #31909b;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="todo-lists"]::before {
+        content: 'list picker fragment';
+        color: #4f2574;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="login"]::before {
+        content: 'login fragment';
+        color: #4f2574;
       }
 
       body.show-seams #root::after {

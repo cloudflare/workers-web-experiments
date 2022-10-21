@@ -29,11 +29,11 @@ export function getCookie(name: string) {
   let cookieString;
 
   if (isBrowser()) {
-    cookieString = document.cookie || '';
+    cookieString = document.cookie || "";
   } else {
     const request = useEnvData<Request>("request")!;
     const cookie = request.headers.get("cookie");
-    cookieString = cookie ?? '';
+    cookieString = cookie ?? "";
   }
 
   const cookie = parse(cookieString);

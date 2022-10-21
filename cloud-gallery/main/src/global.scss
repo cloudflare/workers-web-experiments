@@ -1,0 +1,44 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+body.show-seams {
+  .header-fragment, 
+  .body-fragment,
+  .filter-fragment,
+  .gallery-fragment,
+  .footer-fragment {
+    outline: 3px dashed #fc9003;
+    position: relative;
+    outline-offset: -3px;
+
+    &::before {
+      content: 'fragment';
+      position: absolute;
+      color: #F6F6F6;
+      background-color: #fc9003;
+      padding: .5rem;
+      font-weight: 500;
+      top: 0;
+    }
+  }
+
+  .header-fragment::before, 
+  .body-fragment::before,
+  .gallery-fragment::before,
+  .footer-fragment::before {
+    left: 0;
+  }
+
+  .filter-fragment::before {
+    right: 0;
+  }
+}

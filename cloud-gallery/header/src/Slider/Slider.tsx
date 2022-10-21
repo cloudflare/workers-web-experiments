@@ -1,6 +1,13 @@
-import { component$, useStore, useStylesScoped$, $ } from "@builder.io/qwik";
+import {
+  component$,
+  useStore,
+  useStylesScoped$,
+  $,
+  useClientEffect$,
+  useRef,
+} from "@builder.io/qwik";
 import { getCookie, saveCookie } from "helpers";
-import styles from "./Slider.css?inline";
+import styles from "./Slider.scss?inline";
 
 export const Slider = component$(() => {
   useStylesScoped$(styles);
@@ -18,6 +25,28 @@ export const Slider = component$(() => {
   const handleSliderChange$ = $((e: Event) => {
     store.delay = (e.target as HTMLInputElement).value;
     saveCookie("delay", store.delay);
+  });
+
+  const toggleSeams = $((enabled: boolean) => {
+    if (enabled) {
+      document.body.classList.add("show-seams");
+    } else {
+      document.body.classList.remove("show-seams");
+    }
+  });
+
+  const handleShowSeams$ = $((e: Event) => {
+    const checked = (e.target as HTMLInputElement).checked;
+    saveCookie("seams", JSON.stringify(checked));
+    toggleSeams(checked);
+  });
+
+  const seamsRef = useRef();
+  useClientEffect$(() => {
+    if (getCookie("seams") === "true") {
+      (seamsRef.current as HTMLInputElement).checked = true;
+      toggleSeams(true);
+    }
   });
 
   return (
@@ -40,6 +69,18 @@ export const Slider = component$(() => {
         />
 
         <span class="label">{store.delay} seconds</span>
+      </div>
+
+      <div class="seam-options-container">
+        <label class="label" for="enable-seams-input">
+          <input
+            ref={seamsRef}
+            type="checkbox"
+            id="enable-seams-input"
+            onChange$={handleShowSeams$}
+          />
+          Show Seams
+        </label>
       </div>
     </div>
   );

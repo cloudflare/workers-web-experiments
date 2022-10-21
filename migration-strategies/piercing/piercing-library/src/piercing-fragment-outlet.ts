@@ -18,14 +18,22 @@ import { PiercingFragmentHost } from "./piercing-fragment-host/piercing-fragment
 const defaultInitDelayForUi = 1;
 let initDelayForUi = defaultInitDelayForUi;
 
+/**
+ * Registers the "piercing-fragment-outlet" web component so that it can be used throughout
+ * the application.
+ *
+ * @param Options Configuration object which can contain an optional initial delay for the
+ *                interactivity of fragments. Needed in case the fragment outlets' consumer
+ *                can't accept (queued) events as soon as fragments are added to the DOM.
+ */
 export function registerPiercingFragmentOutlet({
-	initDelay,
+  initDelay,
 }: { initDelay?: number } = {}) {
-	initDelayForUi = initDelay ?? defaultInitDelayForUi;
-	window.customElements.define(
-		"piercing-fragment-outlet",
-		PiercingFragmentOutlet
-	);
+  initDelayForUi = initDelay ?? defaultInitDelayForUi;
+  window.customElements.define(
+    "piercing-fragment-outlet",
+    PiercingFragmentOutlet
+  );
 }
 
 /**
@@ -42,184 +50,184 @@ export function registerPiercingFragmentOutlet({
 const unmountedFragmentIds: Set<string> = new Set();
 
 export class PiercingFragmentOutlet extends HTMLElement {
-	// this field can be read from the outside to check if this element
-	// is a PiercingFragmentOutlet (without relying on `instanceof`)
-	// @ts-ignore - the following field is not only being used by the `isPiercingFragmentOutlet` guard
-	private readonly piercingFragmentOutlet = true;
+  // this field can be read from the outside to check if this element
+  // is a PiercingFragmentOutlet (without relying on `instanceof`)
+  // @ts-ignore - the following field is not only being used by the `isPiercingFragmentOutlet` guard
+  private readonly piercingFragmentOutlet = true;
 
-	private fragmentId!: string;
-	private customEventListener: EventListener | null = null;
+  private fragmentId!: string;
+  private customEventListener: EventListener | null = null;
 
-	constructor() {
-		super();
-	}
+  constructor() {
+    super();
+  }
 
-	async connectedCallback() {
-		const fragmentId = this.getAttribute("fragment-id");
+  async connectedCallback() {
+    const fragmentId = this.getAttribute("fragment-id");
 
-		if (!fragmentId) {
-			throw new Error(
-				"The fragment outlet component has been applied without" +
-					" providing a fragment-id"
-			);
-		}
+    if (!fragmentId) {
+      throw new Error(
+        "The fragment outlet component has been applied without" +
+          " providing a fragment-id"
+      );
+    }
 
-		this.fragmentId = fragmentId;
+    this.fragmentId = fragmentId;
 
-		let fragmentHost = this.getFragmentHost();
+    let fragmentHost = this.getFragmentHost();
 
-		if (fragmentHost) {
-			this.pierceFragmentIntoDOM(fragmentHost);
-		} else {
-			const fragmentStream = await this.fetchFragmentStream();
-			await this.streamFragmentIntoOutlet(fragmentStream);
-			fragmentHost = this.getFragmentHost(true);
-		}
+    if (fragmentHost) {
+      this.pierceFragmentIntoDOM(fragmentHost);
+    } else {
+      const fragmentStream = await this.fetchFragmentStream();
+      await this.streamFragmentIntoOutlet(fragmentStream);
+      fragmentHost = this.getFragmentHost(true);
+    }
 
-		if (!fragmentHost) {
-			throw new Error(
-				`The fragment with id "${this.fragmentId}" is not present and` +
-					" it could not be fetched"
-			);
-		}
+    if (!fragmentHost) {
+      throw new Error(
+        `The fragment with id "${this.fragmentId}" is not present and` +
+          " it could not be fetched"
+      );
+    }
 
-		this.initializeCustomEventListener(fragmentHost);
-	}
+    this.initializeCustomEventListener(fragmentHost);
+  }
 
-	disconnectedCallback() {
-		this.removePiercingEventListener();
+  disconnectedCallback() {
+    this.removePiercingEventListener();
 
-		unmountedFragmentIds.add(this.fragmentId);
-	}
+    unmountedFragmentIds.add(this.fragmentId);
+  }
 
-	private pierceFragmentIntoDOM(contentWrapper: Element) {
-		this.innerHTML == "";
+  private pierceFragmentIntoDOM(contentWrapper: Element) {
+    this.innerHTML == "";
 
-		const activeElementWithinFragmentContent = contentWrapper.contains(
-			document.activeElement
-		)
-			? (document.activeElement as HTMLElement)
-			: null;
+    const activeElementWithinFragmentContent = contentWrapper.contains(
+      document.activeElement
+    )
+      ? (document.activeElement as HTMLElement)
+      : null;
 
-		this.appendChild(contentWrapper);
-		activeElementWithinFragmentContent?.focus();
-	}
+    this.appendChild(contentWrapper);
+    activeElementWithinFragmentContent?.focus();
+  }
 
-	private async fetchFragmentStream() {
-		const url = this.getFragmentUrl();
-		setTimeout(
-			() => this.dispatchEvent(new CustomEvent("FetchingStarted")),
-			initDelayForUi
-		);
-		const response = await fetch(url);
-		this.dispatchEvent(new CustomEvent("FetchingCompleted"));
-		if (!response.body) {
-			throw new Error(
-				"An empty response has been provided when fetching" +
-					`the fragment with id ${this.fragmentId}`
-			);
-		}
-		return response.body;
-	}
+  private async fetchFragmentStream() {
+    const url = this.getFragmentUrl();
+    setTimeout(
+      () => this.dispatchEvent(new CustomEvent("FetchingStarted")),
+      initDelayForUi
+    );
+    const response = await fetch(url);
+    this.dispatchEvent(new CustomEvent("FetchingCompleted"));
+    if (!response.body) {
+      throw new Error(
+        "An empty response has been provided when fetching" +
+          `the fragment with id ${this.fragmentId}`
+      );
+    }
+    return response.body;
+  }
 
-	private getFragmentUrl(): string {
-		const fragmentFetchBase = `/piercing-fragment/${this.fragmentId}`;
+  private getFragmentUrl(): string {
+    const fragmentFetchBase = `/piercing-fragment/${this.fragmentId}`;
 
-		const fragmentFetchParams = this.getFragmentFetchParams();
+    const fragmentFetchParams = this.getFragmentFetchParams();
 
-		const searchParamsStr = fragmentFetchParams
-			? `?${new URLSearchParams([
-					...Object.entries(fragmentFetchParams),
-			  ]).toString()}`
-			: "";
+    const searchParamsStr = fragmentFetchParams
+      ? `?${new URLSearchParams([
+          ...Object.entries(fragmentFetchParams),
+        ]).toString()}`
+      : "";
 
-		return `${fragmentFetchBase}${searchParamsStr}`;
-	}
+    return `${fragmentFetchBase}${searchParamsStr}`;
+  }
 
-	private getFragmentFetchParams(): { [key: string]: string } | null {
-		const attribute = this.getAttribute("fragment-fetch-params");
-		if (!attribute) {
-			return null;
-		}
+  private getFragmentFetchParams(): { [key: string]: string } | null {
+    const attribute = this.getAttribute("fragment-fetch-params");
+    if (!attribute) {
+      return null;
+    }
 
-		try {
-			return JSON.parse(attribute);
-		} catch (error: any) {
-			console.error(error);
-			return null;
-		}
-	}
+    try {
+      return JSON.parse(attribute);
+    } catch (error: any) {
+      console.error(error);
+      return null;
+    }
+  }
 
-	private async streamFragmentIntoOutlet(fragmentStream: ReadableStream) {
-		await fragmentStream
-			.pipeThrough(new TextDecoderStream())
-			.pipeTo(new WritableDOMStream(this as ParentNode));
+  private async streamFragmentIntoOutlet(fragmentStream: ReadableStream) {
+    await fragmentStream
+      .pipeThrough(new TextDecoderStream())
+      .pipeTo(new WritableDOMStream(this as ParentNode));
 
-		this.reapplyFragmentModuleScripts();
-	}
+    this.reapplyFragmentModuleScripts();
+  }
 
-	private reapplyFragmentModuleScripts() {
-		const fragmentHasPreviouslyBeenUnmounted = unmountedFragmentIds.has(
-			this.fragmentId
-		);
+  private reapplyFragmentModuleScripts() {
+    const fragmentHasPreviouslyBeenUnmounted = unmountedFragmentIds.has(
+      this.fragmentId
+    );
 
-		if (fragmentHasPreviouslyBeenUnmounted) {
-			this.querySelectorAll("script").forEach((script) => {
-				if (script.src && script.type === "module") {
-					import(/* @vite-ignore */ script.src).then((scriptModule) =>
-						scriptModule.default?.()
-					);
-				}
-			});
-		}
-	}
+    if (fragmentHasPreviouslyBeenUnmounted) {
+      this.querySelectorAll("script").forEach((script) => {
+        if (script.src && script.type === "module") {
+          import(/* @vite-ignore */ script.src).then((scriptModule) =>
+            scriptModule.default?.()
+          );
+        }
+      });
+    }
+  }
 
-	private getFragmentHost(insideOutlet = false): PiercingFragmentHost | null {
-		return (insideOutlet ? this : document).querySelector(
-			`piercing-fragment-host[fragment-id="${this.fragmentId}"]`
-		);
-	}
+  private getFragmentHost(insideOutlet = false): PiercingFragmentHost | null {
+    return (insideOutlet ? this : document).querySelector(
+      `piercing-fragment-host[fragment-id="${this.fragmentId}"]`
+    );
+  }
 
-	private initializeCustomEventListener(fragmentHost: PiercingFragmentHost) {
-		const piercingEventListener = ({ type, payload }: PiercingEvent) => {
-			const pascalCaseEventType = type
-				.replace(/(^.)|(-.)/g, (c) => c.toUpperCase())
-				.replaceAll("-", "");
-			this.dispatchEvent(
-				new CustomEvent(pascalCaseEventType, { detail: payload })
-			);
-		};
-		this.customEventListener = (({ detail }: CustomEvent<PiercingEvent>) =>
-			piercingEventListener(detail)) as EventListener;
+  private initializeCustomEventListener(fragmentHost: PiercingFragmentHost) {
+    const piercingEventListener = ({ type, payload }: PiercingEvent) => {
+      const pascalCaseEventType = type
+        .replace(/(^.)|(-.)/g, (c) => c.toUpperCase())
+        .replaceAll("-", "");
+      this.dispatchEvent(
+        new CustomEvent(pascalCaseEventType, { detail: payload })
+      );
+    };
+    this.customEventListener = (({ detail }: CustomEvent<PiercingEvent>) =>
+      piercingEventListener(detail)) as EventListener;
 
-		this.addEventListener(piercingEventType, this.customEventListener);
+    this.addEventListener(piercingEventType, this.customEventListener);
 
-		setTimeout(() => fragmentHost.onPiercingComplete(this), initDelayForUi);
-	}
+    setTimeout(() => fragmentHost.onPiercingComplete(this), initDelayForUi);
+  }
 
-	private removePiercingEventListener() {
-		if (this.customEventListener) {
-			const fragmentHost = this.getFragmentHost(true);
-			fragmentHost?.removeEventListener(
-				piercingEventType,
-				this.customEventListener
-			);
-		}
-	}
+  private removePiercingEventListener() {
+    if (this.customEventListener) {
+      const fragmentHost = this.getFragmentHost(true);
+      fragmentHost?.removeEventListener(
+        piercingEventType,
+        this.customEventListener
+      );
+    }
+  }
 }
 
 declare global {
-	namespace JSX {
-		interface IntrinsicElements {
-			"piercing-fragment-outlet": PiercingFragmentOutletAttributes;
-		}
+  namespace JSX {
+    interface IntrinsicElements {
+      "piercing-fragment-outlet": PiercingFragmentOutletAttributes;
+    }
 
-		type PiercingFragmentOutletAttributes = { "fragment-id": string } & Partial<
-			PiercingFragmentOutlet &
-				DOMAttributes<PiercingFragmentOutlet> & {
-					"fragment-fetch-params"?: string;
-					[onProp: `on${string}`]: Function | undefined;
-				}
-		>;
-	}
+    type PiercingFragmentOutletAttributes = { "fragment-id": string } & Partial<
+      PiercingFragmentOutlet &
+        DOMAttributes<PiercingFragmentOutlet> & {
+          "fragment-fetch-params"?: string;
+          [onProp: `on${string}`]: Function | undefined;
+        }
+    >;
+  }
 }

@@ -3,7 +3,7 @@ import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 
 /**
- * Configuration object for the integration of a fragment in the app's gateway worker.
+ * Configuration object for the registration of a fragment in the app's gateway worker.
  */
 export interface FragmentConfig<Env> {
   /**
@@ -50,7 +50,14 @@ export interface FragmentConfig<Env> {
   ) => boolean | Promise<boolean>;
 }
 
+/**
+ * Configuration object for the implementation of the app's gateway worker.
+ */
 export interface PiercingGatewayConfig<Env> {
+  /**
+   * Function which based on the current environment returns
+   * the base url for the base/legacy application.
+   */
   getBaseAppUrl: (env: Env) => string;
 }
 
@@ -59,6 +66,12 @@ export class PiercingGateway<Env> {
 
   constructor(private config: PiercingGatewayConfig<Env>) {}
 
+  /**
+   * Registers a fragment in the gateway worker so that it can be integrated
+   * with the gateway worker.
+   *
+   * @param fragmentConfig Configuration object for the fragment.
+   */
   registerFragment(fragmentConfig: FragmentConfig<Env>) {
     if (this.fragmentConfigs.has(fragmentConfig.fragmentId)) {
       console.warn(

@@ -3,7 +3,7 @@
 }
 
 .login-form {
-    max-width: 40ch;
+    max-width: min(40ch, 90vw);
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -32,6 +32,10 @@
     letter-spacing: .1rem;
     font-size: inherit;
     color: dimgrey;
+}
+
+.form-control input::placeholder {
+    opacity: 0.6;
 }
 
 .form-control input:focus {

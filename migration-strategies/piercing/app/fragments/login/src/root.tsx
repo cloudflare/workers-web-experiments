@@ -89,6 +89,7 @@ export const Root = component$(() => {
             onInput$={handleInput}
             value={state.username}
             autoComplete="true"
+            placeholder="What's your name?"
           />
           {state.usernameError && (
             <p class="input-error-message">{state.usernameError}</p>

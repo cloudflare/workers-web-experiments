@@ -57,7 +57,7 @@ export const Root = component$(() => {
       if (input.includes(" ")) return possibleInputErrors.noSpaces;
       if (/[^a-zA-Z0-9]/.test(input))
         return possibleInputErrors.noSpecialCharacters;
-      if (input.length > 20) {
+      if (input.length > 15) {
         return possibleInputErrors.maxLength;
       }
       if (inputsDetails.usernameInputTouched && !userData.username) {

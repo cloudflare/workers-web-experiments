@@ -5,7 +5,6 @@ import {
   useStore,
   useStyles$,
   useStylesScoped$,
-  useWatch$,
 } from "@builder.io/qwik";
 import { addTodoList, editTodoList, removeTodoList } from "shared";
 import type { Todo, TodoList } from "shared";
@@ -65,6 +64,7 @@ export const TodoListsCarousel = component$(
         setTimeout(() => {
           animationState.animating = false;
           state.idxOfSelectedList = newTodoListIdx;
+          state.selectedListName = state.todoLists[newTodoListIdx].name;
         }, animationDuration);
         onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx], "next");
       }
@@ -78,13 +78,9 @@ export const TodoListsCarousel = component$(
       setTimeout(() => {
         animationState.animating = false;
         state.idxOfSelectedList = newTodoListIdx;
+        state.selectedListName = state.todoLists[newTodoListIdx].name;
       }, animationDuration);
       onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx], which);
-    });
-
-    useWatch$(({ track }) => {
-      const idx = track(() => state.idxOfSelectedList);
-      state.selectedListName = state.todoLists[idx].name;
     });
 
     return (
@@ -141,6 +137,8 @@ export const TodoListsCarousel = component$(
                 .concat(state.todoLists.slice(state.idxOfSelectedList + 1));
               if (state.idxOfSelectedList > 0) {
                 state.idxOfSelectedList--;
+                state.selectedListName =
+                  state.todoLists[state.idxOfSelectedList].name;
               }
               onDispatchSelectedListUpdated$(
                 state.todoLists[state.idxOfSelectedList]

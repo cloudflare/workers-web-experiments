@@ -108,9 +108,8 @@ export const SelectedListCard = component$(
           class="btn delete-btn"
           disabled={newTodoInputState.editing || todoListsNames.length <= 1}
           onClick$={() => onDeleteList$()}
-        >
-          x
-        </button>
+          aria-label="delete list"
+        ></button>
       </div>
     );
   }

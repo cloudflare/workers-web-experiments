@@ -77,6 +77,7 @@ export function ListOfTodos({
                   onTodoRemoved(text);
                 }
               }}
+              aria-label="delete todo"
             ></button>
           </div>
           {editingTodoDetails?.oldTodoText === text && (

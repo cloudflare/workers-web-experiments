@@ -92,14 +92,15 @@ function Footer() {
 
 export function Layout() {
   const location = useLocation();
+  const auth = useAuth();
 
   const path = location.pathname;
-  const isLoginPage = path === "/login";
+  const isAuthed = Boolean(auth.user);
 
   return (
     <div className="layout">
       <Header />
-      {!isLoginPage && <NavBar />}
+      {isAuthed && <NavBar />}
       <main className="app-main">
         <Outlet />
       </main>

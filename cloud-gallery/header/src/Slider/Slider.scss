@@ -6,6 +6,7 @@
 
 .slider-container {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 	background-color: #e1e1e1;
 	color: #494949;
@@ -25,4 +26,14 @@
 	opacity: 0.5;
 	accent-color: #8a8a8a;
 	margin-right: .5rem;
+}
+
+.seam-options-container {
+	.label {
+		margin-left: .5rem;
+	}
+
+	input {
+		margin-right: .5rem;
+	}
 }

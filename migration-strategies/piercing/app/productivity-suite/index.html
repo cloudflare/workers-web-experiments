@@ -106,6 +106,78 @@
         border-left: 1px solid currentColor;
         padding-left: 0.5rem;
       }
+
+      body.show-seams #root,
+      body.show-seams piercing-fragment-host,
+      body.show-seams piercing-fragment-outlet {
+        outline: 3px dashed #fc9003;
+      }
+
+      body.show-seams piercing-fragment-outlet[fragment-id="todos"] {
+        outline: 3px dashed #31909b;
+      }
+
+      body.show-seams piercing-fragment-outlet[fragment-id="login"],
+      body.show-seams piercing-fragment-outlet[fragment-id="todo-lists"] {
+        outline: 3px dashed #4f2574;
+      }
+
+      body.show-seams #root,
+      body.show-seams piercing-fragment-outlet {
+        position: relative;
+      }
+
+      body.show-seams #root {
+        outline-offset: -3px;
+      }
+
+      body.show-seams piercing-fragment-outlet {
+        outline-offset: 10px;
+      }
+
+      body.show-seams #root::after,
+      body.show-seams piercing-fragment-host::before {
+        content: 'fragment';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        background-color: #FeFeFee8;
+        color: #e38202;
+        font-weight: 400;
+        font-size: 12px;
+        padding: .5rem;
+        font-weight: 500;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="todos"]::before {
+        content: 'todos fragment';
+        color: #31909b;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="todo-lists"]::before {
+        content: 'list picker fragment';
+        color: #4f2574;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="login"]::before {
+        content: 'login fragment';
+        color: #4f2574;
+      }
+
+      body.show-seams #root::after {
+        top: 3px;
+        left: 3px;
+      }
+
+      body.show-seams piercing-fragment-host::before {
+        top: -10px;
+        left: -10px;
+      }
+
+      body.show-seams #root::after {
+        content: 'Legacy app';
+      }
+
     </style>
   </head>
   <body>
@@ -116,6 +188,9 @@
       <label for="enable-piercing-input">
         <input type="checkbox" id="enable-piercing-input">
       Piercing Enabled</label>
+      <label for="enable-seams-input">
+        <input type="checkbox" id="enable-seams-input">
+      Show Seams</label>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -154,6 +229,26 @@
         ).toUTCString();
         document.cookie = `piercingEnabled=${enable}; expires=${expirationDate}; path=/`;
       }
+
+
+      const enableSeamsInput = document.getElementById('enable-seams-input');
+
+      const toggleSeams = (enabled) => {
+        if (enabled) {
+          document.body.classList.add('show-seams')
+        } else {
+          document.body.classList.remove('show-seams')
+        }
+      }
+      enableSeamsInput.addEventListener('input', (event) => {
+        toggleSeams(event.target.checked);
+        document.cookie = `seamsEnabled=${event.target.checked}`;
+      });
+
+      const seamsEnabledMatch = document.cookie.match(/seamsEnabled=(true|false)/);
+      const initialSeamsEnabledValue = !seamsEnabledMatch ? null : seamsEnabledMatch[1] === 'true' ? true : false;
+      enableSeamsInput.checked = initialSeamsEnabledValue;
+      toggleSeams(initialSeamsEnabledValue);
     </script>
   </body>
 </html>

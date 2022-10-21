@@ -95,7 +95,7 @@ export function Layout() {
   const auth = useAuth();
 
   const path = location.pathname;
-  const isAuthed = Boolean(auth.user);
+  const isAuthed = !!auth.user;
 
   return (
     <div className="layout">

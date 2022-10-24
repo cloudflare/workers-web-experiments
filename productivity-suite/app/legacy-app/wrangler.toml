@@ -2,6 +2,9 @@ name = "productivity-suite"
 main = "src/worker/script.ts"
 compatibility_date = "2022-10-05"
 
+[dev]
+port = 8987
+
 [vars]
 APP_BASE_URL = "https://productivity-suite.pages.dev"
 

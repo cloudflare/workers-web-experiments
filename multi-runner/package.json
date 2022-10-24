@@ -1,0 +1,13 @@
+{
+  "name": "workers-multi-runner",
+  "version": "1.0.0",
+  "description": "A tool that runs multiple Workers via Wrangler at the same time.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.4",
+    "typescript": "^4.8.4"
+  }
+}

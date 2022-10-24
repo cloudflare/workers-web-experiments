@@ -140,9 +140,9 @@ export const TodoListsCarousel = component$(
                 .concat(state.todoLists.slice(state.idxOfSelectedList + 1));
               if (state.idxOfSelectedList > 0) {
                 state.idxOfSelectedList--;
-                state.selectedListName =
-                  state.todoLists[state.idxOfSelectedList].name;
               }
+              state.selectedListName =
+                state.todoLists[state.idxOfSelectedList].name;
               onDispatchSelectedListUpdated$(
                 state.todoLists[state.idxOfSelectedList]
               );

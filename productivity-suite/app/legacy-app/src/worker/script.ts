@@ -173,4 +173,41 @@ gateway.registerFragment({
   },
 });
 
+gateway.registerFragment({
+  fragmentId: "news",
+  // Note: deployment part of the url is fine also for local development since then
+  //       only the path part of the url is being used
+  getBaseUrl: () =>
+    `https://productivity-suite-news-fragment.devdash.workers.dev`,
+  prePiercingStyles: `
+    :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
+      position: absolute;
+      top: 24.6rem;
+      left: 0;
+      right: 0;
+    }
+    `,
+  shouldBeIncluded: async (request: Request) =>
+    isPiercingEnabled(request) &&
+    (await isUserAuthenticated(request)) &&
+    /^\/(news(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
+  transformRequest: (
+    request: Request,
+    env: Env,
+    thisConfig: FragmentConfig<Env>
+  ) => {
+    console.log("news from the gateway");
+    const url = new URL(request.url);
+    const path = url.pathname;
+    const match = /\/news\/([^/]+)$/.exec(path);
+    const listName = match?.[1] && decodeURIComponent(match[1]);
+
+    const params = url.searchParams;
+    if (listName) {
+      params.append("listName", listName);
+    }
+    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+  },
+});
+
 export default gateway;

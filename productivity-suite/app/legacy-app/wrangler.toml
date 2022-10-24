@@ -34,3 +34,11 @@ service = "productivity-suite-todos-fragment"
 [[env.local.services]]
 binding = "todos-fragment"
 service = "productivity-suite-todos-fragment"
+
+[[services]]
+binding = "news-fragment"
+service = "productivity-suite-news-fragment"
+
+[[env.local.services]]
+binding = "news-fragment"
+service = "productivity-suite-news-fragment"

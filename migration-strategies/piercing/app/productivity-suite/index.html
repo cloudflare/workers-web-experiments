@@ -39,6 +39,10 @@
           font-size: 75%;
         }
       }
+
+      body {
+        min-width: 20rem;
+      }
     </style>
     <style>
       /* basic styles */
@@ -68,6 +72,14 @@
         border-bottom: 1px solid #bcbcbc;
         display: flex;
         align-items: center;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+      }
+
+      .spa-delay-slider-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: stretch;
       }
 
       .piercing-options-wrapper > * {
@@ -86,6 +98,10 @@
         max-width: calc(100vw - 9rem);
       }
 
+      label[for="spa-delay-slider-input"] {
+        min-width: max-content;
+      }
+
       #spa-delay-slider-output {
         display: inline-block;
         text-align: end;
@@ -102,9 +118,15 @@
         }
       }
 
-      label[for="enable-piercing-input"] {
-        border-left: 1px solid currentColor;
-        padding-left: 0.5rem;
+      .piercing-checkboxes-wrapper {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+
+      .piercing-checkboxes-wrapper label {
+        display: flex;
+        align-items: center;
       }
 
       body.show-seams {
@@ -180,15 +202,19 @@
   </head>
   <body>
     <div class="piercing-options-wrapper">
-      <label for="spa-delay-slider-input">SPA <span class="desktop-text">bootstrap</span> delay: </label>
-      <input type="range" min="0" max="10" value="3" id="spa-delay-slider-input">
-      <span id="spa-delay-slider-output"></span>
-      <label for="enable-piercing-input">
-        <input type="checkbox" id="enable-piercing-input">
-      Piercing Enabled</label>
-      <label for="enable-seams-input">
-        <input type="checkbox" id="enable-seams-input">
-      Show Seams</label>
+      <div class="spa-delay-slider-wrapper">
+        <label for="spa-delay-slider-input">SPA <span class="desktop-text">bootstrap</span> delay: </label>
+        <input type="range" min="0" max="10" value="3" id="spa-delay-slider-input">
+        <span id="spa-delay-slider-output"></span>
+      </div>
+      <div class="piercing-checkboxes-wrapper">
+        <label for="enable-piercing-input">
+          <input type="checkbox" id="enable-piercing-input">
+        Piercing Enabled</label>
+        <label for="enable-seams-input">
+          <input type="checkbox" id="enable-seams-input">
+        Show Seams</label>
+      </div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

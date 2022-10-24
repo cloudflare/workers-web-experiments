@@ -97,58 +97,10 @@ function Footer() {
   );
 }
 
-function OldFooter() {
-  return (
-    <footer className="app-footer">
-      <p className="demo-details">
-        This is a demo application for the piercing migration strategy
-        implemented using{" "}
-        <a
-          target="_blank"
-          className="external-link"
-          href="https://workers.cloudflare.com/"
-        >
-          Cloudflare Workers {openInNewIcon}
-        </a>
-        {/* href to update when the blog-post url is known */}. For more
-        information check out the accompanying{" "}
-        <a
-          target="_blank"
-          className="external-link"
-          href="https://blog.cloudflare.com/404/"
-        >
-          blog post {openInNewIcon}
-        </a>
-        .
-      </p>
-      <div className="social">
-        <a
-          className="social-link"
-          target="_blank"
-          href="https://www.cloudflare.com/"
-        >
-          {cloudflareIcon}
-        </a>
-        {/* Note: the links needs to be updated once this demo is merged */}
-        <a
-          className="social-link"
-          target="_blank"
-          href="https://github.com/cloudflare/workers-web-experiments/tree/productivity-suite-demo/migration-strategies/piercing"
-        >
-          {githubIcon}
-        </a>
-      </div>
-      <hr />
-      <p className="copyright">&copy; 2022 Cloudflare.com</p>
-    </footer>
-  );
-}
-
 export function Layout() {
   const location = useLocation();
   const auth = useAuth();
 
-  const path = location.pathname;
   const isAuthed = !!auth.user;
 
   return (

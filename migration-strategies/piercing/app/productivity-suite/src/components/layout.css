@@ -5,14 +5,6 @@
     padding-inline: 1.5rem;
 }
 
-@media (max-width: 35rem) {
-    .app-header {
-        flex-direction: column;
-        padding-block: 0.5rem 1.7rem;
-        gap: 0.5rem;
-    }
-}
-
 .app-header a {
     text-decoration: none;
 }
@@ -131,16 +123,16 @@
     margin-left: 0.5rem;
  }
 
+@media (max-width: 52rem) {
+     .links-and-copyright {
+         flex-direction: column;
+         gap: 0.1rem;
+      }
+}
+
 .link-icons {
     display: flex;
     justify-content: center;
-}
-
- @media (max-width: 52rem) {
-    .links-and-copyright {
-        flex-direction: column;
-        gap: 0.1rem;
-     }
 }
 
 
@@ -201,4 +193,15 @@ h1, h2, h3, h4, h5, h6 {
 
 .app-page-heading {
     margin-bottom: 1rem;
+}
+
+@media (max-width: 35rem) {
+    .app-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .app-header .user-section {
+        margin-bottom: 1.7rem;
+    }
 }

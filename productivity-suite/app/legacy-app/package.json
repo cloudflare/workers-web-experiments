@@ -4,15 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "echo '\\033[0;31m Run \"npm run fe:dev\" and \"npm run be:dev\" in two separate terminals to start the app \\033[0;0m'",
+    "start": "echo '\\033[0;31m Run \"npm run dev.react\" and \"npm run dev.worker\" in two separate terminals to start the app \\033[0;0m'",
     "dev": "npm run start",
-    "be:dev": "wrangler dev --local --env local",
-    "be:deploy": "wrangler publish",
-    "fe:dev": "vite",
-    "build": "npm run fe:build",
-    "fe:build": "tsc && vite build",
-    "fe:deploy": "npm run fe:build && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main",
-    "deploy": "npm run fe:deploy; npm run be:deploy"
+    "dev.react": "vite",
+    "dev.worker": "wrangler dev --local --env local",
+    "build": "npm run build.react",
+    "build.react": "tsc && vite build",
+    "deploy": "npm run deploy.react; npm run deploy.worker",
+    "deploy.react": "npm run build.react && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main",
+    "deploy.worker": "wrangler publish"
   },
   "// React note for the blog post - 1": "make sure to remember to mention that we need the react experimental packages",
   "// React note for the blog post - 2": "and that for compatibility with the react-router-dom we need to add `-f` to `npm i`",

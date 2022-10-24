@@ -79,7 +79,7 @@ function Footer() {
           <a
             className="gh-link"
             target="_blank"
-            href="https://github.com/cloudflare/workers-web-experiments/tree/productivity-suite-demo/migration-strategies/piercing"
+            href="https://github.com/cloudflare/workers-web-experiments/tree/main/productivity-suite"
           >
             {githubIcon}
           </a>

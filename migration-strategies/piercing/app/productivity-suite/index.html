@@ -73,7 +73,12 @@
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        flex-wrap: wrap;
+      }
+
+      @media (max-width: 35rem) {
+        .piercing-options-wrapper {
+          flex-direction: column;
+        }
       }
 
       .spa-delay-slider-wrapper {

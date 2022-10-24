@@ -29,12 +29,29 @@ gateway.registerFragment({
   getBaseUrl: () =>
     `https://productivity-suite-login-fragment.devdash.workers.dev`,
   prePiercingStyles: `
-		:not(piercing-fragment-outlet) > piercing-fragment-host {
+    :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
       top: 10.3rem;
       left: 0;
       right: 0;
-    }`,
+    }
+
+    @media (max-width: 45rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host {
+        top: 10.5rem;
+      }
+    }
+    @media (max-width: 35rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host {
+        top: 12.9rem;
+      }
+    }
+    @media (max-width: 25rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host {
+        top: 13.2rem;
+      }
+    }
+    `,
   shouldBeIncluded: async (request: Request) =>
     isPiercingEnabled(request) &&
     isUserAuthenticated(request).then((authenticated) => !authenticated),

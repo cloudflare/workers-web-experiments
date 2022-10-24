@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   deleteCurrentUser,
@@ -6,8 +6,8 @@ import {
   getUserData,
   saveCurrentUser,
   setUserData,
-  TodoList,
 } from "shared";
+import { initialPlaceholderTodoList } from "./initialPlaceholderTodoList";
 
 interface AuthContextType {
   user: string | null;
@@ -63,33 +63,11 @@ export function RequireNotAuth({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-const placeholderTodoList: TodoList = {
-  name: "Important Tasks",
-  todos: [
-    {
-      text: "Create Cloudflare account",
-      completed: false,
-    },
-    {
-      text: "Experience Cloudflare workers",
-      completed: false,
-    },
-    {
-      text: "Read the Micro-Front-End Cloudflare blog posts",
-      completed: true,
-    },
-    {
-      text: "Help build a better internet",
-      completed: false,
-    },
-  ],
-};
-
 async function addUserDataIfMissing(user: string) {
   const data = getUserData(user);
   if (!data) {
     const newDataStr = JSON.stringify({
-      todoLists: [placeholderTodoList],
+      todoLists: [initialPlaceholderTodoList],
     });
     setUserData(user, newDataStr);
   }

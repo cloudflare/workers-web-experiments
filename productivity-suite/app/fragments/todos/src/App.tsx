@@ -32,6 +32,36 @@ const App: React.FC<{
 
   if (!currentUser || !listName) return <></>;
 
+  function handleNewTodoAdded(newTodoText: string) {
+    setTodos([...todos, { text: newTodoText, completed: false }]);
+  }
+
+  function handleAllTodosToggled(to: "completed" | "active") {
+    setTodos(
+      todos.map(({ text }) => ({
+        text,
+        completed: to === "completed" ? true : false,
+      }))
+    );
+  }
+
+  function handleTodoEdited(oldTodoText: string, updatedTodo: Todo) {
+    setTodos(
+      todos.map((todo) => (todo.text === oldTodoText ? updatedTodo : todo))
+    );
+  }
+
+  function handleTodoRemoval(removedTodoText: string) {
+    setTodos(todos.filter((todo) => todo.text !== removedTodoText));
+  }
+
+  function clearCompletedTodos() {
+    for (const completedTodo of todosMap[TodoType.completed]) {
+      removeTodo(currentUser!, listName!, completedTodo.text);
+    }
+    setTodos(todos.filter(({ completed }) => !completed));
+  }
+
   return (
     <div className="todo-mvc-wrapper">
       <section className="todo-mvc">
@@ -39,9 +69,7 @@ const App: React.FC<{
           todos={todos}
           currentUser={currentUser}
           listName={listName}
-          onNewTodoAdded={(newTodoText: string) => {
-            setTodos([...todos, { text: newTodoText, completed: false }]);
-          }}
+          onNewTodoAdded={handleNewTodoAdded}
         />
         {!!todos.length && (
           <>
@@ -51,31 +79,14 @@ const App: React.FC<{
                 completedTodos={todosMap[TodoType.completed]}
                 currentUser={currentUser}
                 listName={listName}
-                onToggle={(to) => {
-                  setTodos(
-                    todos.map(({ text }) => ({
-                      text,
-                      completed: to === "completed" ? true : false,
-                    }))
-                  );
-                }}
+                onToggle={handleAllTodosToggled}
               />
               <ListOfTodos
                 todos={todosToShow}
                 currentUser={currentUser}
                 listName={listName}
-                onTodoEdited={(oldTodoText, updatedTodo) => {
-                  setTodos(
-                    todos.map((todo) =>
-                      todo.text === oldTodoText ? updatedTodo : todo
-                    )
-                  );
-                }}
-                onTodoRemoved={(removedTodoText: string) => {
-                  setTodos(
-                    todos.filter((todo) => todo.text !== removedTodoText)
-                  );
-                }}
+                onTodoEdited={handleTodoEdited}
+                onTodoRemoved={handleTodoRemoval}
               />
             </section>
             <Footer
@@ -83,12 +94,7 @@ const App: React.FC<{
               numOfCompletedTodos={completedTodos.length}
               todosSelection={todosSelection}
               setTodosSelection={setTodosSelection}
-              clearCompletedTodos={() => {
-                for (const completedTodo of todosMap[TodoType.completed]) {
-                  removeTodo(currentUser, listName, completedTodo.text);
-                }
-                setTodos(todos.filter(({ completed }) => !completed));
-              }}
+              clearCompletedTodos={clearCompletedTodos}
             />
           </>
         )}

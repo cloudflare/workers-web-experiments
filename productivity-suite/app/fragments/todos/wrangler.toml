@@ -9,6 +9,3 @@ main = "dist/server/index.js"
 
 [site]
     bucket = "dist/client"
-
-[build.env.local]
-   command = "npm run build-local"

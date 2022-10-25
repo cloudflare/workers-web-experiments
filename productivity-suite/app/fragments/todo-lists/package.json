@@ -3,13 +3,10 @@
 	"description": "Todo Lists Fragment Implemented using Qwik",
 	"scripts": {
 		"build": "npm run build.client && npm run build.ssr",
-		"build-local": "npm run build.client-local && npm run build.ssr-local",
 		"build.client": "vite build",
-		"build.client-local": "vite build --mode development-local",
 		"build.ssr": "vite build --ssr src/entry.ssr.tsx",
-		"build.ssr-local": "vite build --mode development-local --ssr src/entry.ssr.tsx",
 		"lint": "eslint \"src/**/*.ts*\"",
-		"start": "npx wrangler dev --local --env local",
+		"start": "npx wrangler dev --local",
 		"dev": "npm run start",
 		"deploy": "npx wrangler publish",
 		"typecheck": "tsc --incremental --noEmit"

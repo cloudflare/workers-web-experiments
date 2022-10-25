@@ -31,24 +31,24 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
-      top: 10.3rem;
+      top: 10.33rem;
       left: 0;
       right: 0;
     }
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host {
-        top: 10.5rem;
+        top: 10.532rem;
       }
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host {
-        top: 12.9rem;
+        top: 12.869rem;
       }
     }
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host {
-        top: 13.2rem;
+        top: 13.25rem;
       }
     }
     `,
@@ -66,14 +66,14 @@ gateway.registerFragment({
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
-      top: 14.6rem;
+      top: 14.57rem;
       left: 2rem;
       right: 2rem;
     }
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 14.8rem;
+        top: 14.76rem;
       }
     }
     @media (max-width: 35rem) {
@@ -125,9 +125,15 @@ gateway.registerFragment({
       right: 0;
     }
 
+    @media (max-width: 52rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
+        top: 22.7rem;
+      }
+    }
+
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 22.9rem;
+        top: 22.885rem;
       }
     }
     @media (max-width: 35rem) {

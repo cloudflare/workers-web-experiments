@@ -46,6 +46,7 @@ In which:
   ```
 
 - Run the whole app for local development:
+
   ```
   npm start
   ```

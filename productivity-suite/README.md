@@ -53,3 +53,17 @@ Alternatively you can run all the processes manually in separate terminals in th
   where `fragmentName` is `login`, `todo-lists` and `todos`
 
 - Open the browser at: http://localhost:8987
+
+## How to deploy the app
+
+If you want you can deploy your version of the application using your Cloudflare account, to do so, you just need to modify the `deploy.react` script in `productivity-suite/app/legacy-app/package.json` and replace the existing `CLOUDFLARE_ACCOUNT_ID` with your own.
+
+After that in the `productivity-suite` directory you can simply run
+
+```
+npm run deploy
+```
+
+to deploy all the fragments and legacy application.
+
+After the deployment is completed you should be able to access the application at: `https://productivity-suite._YOUR_ACCOUNT_DOMAIN_.workers.dev`.

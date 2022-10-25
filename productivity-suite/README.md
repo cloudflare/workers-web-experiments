@@ -8,6 +8,35 @@ To read more about it see the [_TITLE TBD_ blog post](https://blog.cloudflare.co
 
 To view the application visit: https://productivity-suite.web-experiments.workers.dev.
 
+## Project Structure
+
+The following tree represents the project's file structure:
+
+```
+productivity-suite
+|-- app
+|    |-- fragments
+|    |    |-- login
+|    |    |-- todo-lists
+|    |    +-- todos
+|    |
+|    |-- legacy-app
+|    +-- shared
+|
+|-- piercing-library
+|
++-- scripts
+```
+
+In which:
+
+- `scripts` simply contains utility node scripts
+- `piercing-library` contains the library implemented for the piercing strategy. It is not a fully fledged npm library but it could potentially be the base for one. All the content of this directory is generic and independent of the application's logic (and could be reused for any application).
+- `app` contains the productivity suite application specific elements (not generic/reusable) which are:
+  - a local `shared` library used by the legacy application and the fragments
+  - the `legacy-app` application
+  - the set of `fragments`
+
 ## How to run the app locally
 
 - Install the workspace:

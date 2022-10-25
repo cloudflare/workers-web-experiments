@@ -22,17 +22,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [user, setUser] = useState<string | null>(getCurrentUser());
 
-  const login = async (username: string) => {
+  async function login(username: string) {
     await saveCurrentUser(username);
     addUserDataIfMissing(username);
     setUser(username);
-  };
+  }
 
-  const logout = async () => {
+  async function logout() {
     await deleteCurrentUser();
     navigate("/login");
     setUser(null);
-  };
+  }
 
   const value = { user, login, logout };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

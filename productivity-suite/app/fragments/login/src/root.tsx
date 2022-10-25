@@ -1,7 +1,7 @@
 import {
   $,
   component$,
-  useRef,
+  useSignal,
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
@@ -36,7 +36,7 @@ export const getUsernameInputError = (
 };
 
 export const Root = component$(() => {
-  const ref = useRef();
+  const ref = useSignal<Element>();
   useStylesScoped$(styles);
 
   const state = useStore<LoginState>({
@@ -49,7 +49,7 @@ export const Root = component$(() => {
   });
 
   const dispatchLoginEvent = $(() => {
-    dispatchPiercingEvent(ref.current!, {
+    dispatchPiercingEvent(ref.value!, {
       type: "login",
       payload: {
         username: state.username,

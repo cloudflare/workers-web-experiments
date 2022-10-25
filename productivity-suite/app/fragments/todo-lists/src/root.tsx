@@ -2,7 +2,7 @@ import {
   component$,
   useEnvData,
   useMount$,
-  useRef,
+  useSignal,
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
@@ -42,7 +42,7 @@ export const Root = component$(() => {
     }
   });
 
-  const ref = useRef();
+  const ref = useSignal<Element>();
 
   return (
     <div class="todo-lists-section" ref={ref}>
@@ -54,7 +54,7 @@ export const Root = component$(() => {
           onDispatchSelectedListUpdated$={(
             listSelected: TodoList,
             which?: "previous" | "next"
-          ) => dispatchSelectedListUpdated(ref.current!, listSelected, which)}
+          ) => dispatchSelectedListUpdated(ref.value!, listSelected, which)}
         />
       )}
     </div>

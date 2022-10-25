@@ -26,12 +26,12 @@ export function TodoLists() {
       })
     : "null";
 
-  const updateSelectedListName = (newListName: string) => {
+  function updateSelectedListName(newListName: string) {
     setSelectedListName(newListName);
     navigate(`/todos/${newListName}`, { replace: true });
-  };
+  }
 
-  const updateSelectedList = (list: TodoList, which?: "previous" | "next") => {
+  function updateSelectedList(list: TodoList, which?: "previous" | "next") {
     setShowTodos(false);
     setTodoEnteringAnimation(which);
     setTimeout(() => {
@@ -39,7 +39,7 @@ export function TodoLists() {
       updateSelectedListName(list.name);
     }, 50);
     setTimeout(() => setTodoEnteringAnimation(undefined), 250);
-  };
+  }
 
   return (
     <div className="todo-lists-page">

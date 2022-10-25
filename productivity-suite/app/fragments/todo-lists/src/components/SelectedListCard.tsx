@@ -2,7 +2,7 @@ import {
   $,
   component$,
   PropFunction,
-  useRef,
+  useSignal,
   useStore,
   useStylesScoped$,
   useWatch$,
@@ -36,8 +36,8 @@ export const SelectedListCard = component$(
       dirty: false,
     });
 
-    const editRef = useRef<HTMLInputElement>();
-    editRef.current?.focus();
+    const editRef = useSignal<HTMLInputElement>();
+    editRef.value?.focus();
 
     useWatch$(({ track }) => {
       track(() => listName);

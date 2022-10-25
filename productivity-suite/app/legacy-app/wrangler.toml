@@ -17,7 +17,7 @@ service = "productivity-suite-login-fragment"
 
 [[env.local.services]]
 binding = "login-fragment"
-service = "productivity-suite-login-fragment-local"
+service = "productivity-suite-login-fragment"
 
 [[services]]
 binding = "todo-lists-fragment"
@@ -25,7 +25,7 @@ service = "productivity-suite-todo-lists-fragment"
 
 [[env.local.services]]
 binding = "todo-lists-fragment"
-service = "productivity-suite-todo-lists-fragment-local"
+service = "productivity-suite-todo-lists-fragment"
 
 [[services]]
 binding = "todos-fragment"
@@ -33,4 +33,4 @@ service = "productivity-suite-todos-fragment"
 
 [[env.local.services]]
 binding = "todos-fragment"
-service = "productivity-suite-todos-fragment-local"
+service = "productivity-suite-todos-fragment"

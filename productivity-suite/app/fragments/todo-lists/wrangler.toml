@@ -6,6 +6,3 @@ assets = "./dist"
 [build]
 watch_dir = ["src", "../../shared/src"]
 command = "npm run build"
-
-[build.env.local]
-command = "npm run build-local"

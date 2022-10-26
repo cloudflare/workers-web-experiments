@@ -7,7 +7,7 @@ import { EnvContext } from "./env";
 (async () => {
   const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
   const listName = match?.[1] ?? null;
-  let todosListDetails = undefined;
+  let todoList = null;
 
   const currentUser = getCurrentUser();
 
@@ -15,18 +15,18 @@ import { EnvContext } from "./env";
     if (listName) {
       const list = await getTodoList(currentUser, decodeURIComponent(listName));
       if (list) {
-        todosListDetails = list;
+        todoList = list;
       }
     } else {
       const lists = await getTodoLists(currentUser);
-      todosListDetails = lists[lists.length - 1];
+      todoList = lists[lists.length - 1];
     }
   }
 
   const application = (
     <React.StrictMode>
       <EnvContext.Provider value={{ currentUser }}>
-        <App todosListDetails={todosListDetails} />
+        <App todoList={todoList} />
       </EnvContext.Provider>
     </React.StrictMode>
   );

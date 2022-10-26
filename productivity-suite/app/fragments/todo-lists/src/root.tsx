@@ -1,16 +1,18 @@
 import {
   component$,
+  useClientEffect$,
   useEnvData,
   useMount$,
   useSignal,
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import type { TodoList } from "shared";
+import type { Todo, TodoList } from "shared";
 
 import styles from "./root.css?inline";
 import { dispatchSelectedListUpdated } from "./dispatchSelectedListUpdated";
 import { TodoListsCarousel } from "./components/TodoListsCarousel";
+import { getBus } from "piercing-library";
 
 export const Root = component$(() => {
   useStylesScoped$(styles);
@@ -44,6 +46,26 @@ export const Root = component$(() => {
 
   const ref = useSignal<Element>();
 
+  useClientEffect$(() => {
+    if (ref.value) {
+      return getBus(ref.value).listen({
+        eventName: "todos-updated",
+        callback: ({
+          listName,
+          todos,
+        }: {
+          listName: string;
+          todos: Todo[];
+        }) => {
+          const list = state.todoLists.find(({ name }) => name === listName);
+          if (list) {
+            list.todos = todos;
+          }
+        },
+      });
+    }
+  });
+
   return (
     <div class="todo-lists-section" ref={ref}>
       {state.currentUser && state.todoLists.length && (
@@ -51,10 +73,9 @@ export const Root = component$(() => {
           currentUser={state.currentUser!}
           initialTodoLists={state.todoLists}
           initialIdxOfSelectedList={state.idxOfSelectedList}
-          onDispatchSelectedListUpdated$={(
-            listSelected: TodoList,
-            which?: "previous" | "next"
-          ) => dispatchSelectedListUpdated(ref.value!, listSelected, which)}
+          onDispatchSelectedListUpdated$={(listSelected: TodoList) =>
+            dispatchSelectedListUpdated(ref.value!, listSelected)
+          }
         />
       )}
     </div>

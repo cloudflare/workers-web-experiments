@@ -5,7 +5,7 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import { dispatchPiercingEvent } from "piercing-library";
+import { getBus } from "piercing-library";
 
 import styles from "./LoginForm.css?inline";
 
@@ -49,13 +49,16 @@ export const LoginForm = component$(() => {
   });
 
   const dispatchLoginEvent = $(() => {
-    dispatchPiercingEvent(ref.value!, {
-      type: "login",
-      payload: {
+    getBus(ref.value!).dispatch(
+      "login",
+      {
         username: state.username,
         password: state.password,
       },
-    });
+      {
+        singleUse: true,
+      }
+    );
     state.loading = true;
   });
 

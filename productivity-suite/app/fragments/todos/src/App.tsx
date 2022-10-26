@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { getBus } from "piercing-library";
+import { useContext, useEffect, useRef, useState } from "react";
 import { removeTodo, Todo, TodoList } from "shared";
 import "./App.css";
 import { Footer } from "./components/Footer";
@@ -11,9 +12,10 @@ import { TodoType } from "./todoType";
 const App: React.FC<{
   todoList: TodoList | null;
 }> = ({ todoList }) => {
-  const listName = todoList?.name ?? null;
-
-  const [todos, setTodos] = useState<Todo[]>(todoList?.todos ?? []);
+  const [listName, setListName] = useState<string | null>(
+    todoList?.name ?? null
+  );
+  const [todos, setTodosState] = useState<Todo[]>(todoList?.todos ?? []);
 
   const [todosSelection, setTodosSelection] = useState<TodoType>(TodoType.all);
 
@@ -21,6 +23,8 @@ const App: React.FC<{
 
   const activeTodos = todos.filter(({ completed }) => !completed);
   const completedTodos = todos.filter(({ completed }) => completed);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const todosMap: Record<TodoType, Todo[]> = {
     [TodoType.all]: todos,
@@ -31,6 +35,16 @@ const App: React.FC<{
   const todosToShow = todosMap[todosSelection];
 
   if (!currentUser || !listName) return <></>;
+
+  function setTodos(todos: Todo[], dispatch = true) {
+    setTodosState(todos);
+    if (dispatch) {
+      getBus(ref.current!).dispatch("todos-updated", {
+        listName,
+        todos,
+      });
+    }
+  }
 
   function handleNewTodoAdded(newTodoText: string) {
     setTodos([...todos, { text: newTodoText, completed: false }]);
@@ -62,8 +76,20 @@ const App: React.FC<{
     setTodos(todos.filter(({ completed }) => !completed));
   }
 
+  useEffect(() => {
+    if (ref.current) {
+      return getBus(ref.current).listen({
+        eventName: "todo-list-selected",
+        callback: ({ list }: { list: TodoList }) => {
+          setListName(list.name);
+          setTodos(list.todos, false);
+        },
+      });
+    }
+  }, [ref.current]);
+
   return (
-    <div className="todo-mvc-wrapper">
+    <div className="todo-mvc-wrapper" ref={ref}>
       <section className="todo-mvc">
         <Header
           todos={todos}

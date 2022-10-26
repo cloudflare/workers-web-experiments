@@ -1,16 +1,11 @@
-import { dispatchPiercingEvent } from "piercing-library";
+import { getBus } from "piercing-library";
 import type { TodoList } from "shared";
 
 export function dispatchSelectedListUpdated(
   el: Element,
-  listSelected: TodoList,
-  which?: "previous" | "next"
+  listSelected: TodoList
 ) {
-  dispatchPiercingEvent(el, {
-    type: "todo-list-selected",
-    payload: {
-      list: listSelected,
-      which,
-    },
+  getBus(el).dispatch("todo-list-selected", {
+    list: listSelected,
   });
 }

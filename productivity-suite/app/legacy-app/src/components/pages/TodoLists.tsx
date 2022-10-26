@@ -1,67 +1,43 @@
-import { useEffect, useState } from "react";
+import { getBus } from "piercing-library";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TodoList } from "shared";
 import "./TodoLists.css";
 
 export function TodoLists() {
+  const ref = useRef<HTMLDivElement>(null);
   const [selectedListName, setSelectedListName] = useState<string | null>(null);
 
   const [todoEnteringAnimation, setTodoEnteringAnimation] = useState<
     "previous" | "next" | undefined
   >();
-  const [showTodos, setShowTodos] = useState<boolean>(true);
 
   useEffect(() => {
-    const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
-    if (match) {
-      setSelectedListName(decodeURIComponent(match[1]));
+    if (ref.current) {
+      return getBus(ref.current).listen({
+        eventName: "todo-list-selected",
+        callback: ({ list }: { list: TodoList }) =>
+          updateSelectedListName(list.name),
+      });
     }
-  }, []);
+  }, [ref.current]);
 
   const navigate = useNavigate();
-
-  const fragmentFetchParams = selectedListName
-    ? JSON.stringify({
-        listName: selectedListName,
-      })
-    : "null";
 
   function updateSelectedListName(newListName: string) {
     setSelectedListName(newListName);
     navigate(`/todos/${newListName}`, { replace: true });
   }
 
-  function updateSelectedList(list: TodoList, which?: "previous" | "next") {
-    setShowTodos(false);
-    setTodoEnteringAnimation(which);
-    setTimeout(() => {
-      setShowTodos(true);
-      updateSelectedListName(list.name);
-    }, 50);
-    setTimeout(() => setTodoEnteringAnimation(undefined), 250);
-  }
-
   return (
-    <div className="todo-lists-page">
+    <div className="todo-lists-page" ref={ref}>
+      <piercing-fragment-outlet fragment-id="todo-lists" />
       <piercing-fragment-outlet
-        fragment-id="todo-lists"
-        fragment-fetch-params={fragmentFetchParams}
-        onTodoListSelected={(event: {
-          detail: {
-            list: TodoList;
-            which?: "previous" | "next";
-          };
-        }) => updateSelectedList(event.detail.list, event.detail.which)}
+        className={`todos ${
+          todoEnteringAnimation ? `todos-${todoEnteringAnimation}` : ""
+        }`}
+        fragment-id="todos"
       />
-      {showTodos && (
-        <piercing-fragment-outlet
-          className={`todos ${
-            todoEnteringAnimation ? `todos-${todoEnteringAnimation}` : ""
-          }`}
-          fragment-id="todos"
-          fragment-fetch-params={fragmentFetchParams}
-        />
-      )}
     </div>
   );
 }

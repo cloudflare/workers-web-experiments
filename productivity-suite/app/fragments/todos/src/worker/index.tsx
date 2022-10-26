@@ -6,11 +6,10 @@ import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 import { wrapStreamInText } from "piercing-library";
 import { EnvContext } from "../env";
-import { getCurrentUser, getTodoList, getTodoLists } from "shared";
+import { getCurrentUser, getTodoList, getTodoLists, TodoList } from "shared";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
-  backend: Fetcher;
   __STATIC_CONTENT: any;
 }
 
@@ -20,41 +19,22 @@ export default {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
-    const requestCookie = request.headers.get("Cookie") || "";
-
-    const currentUser = await getCurrentUser(requestCookie);
-
     const url = new URL(request.url);
-    const pathname = url.pathname;
+    const response = await fetchAsset(request, ctx, env);
 
-    const requestIsForIndex = /^\/(_fragment\/todos(\/todos)?\/?)?$/.test(
-      pathname
-    );
-
-    if (!requestIsForIndex) {
-      return fetchAsset(request, ctx, env);
+    const requestIsForAsset = /\.[^.\/]+$/.test(url.pathname);
+    if (requestIsForAsset) {
+      return response;
     }
 
+    const requestCookie = request.headers.get("Cookie") || "";
+    const currentUser = await getCurrentUser(requestCookie);
     const listName = url.searchParams.get("listName");
-    let todosListDetails = undefined;
-
-    if (currentUser) {
-      if (listName) {
-        const list = await getTodoList(
-          currentUser,
-          decodeURIComponent(listName),
-          requestCookie
-        );
-        if (list) {
-          todosListDetails = list;
-        }
-      } else {
-        const lists = await getTodoLists(currentUser, requestCookie);
-        if (lists.length) {
-          todosListDetails = lists[lists.length - 1];
-        }
-      }
-    }
+    const todoList = await getCurrentTodoList(
+      requestCookie,
+      currentUser,
+      listName
+    );
 
     const baseUrl = request.url
       .replace(/todos\/todos/, "todos")
@@ -66,20 +46,15 @@ export default {
       env
     ).then((res) => res.text());
 
-    const indexOfFragmentDiv = initialPageHtml.indexOf(
+    const [pre, post] = initialPageHtml.split(
       '<div id="todos-fragment-root"></div>'
     );
-    const indexForFragment =
-      indexOfFragmentDiv + '<div id="todos-fragment-root">'.length;
-    const pre = initialPageHtml.slice(0, indexForFragment);
-    const post = initialPageHtml.slice(indexForFragment);
-
     const stream = wrapStreamInText(
       pre,
       post,
       await renderToReadableStream(
         <EnvContext.Provider value={{ currentUser }}>
-          <App todosListDetails={todosListDetails} />
+          <App todoList={todoList} />
         </EnvContext.Provider>
       )
     );
@@ -105,4 +80,28 @@ async function fetchAsset(request: Request, ctx: ExecutionContext, env: Env) {
       ASSET_MANIFEST: assetManifest,
     }
   );
+}
+
+async function getCurrentTodoList(
+  requestCookie: string,
+  currentUser: string | null,
+  listName: string | null
+): Promise<TodoList | null> {
+  if (currentUser) {
+    if (listName) {
+      return (
+        (await getTodoList(
+          currentUser,
+          decodeURIComponent(listName),
+          requestCookie
+        )) ?? null
+      );
+    } else {
+      const lists = await getTodoLists(currentUser, requestCookie);
+      if (lists.length) {
+        return lists[lists.length - 1];
+      }
+    }
+  }
+  return null;
 }

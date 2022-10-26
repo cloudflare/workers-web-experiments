@@ -14,18 +14,12 @@ export interface Env {
   __STATIC_CONTENT: any;
 }
 
-declare const globalThis: {
-  backendWorkerFetcher: Fetcher;
-};
-
 export default {
   async fetch(
     request: Request,
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
-    globalThis.backendWorkerFetcher = env.backend;
-
     const requestCookie = request.headers.get("Cookie") || "";
 
     const currentUser = await getCurrentUser(requestCookie);

@@ -7,8 +7,24 @@ export default component$(() => {
 
   return (
     <div class="content">
-      <FragmentPlaceholder name="filter" />
-      <FragmentPlaceholder name="gallery" />
+      <div class="filter-fragment">
+        <a
+          href="https://cloud-gallery-filter.web-experiments.workers.dev/"
+          class="seam-link"
+        >
+          filter
+        </a>
+        <FragmentPlaceholder name="filter" />
+      </div>
+      <div class="gallery-fragment">
+        <a
+          href="https://cloud-gallery-gallery.web-experiments.workers.dev/"
+          class="seam-link"
+        >
+          gallery
+        </a>
+        <FragmentPlaceholder name="gallery" />
+      </div>
     </div>
   );
 });

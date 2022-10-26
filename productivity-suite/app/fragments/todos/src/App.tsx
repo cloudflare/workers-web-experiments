@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { removeTodo, Todo } from "shared";
+import { removeTodo, Todo, TodoList } from "shared";
 import "./App.css";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -9,11 +9,11 @@ import { EnvContext } from "./env";
 import { TodoType } from "./todoType";
 
 const App: React.FC<{
-  todosListDetails?: { name: string; todos: Todo[] };
-}> = ({ todosListDetails }) => {
-  const listName = todosListDetails?.name ?? null;
+  todoList: TodoList | null;
+}> = ({ todoList }) => {
+  const listName = todoList?.name ?? null;
 
-  const [todos, setTodos] = useState<Todo[]>(todosListDetails?.todos ?? []);
+  const [todos, setTodos] = useState<Todo[]>(todoList?.todos ?? []);
 
   const [todosSelection, setTodosSelection] = useState<TodoType>(TodoType.all);
 

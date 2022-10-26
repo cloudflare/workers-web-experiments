@@ -10,7 +10,6 @@ import { getCurrentUser, getTodoList, getTodoLists } from "shared";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
-  backend: Fetcher;
   __STATIC_CONTENT: any;
 }
 

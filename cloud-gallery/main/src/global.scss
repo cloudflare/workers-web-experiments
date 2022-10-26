@@ -10,6 +10,10 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
 
+.seam-link {
+  display: none;
+}
+
 body.show-seams {
   .header-fragment, 
   .body-fragment,
@@ -20,7 +24,8 @@ body.show-seams {
     position: relative;
     outline-offset: -3px;
 
-    &::before {
+    .seam-link {
+      display: inherit;
       content: 'fragment';
       position: absolute;
       background-color: #FcFcFca8;
@@ -34,48 +39,48 @@ body.show-seams {
 
   .header-fragment {
     outline: 3px dashed #4f2574;
-    &::before {
-      content: 'header';
+
+    .seam-link {
       color: #4f2574;
     }
   }
   .body-fragment {
     outline: 3px dashed #31909b;
-    &::before {
-      content: 'body';
+
+    .seam-link {
       color: #31909b;
     }
   }
   .filter-fragment {
     outline: 3px dashed #fc9003;
-    &::before {
-      content: 'filter';
+
+    .seam-link {
       color: #fc9003;
     }
   }
   .gallery-fragment {
     outline: 3px dashed #A53627;
-    &::before {
-      content: 'gallery';
+
+    .seam-link {
       color: #A53627;
     }
   }
   .footer-fragment {
     outline: 3px dashed #74256c;
-    &::before {
-      content: 'footer';
+
+    .seam-link {
       color: #74256c;
     }
   }
 
-  .header-fragment::before, 
-  .body-fragment::before,
-  .gallery-fragment::before,
-  .footer-fragment::before {
+  .header-fragment > .seam-link, 
+  .body-fragment > .seam-link,
+  .gallery-fragment > .seam-link,
+  .footer-fragment > .seam-link {
     left: 3px;
   }
 
-  .filter-fragment::before {
+  .filter-fragment .seam-link {
     right: 2px;
   }
 }

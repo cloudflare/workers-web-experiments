@@ -46,9 +46,11 @@ export default {
       env
     ).then((res) => res.text());
 
-    const [pre, post] = initialPageHtml.split(
-      '<div id="todos-fragment-root"></div>'
-    );
+    const appRootElement = '<div id="todos-fragment-root">';
+    const indexOfFragmentDiv = initialPageHtml.indexOf(appRootElement);
+    const indexForFragment = indexOfFragmentDiv + appRootElement.length;
+    const pre = initialPageHtml.slice(0, indexForFragment);
+    const post = initialPageHtml.slice(indexForFragment);
     const stream = wrapStreamInText(
       pre,
       post,

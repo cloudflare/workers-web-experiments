@@ -1,5 +1,4 @@
 import { Component, Show } from "solid-js";
-import { A } from "solid-start";
 
 import type { IStory } from "../types";
 
@@ -13,9 +12,9 @@ const Story: Component<{ story: IStory }> = (props) => {
         <Show
           when={props.story.url}
           fallback={
-            <A href={hnUrl(`/item?id=${props.story.id}`)}>
+            <a href={hnUrl(`/item?id=${props.story.id}`)}>
               {props.story.title}
-            </A>
+            </a>
           }
         >
           <a
@@ -33,19 +32,19 @@ const Story: Component<{ story: IStory }> = (props) => {
         <Show
           when={props.story.type !== "job"}
           fallback={
-            <A href={hnUrl(`/item?id=${props.story.id}`)}>
+            <a href={hnUrl(`/item?id=${props.story.id}`)}>
               {props.story.time_ago}
-            </A>
+            </a>
           }
         >
           by{" "}
-          <A href={hnUrl(`/user?id=${props.story.user}`)}>{props.story.user}</A>{" "}
+          <a href={hnUrl(`/user?id=${props.story.user}`)}>{props.story.user}</a>{" "}
           {props.story.time_ago} |{" "}
-          <A href={hnUrl(`/item?id=${props.story.id}`)}>
+          <a href={hnUrl(`/item?id=${props.story.id}`)}>
             {props.story.comments_count
               ? `${props.story.comments_count} comments`
               : "discuss"}
-          </A>
+          </a>
         </Show>
       </span>
       <Show when={props.story.type !== "link"}>

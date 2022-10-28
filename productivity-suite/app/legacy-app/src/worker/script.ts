@@ -196,7 +196,6 @@ gateway.registerFragment({
     env: Env,
     thisConfig: FragmentConfig<Env>
   ) => {
-    console.log("news from the gateway");
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/news\/([^/]+)$/.exec(path);

@@ -1,28 +1,7 @@
 import solid from "solid-start/vite";
 import cloudflareWorkers from "solid-start-cloudflare-workers";
-import { defineConfig, PluginOption } from "vite";
-
-function addDefaultFnExportToBundle(): PluginOption {
-  return {
-    name: "add-default-fn-export-to-bundle-plugin",
-    enforce: "post",
-    generateBundle(_options, chunkMap) {
-      for (const file of Object.keys(chunkMap)) {
-        if (/entry-client\..*\.js$/.test(file)) {
-          const jsChunk = chunkMap[file] as { code: string; isEntry: boolean };
-          if (jsChunk.isEntry) {
-            jsChunk.code = `
-							const moduleFn = () => {
-								${jsChunk.code}
-							};
-							moduleFn();
-							export default moduleFn;`.replace(/\t+/g, " ");
-          }
-        }
-      }
-    },
-  };
-}
+import { defineConfig } from "vite";
+import { addDefaultFnExportToBundle } from "shared";
 
 export default defineConfig({
   ssr: {
@@ -37,6 +16,6 @@ export default defineConfig({
       ssr: true,
       adapter: cloudflareWorkers({}),
     }),
-    addDefaultFnExportToBundle(),
+    addDefaultFnExportToBundle(/entry-client\..*\.js$/),
   ],
 });

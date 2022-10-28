@@ -5,7 +5,6 @@ import type { IStory } from "../types";
 
 const Story: Component<{ story: IStory }> = (props) => {
   const hnUrl = (path) => `https://news.ycombinator.com${path}`;
-  console.log("props.story", props.story.user);
 
   return (
     <li class="news-item">

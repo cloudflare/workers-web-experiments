@@ -2,9 +2,11 @@ import { renderToStream } from "@builder.io/qwik/server";
 import { manifest } from "@qwik-client-manifest";
 import { getCurrentUser, getUserData } from "shared";
 import { Root } from "./root";
+import { createServerSideMessageBusFromRequest } from "piercing-library";
 
 export default {
   async fetch(request: Request): Promise<Response> {
+    createServerSideMessageBusFromRequest(request);
     const { writable, readable } = new TransformStream();
     const writer = writable.getWriter();
     const requestCookie = request.headers.get("Cookie") || "";
@@ -14,12 +16,6 @@ export default {
       (currentUser && getUserData(currentUser, requestCookie)) || null;
 
     const url = new URL(request.url);
-    const listName = url.searchParams.get("listName") ?? null;
-
-    const selectedListName =
-      listName ??
-      (userData?.todoLists &&
-        userData.todoLists[userData.todoLists.length - 1].name);
 
     const stream = {
       write: (chunk: any) => {
@@ -41,7 +37,6 @@ export default {
       envData: {
         currentUser,
         userData,
-        selectedListName,
       },
     }).finally(() => writer.close());
 

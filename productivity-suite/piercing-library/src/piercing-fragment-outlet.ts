@@ -1,5 +1,6 @@
 import { DOMAttributes } from "react";
 import WritableDOMStream from "writable-dom";
+import { getBus } from "./message-bus/message-bus";
 
 import { PiercingFragmentHost } from "./piercing-fragment-host/piercing-fragment-host";
 
@@ -113,7 +114,15 @@ export class PiercingFragmentOutlet extends HTMLElement {
       () => this.dispatchEvent(new CustomEvent("FetchingStarted")),
       initDelayForUi
     );
-    const response = await fetch(url);
+
+    const context = getBus(null).context;
+
+    const req = new Request(url, {
+      headers: {
+        "message-bus-context": JSON.stringify(context),
+      },
+    });
+    const response = await fetch(req);
     this.dispatchEvent(new CustomEvent("FetchingCompleted"));
     if (!response.body) {
       throw new Error(

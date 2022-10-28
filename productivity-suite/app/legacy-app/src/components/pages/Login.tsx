@@ -13,13 +13,15 @@ export function Login() {
 
   useEffect(() => {
     if (ref.current) {
-      return getBus(ref.current).listen({
-        eventName: "login",
-        callback: ({ username }: { username: string }) => {
-          auth.login(username);
-          navigate(from, { replace: true });
-        },
-      });
+      return (
+        getBus(ref.current).listen({
+          eventName: "login",
+          callback: ({ username }: { username: string }) => {
+            auth.login(username);
+            setTimeout(() => navigate(from, { replace: true }), 1);
+          },
+        }) ?? undefined
+      );
     }
   }, [ref.current]);
 

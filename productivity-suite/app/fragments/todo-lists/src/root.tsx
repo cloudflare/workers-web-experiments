@@ -7,7 +7,7 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import type { Todo, TodoList } from "shared";
+import type { TodoList } from "shared";
 
 import styles from "./root.css?inline";
 import { dispatchSelectedListUpdated } from "./dispatchSelectedListUpdated";
@@ -19,8 +19,6 @@ export const Root = component$(() => {
 
   const envCurrentUser: string = useEnvData("currentUser")!;
   const initialUserData: { todoLists: TodoList[] } = useEnvData("userData")!;
-  const initialSelectedListName: string | null =
-    useEnvData("selectedListName") ?? null;
 
   const state = useStore<{
     currentUser?: string;
@@ -34,13 +32,32 @@ export const Root = component$(() => {
   });
 
   useMount$(async () => {
-    state.currentUser = envCurrentUser;
-    state.todoLists = initialUserData.todoLists;
-    if (initialSelectedListName) {
+    // TODO: check if we can use useServerMount$ instead
+    if (typeof document === "undefined") {
+      state.currentUser = envCurrentUser;
+      state.todoLists = initialUserData.todoLists;
+
+      const selectedListName = await Promise.race([
+        new Promise<string | null>((resolve) => {
+          getBus(null).listen({
+            eventName: "todo-list-selected",
+            callback: ({ name }: { name: string }) => {
+              resolve(name);
+            },
+            options: {
+              once: true,
+            },
+          });
+        }),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+      ]);
+
       const idx = state.todoLists.findIndex(
-        ({ name }) => name === initialSelectedListName
+        ({ name }) => name === selectedListName
       );
-      state.idxOfSelectedList = idx !== -1 ? idx : 0;
+
+      state.idxOfSelectedList = idx !== -1 ? idx : state.todoLists.length - 1;
+      state.selectedListName = state.todoLists[idx]!.name;
     }
   });
 
@@ -48,18 +65,15 @@ export const Root = component$(() => {
 
   useClientEffect$(() => {
     if (ref.value) {
-      return getBus(ref.value).listen({
-        eventName: "todos-updated",
-        callback: ({
-          listName,
-          todos,
-        }: {
-          listName: string;
-          todos: Todo[];
-        }) => {
-          const list = state.todoLists.find(({ name }) => name === listName);
-          if (list) {
-            list.todos = todos;
+      getBus(ref.value).listen({
+        eventName: "todo-list-selected",
+        callback: ({ name }: { name: string }) => {
+          const newIdxOfSelectedList = state.todoLists.findIndex(
+            ({ name: listName }) => listName === name
+          );
+          if (newIdxOfSelectedList >= 0) {
+            state.idxOfSelectedList = newIdxOfSelectedList;
+            state.selectedListName = state.todoLists[newIdxOfSelectedList].name;
           }
         },
       });
@@ -72,9 +86,20 @@ export const Root = component$(() => {
         <TodoListsCarousel
           currentUser={state.currentUser!}
           initialTodoLists={state.todoLists}
-          initialIdxOfSelectedList={state.idxOfSelectedList}
+          idxOfSelectedList={state.idxOfSelectedList}
+          selectedListName={state.selectedListName}
+          onUpdateSelectedListDetails$={({
+            idx,
+            name,
+          }: {
+            idx: number;
+            name: string;
+          }) => {
+            state.idxOfSelectedList = idx;
+            state.selectedListName = name;
+          }}
           onDispatchSelectedListUpdated$={(listSelected: TodoList) =>
-            dispatchSelectedListUpdated(ref.value!, listSelected)
+            dispatchSelectedListUpdated(ref.value!, listSelected.name)
           }
         />
       )}

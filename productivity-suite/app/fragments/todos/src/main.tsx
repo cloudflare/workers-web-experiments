@@ -1,26 +1,36 @@
+import { getBus } from "piercing-library";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { getCurrentUser, getTodoList, getTodoLists } from "shared";
+import { getCurrentUser, getTodoLists } from "shared";
 import App from "./App";
 import { EnvContext } from "./env";
 
 (async () => {
-  const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
-  const listName = match?.[1] ?? null;
-  let todoList = null;
+  const rootElement = document.getElementById(
+    "todos-fragment-root"
+  ) as HTMLElement;
 
+  const todoListName = await Promise.race([
+    new Promise<string>((resolve) => {
+      getBus(rootElement).listen({
+        eventName: "todo-list-selected",
+        callback: ({ name }: { name: string }) => {
+          resolve(name);
+        },
+        options: { once: true },
+      });
+    }),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+  ]);
+
+  // Note: the current user should come from the message bus, I think?
   const currentUser = getCurrentUser();
 
-  if (currentUser) {
-    if (listName) {
-      const list = await getTodoList(currentUser, decodeURIComponent(listName));
-      if (list) {
-        todoList = list;
-      }
-    } else {
-      const lists = await getTodoLists(currentUser);
-      todoList = lists[lists.length - 1];
-    }
+  const lists = currentUser ? await getTodoLists(currentUser) : [];
+  const todoList = lists.find(({ name }) => todoListName === name);
+
+  if (!todoList) {
+    throw new Error(`todoList "${todoListName}" not found`);
   }
 
   const application = (
@@ -30,10 +40,6 @@ import { EnvContext } from "./env";
       </EnvContext.Provider>
     </React.StrictMode>
   );
-
-  const rootElement = document.getElementById(
-    "todos-fragment-root"
-  ) as HTMLElement;
 
   const appWasSSRed = rootElement.children.length > 0;
 

@@ -1,5 +1,5 @@
 import { FragmentConfig, PiercingGateway } from "piercing-library";
-import { getCurrentUser } from "shared";
+import { getCurrentUser, getTodoLists } from "shared";
 
 export interface Env {
   APP_BASE_URL: string;
@@ -7,10 +7,32 @@ export interface Env {
 
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
+  generateMessageBusContext: async (requestMessageBusContext, request) => {
+    if (!("todo-list-selected" in requestMessageBusContext)) {
+      const match = /\/todos\/([^/]+)$/.exec(request.url);
+      let listName = match?.[1] && decodeURIComponent(match[1]);
+
+      const requestCookie = request.headers.get("Cookie");
+      if (!listName && requestCookie) {
+        const currentUser = getCurrentUser(requestCookie);
+        if (currentUser) {
+          const lists = await getTodoLists(currentUser, requestCookie);
+          if (lists.length) {
+            listName = lists[lists.length - 1].name;
+          }
+        }
+      }
+
+      requestMessageBusContext["todo-list-selected"] = {
+        detail: { name: listName ?? null },
+      };
+    }
+    return requestMessageBusContext;
+  },
 });
 
 async function isUserAuthenticated(request: Request) {
-  const currentUser = await getCurrentUser(request.headers.get("Cookie") || "");
+  const currentUser = getCurrentUser(request.headers.get("Cookie") || "");
   return !!currentUser;
 }
 

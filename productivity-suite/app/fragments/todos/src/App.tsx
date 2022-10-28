@@ -1,6 +1,6 @@
 import { getBus } from "piercing-library";
 import { useContext, useEffect, useRef, useState } from "react";
-import { removeTodo, Todo, TodoList } from "shared";
+import { getTodoList, removeTodo, Todo, TodoList } from "shared";
 import "./App.css";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -15,7 +15,7 @@ const App: React.FC<{
   const [listName, setListName] = useState<string | null>(
     todoList?.name ?? null
   );
-  const [todos, setTodosState] = useState<Todo[]>(todoList?.todos ?? []);
+  const [todos, setTodos] = useState<Todo[]>(todoList?.todos ?? []);
 
   const [todosSelection, setTodosSelection] = useState<TodoType>(TodoType.all);
 
@@ -35,16 +35,6 @@ const App: React.FC<{
   const todosToShow = todosMap[todosSelection];
 
   if (!currentUser || !listName) return <></>;
-
-  function setTodos(todos: Todo[], dispatch = true) {
-    setTodosState(todos);
-    if (dispatch) {
-      getBus(ref.current!).dispatch("todos-updated", {
-        listName,
-        todos,
-      });
-    }
-  }
 
   function handleNewTodoAdded(newTodoText: string) {
     setTodos([...todos, { text: newTodoText, completed: false }]);
@@ -77,14 +67,19 @@ const App: React.FC<{
   }
 
   useEffect(() => {
+    // Note: only runs on the client
     if (ref.current) {
-      return getBus(ref.current).listen({
+      const remover = getBus(ref.current).listen({
         eventName: "todo-list-selected",
-        callback: ({ list }: { list: TodoList }) => {
-          setListName(list.name);
-          setTodos(list.todos, false);
+        callback: async ({ name }: { name: string }) => {
+          const list = await getTodoList(currentUser, name);
+          if (list) {
+            setListName(list.name);
+            setTodos(list.todos);
+          }
         },
       });
+      return remover ?? undefined;
     }
   }, [ref.current]);
 

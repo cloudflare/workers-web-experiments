@@ -1,16 +1,9 @@
-import {
-  DispatchOptions,
-  getBus,
-  MessageBus,
-  MessageHandler,
-} from "../message-bus";
-
 // Important: we only need to import the type, do not import the class itself
 //            as it would bloat the script (which needs to be very light)
 import type { PiercingFragmentOutlet } from "../piercing-fragment-outlet";
 
-export class PiercingFragmentHost extends HTMLElement implements MessageBus {
-  private parentMessageBus!: MessageBus;
+export class PiercingFragmentHost extends HTMLElement {
+  // TODO: add message bus field here so that we can use that to prevent memory leaks
   fragmentId!: string;
   queueEventListener?: (event: Event) => void;
   stylesEmbeddingObserver?: MutationObserver;
@@ -19,24 +12,7 @@ export class PiercingFragmentHost extends HTMLElement implements MessageBus {
     super();
   }
 
-  private messageHandlerRemovers: (() => void)[] = [];
-
-  listen(handler: MessageHandler) {
-    const remover = this.parentMessageBus.listen(handler);
-    this.messageHandlerRemovers.push(remover);
-    return remover;
-  }
-
-  dispatch(
-    eventName: any,
-    details: any,
-    dispatchOptions: DispatchOptions = {}
-  ) {
-    this.parentMessageBus.dispatch(eventName, details, dispatchOptions);
-  }
-
   connectedCallback() {
-    this.parentMessageBus = getBus(this);
     this.fragmentId = this.getAttribute("fragment-id")!;
 
     if (!this.fragmentIsPierced) {
@@ -44,9 +20,7 @@ export class PiercingFragmentHost extends HTMLElement implements MessageBus {
     }
   }
 
-  disconnectedCallback() {
-    this.messageHandlerRemovers.forEach((remover) => remover());
-  }
+  disconnectedCallback() {}
 
   async onPiercingComplete(outlet: PiercingFragmentOutlet) {
     this.removeStylesEmbeddingObserver();

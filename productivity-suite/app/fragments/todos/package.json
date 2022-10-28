@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"dev:vite": "vite dev -c vite.config.client.ts",
-		"build:client": "tsc && vite build -c vite.config.client.ts",
+		"build:client": "tsc && vite build -c vite.config.client.ts -m development",
 		"build:server": "tsc && vite build --ssr src/worker/index.tsx -c vite.config.server.ts",
 		"build": "npm run build:client; npm run build:server",
 		"preview": "wrangler dev",

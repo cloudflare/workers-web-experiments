@@ -24,6 +24,7 @@ export function ListOfTodos({ ...props }: ListOfTodosProps) {
     <ul className="todo-mvc-todos-list">
       {props.todos.map((todo) => (
         <TodoItem
+          key={todo.text}
           todo={todo}
           editingTodoDetailsState={editingTodoDetailsState}
           {...props}

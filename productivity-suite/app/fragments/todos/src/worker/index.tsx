@@ -4,7 +4,11 @@ import App from "../App";
 import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 // @ts-ignore
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
-import { wrapStreamInText } from "piercing-library";
+import {
+  createServerSideMessageBusFromRequest,
+  getBus,
+  wrapStreamInText,
+} from "piercing-library";
 import { EnvContext } from "../env";
 import { getCurrentUser, getTodoList, getTodoLists, TodoList } from "shared";
 const assetManifest = JSON.parse(manifestJSON);
@@ -19,6 +23,7 @@ export default {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
+    createServerSideMessageBusFromRequest(request);
     const url = new URL(request.url);
     const response = await fetchAsset(request, ctx, env);
 
@@ -29,7 +34,20 @@ export default {
 
     const requestCookie = request.headers.get("Cookie") || "";
     const currentUser = await getCurrentUser(requestCookie);
-    const listName = url.searchParams.get("listName");
+
+    const listName = await Promise.race([
+      new Promise<string | null>((resolve) => {
+        getBus(null).listen({
+          eventName: "todo-list-selected",
+          callback: ({ name }: { name: string }) => {
+            resolve(name);
+          },
+          options: { once: true },
+        });
+      }),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+    ]);
+
     const todoList = await getCurrentTodoList(
       requestCookie,
       currentUser,

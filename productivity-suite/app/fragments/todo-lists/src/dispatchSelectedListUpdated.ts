@@ -1,11 +1,7 @@
 import { getBus } from "piercing-library";
-import type { TodoList } from "shared";
 
-export function dispatchSelectedListUpdated(
-  el: Element,
-  listSelected: TodoList
-) {
+export function dispatchSelectedListUpdated(el: Element, listName: string) {
   getBus(el).dispatch("todo-list-selected", {
-    list: listSelected,
+    name: listName,
   });
 }

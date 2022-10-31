@@ -115,11 +115,11 @@ export class PiercingFragmentOutlet extends HTMLElement {
       initDelayForUi
     );
 
-    const context = getBus(null).context;
+    const state = getBus(null).state;
 
     const req = new Request(url, {
       headers: {
-        "message-bus-context": JSON.stringify(context),
+        "message-bus-state": JSON.stringify(state),
       },
     });
     const response = await fetch(req);

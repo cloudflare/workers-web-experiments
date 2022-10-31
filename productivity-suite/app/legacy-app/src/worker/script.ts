@@ -7,8 +7,8 @@ export interface Env {
 
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
-  generateMessageBusContext: async (requestMessageBusContext, request) => {
-    if (!("todo-list-selected" in requestMessageBusContext)) {
+  generateMessageBusState: async (requestMessageBusState, request) => {
+    if (!("todo-list-selected" in requestMessageBusState)) {
       const match = /\/todos\/([^/]+)$/.exec(request.url);
       let listName = match?.[1] && decodeURIComponent(match[1]);
 
@@ -23,11 +23,11 @@ const gateway = new PiercingGateway<Env>({
         }
       }
 
-      requestMessageBusContext["todo-list-selected"] = {
+      requestMessageBusState["todo-list-selected"] = {
         detail: { name: listName ?? null },
       };
     }
-    return requestMessageBusContext;
+    return requestMessageBusState;
   },
 });
 

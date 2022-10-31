@@ -1,4 +1,4 @@
-import { createBrowserMessageBusFromContextStr } from "./message-bus";
+import { createBrowserMessageBusFromStateStr } from "./message-bus";
 
-const contextStr = "__MESSAGE_BUS_CONTEXT_STR_PLACEHOLDER__";
-createBrowserMessageBusFromContextStr(contextStr);
+const stateStr = "__MESSAGE_BUS_STATE_STR_PLACEHOLDER__";
+createBrowserMessageBusFromStateStr(stateStr);

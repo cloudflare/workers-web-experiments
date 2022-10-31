@@ -5,9 +5,9 @@ import {
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import {
-  getMessageBusContextFromRequest,
+  getMessageBusStateFromRequest,
   MessageBus,
-  MessageBusContext,
+  MessageBusState,
   messageBusProp,
   ServerSideMessageBus,
 } from "./message-bus/message-bus";
@@ -72,12 +72,12 @@ export interface PiercingGatewayConfig<Env> {
   /**
    * Generates the message bus context for the current request.
    */
-  generateMessageBusContext: (
-    requestMessageBusContext: MessageBusContext,
+  generateMessageBusState: (
+    requestMessageBusState: MessageBusState,
     request: Request,
     env: Env,
     ctx: ExecutionContext
-  ) => MessageBusContext | Promise<MessageBusContext>;
+  ) => MessageBusState | Promise<MessageBusState>;
 }
 
 export class PiercingGateway<Env> {
@@ -173,20 +173,19 @@ export class PiercingGateway<Env> {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Request> {
-    const requestMessageBusContext = getMessageBusContextFromRequest(request);
+    const requestMessageBusState = getMessageBusStateFromRequest(request);
 
-    const updatedMessageBusContext =
-      await this.config.generateMessageBusContext(
-        requestMessageBusContext,
-        request,
-        env,
-        ctx
-      );
+    const updatedMessageBusState = await this.config.generateMessageBusState(
+      requestMessageBusState,
+      request,
+      env,
+      ctx
+    );
 
     const updatedRequest = new Request(request);
     updatedRequest.headers.set(
-      "message-bus-context",
-      JSON.stringify(updatedMessageBusContext)
+      "message-bus-state",
+      JSON.stringify(updatedMessageBusState)
     );
     return updatedRequest;
   }
@@ -295,10 +294,10 @@ export class PiercingGateway<Env> {
       .get("Accept")
       ?.includes("text/html");
     if (requestIsForHtml) {
-      const contextHeaderStr = request.headers.get("message-bus-context");
+      const stateHeaderStr = request.headers.get("message-bus-state");
       let indexBody = (await response.text()).replace(
         "</head>",
-        `${getMessageBusInlineScript(contextHeaderStr ?? "{}")}
+        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}
         ${piercingFragmentHostInlineScript}
         </head>`
       );

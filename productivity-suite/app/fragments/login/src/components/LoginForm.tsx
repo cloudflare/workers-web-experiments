@@ -49,16 +49,10 @@ export const LoginForm = component$(() => {
   });
 
   const dispatchLoginEvent = $(() => {
-    getBus(ref.value!).dispatch(
-      "login",
-      {
-        username: state.username,
-        password: state.password,
-      },
-      {
-        singleUse: true,
-      }
-    );
+    getBus(ref.value!).dispatch("authentication", {
+      username: state.username,
+      password: state.password,
+    });
     state.loading = true;
   });
 

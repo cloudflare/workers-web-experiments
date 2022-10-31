@@ -4,12 +4,7 @@ export type MessageHandler = {
   options?: { once?: boolean };
 };
 
-export type DispatchOptions = { singleUse?: boolean };
-
-export type MessageBusState = Record<
-  string,
-  { detail: any; dispatchOptions?: DispatchOptions }
->;
+export type MessageBusState = Record<string, { detail: any }>;
 
 export class MessageBus {
   protected _handlers: MessageHandler[] = [];
@@ -20,7 +15,8 @@ export class MessageBus {
     return JSON.parse(JSON.stringify(this._state));
   }
 
-  dispatch(eventName: string, detail: any, dispatchOptions?: DispatchOptions) {
+  dispatch(eventName: string, detail: any) {
+    this._state[eventName] = { detail };
     const handlersForEvent = this._handlers.filter(
       ({ eventName: handlerEventName }) => handlerEventName === eventName
     );
@@ -34,22 +30,12 @@ export class MessageBus {
     this._handlers = this._handlers.filter(
       (handler) => !handlersToRemove.includes(handler)
     );
-    const eventConsumed = handlersForEvent.length && dispatchOptions?.singleUse;
-    if (!eventConsumed) {
-      this._state[eventName] = {
-        detail,
-        ...(dispatchOptions ? { dispatchOptions } : {}),
-      };
-    }
   }
 
   listen(handler: MessageHandler) {
     const lastMessage = this._state[handler.eventName];
     if (lastMessage) {
       handler.callback(lastMessage.detail);
-      if (lastMessage.dispatchOptions?.singleUse) {
-        delete this._state[handler.eventName];
-      }
       if (handler.options?.once) {
         return null;
       }
@@ -61,47 +47,7 @@ export class MessageBus {
   }
 }
 
-export class BrowserMessageBus extends MessageBus {
-  dispatch(eventName: string, detail: any, dispatchOptions: DispatchOptions) {
-    const handlersForEvent = this._handlers.filter(
-      ({ eventName: handlerEventName }) => handlerEventName === eventName
-    );
-    const handlersToRemove: MessageHandler[] = [];
-    handlersForEvent.forEach((handler) => {
-      handler.callback(detail);
-      if (handler.options?.once) {
-        handlersToRemove.push(handler);
-      }
-    });
-    this._handlers = this._handlers.filter(
-      (handler) => !handlersToRemove.includes(handler)
-    );
-    const eventConsumed = handlersForEvent.length && dispatchOptions?.singleUse;
-    if (!eventConsumed) {
-      this._state[eventName] = {
-        detail,
-        ...(dispatchOptions ? { dispatchOptions } : {}),
-      };
-    }
-  }
-
-  listen(handler: MessageHandler) {
-    const lastMessage = this._state[handler.eventName];
-    if (lastMessage) {
-      handler.callback(lastMessage.detail);
-      if (lastMessage.dispatchOptions?.singleUse) {
-        delete this._state[handler.eventName];
-      }
-      if (handler.options?.once) {
-        return null;
-      }
-    }
-    this._handlers.push(handler);
-    return () => {
-      this._handlers = this._handlers.filter((h) => h !== handler);
-    };
-  }
-}
+export class BrowserMessageBus extends MessageBus {}
 
 export function createBrowserMessageBusFromStateStr(stateStr: string) {
   const state = JSON.parse(stateStr ?? "{}");

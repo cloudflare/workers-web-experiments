@@ -1,3 +1,4 @@
+import { getBus } from "piercing-library";
 import { createContext, useContext, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await deleteCurrentUser();
+    getBus(null).dispatch("authentication", null);
     navigate("/login");
     setUser(null);
   }

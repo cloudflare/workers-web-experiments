@@ -33,7 +33,7 @@ export const TodoListsCarousel = component$(
       ({ idx, name }: { idx: number; name: string }) => void
     >;
     onDispatchSelectedListUpdated$: PropFunction<
-      (listSelected: TodoList, which?: "previous" | "next") => void
+      (listSelected: TodoList) => void
     >;
   }) => {
     useStylesScoped$(styles);
@@ -69,10 +69,7 @@ export const TodoListsCarousel = component$(
             idx: newTodoListIdx,
             name: state.todoLists[newTodoListIdx].name,
           });
-          onDispatchSelectedListUpdated$(
-            state.todoLists[newTodoListIdx],
-            "next"
-          );
+          onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx]);
         }, animationDuration);
       }
     });
@@ -89,7 +86,7 @@ export const TodoListsCarousel = component$(
           name: state.todoLists[newTodoListIdx].name,
         });
       }, animationDuration);
-      onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx], which);
+      onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx]);
     });
 
     return (

@@ -2,7 +2,7 @@ name = "productivity-suite-news-fragment"
 compatibility_date = "2022-10-05"
 compatibility_flags = ["streams_enable_constructors"]
 main = "./dist/server.js"
-assets = "./dist"
+assets = "./dist/public"
 
 [build]
 command = "npm run build"

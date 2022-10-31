@@ -1,11 +1,32 @@
 // @refresh reload
 import { Suspense } from "solid-js";
-import { HydrationScript, isServer } from "solid-js/web";
-import { ErrorBoundary, Routes, useServerContext, Route } from "solid-start";
+import { HydrationScript, isServer, NoHydration } from "solid-js/web";
+// import {
+//   ErrorBoundary,
+//   Routes,
+//   Scripts,
+//   Route,
+// } from "solid-start";
+
+import {
+  A,
+  Body,
+  ErrorBoundary,
+  // FileRoutes,
+  useServerContext,
+  Head,
+  Html,
+  Meta,
+  Routes,
+  Scripts,
+  Title,
+} from "solid-start";
+
 import { PageEvent } from "solid-start/server";
 import { createContext, useContext } from "solid-js";
 import "./root.css";
 import { News } from "./routes";
+import { FileRoutes } from "solid-start";
 
 export const ServerContext = createContext<PageEvent>({} as any);
 
@@ -32,27 +53,43 @@ export default function Root() {
 
   return (
     <div>
-      {isServer && (
-        <link rel="stylesheet" href={`/_fragment/news/public${style.href}`} />
-      )}
+      <NoHydration>
+        {isServer && (
+          <link rel="stylesheet" href={`/_fragment/news${style.href}`} />
+        )}
+      </NoHydration>
 
-      <ErrorBoundary>
-        <Suspense fallback={<div class="news-list-nav">Loading...</div>}>
+      <Suspense fallback={<div class="news-list-nav">Loading...</div>}>
+        <ErrorBoundary>
           <Routes>
-            <Route path="/*" component={News} />
+            <FileRoutes />
           </Routes>
-        </Suspense>
-      </ErrorBoundary>
+          {/* <News /> */}
+        </ErrorBoundary>
+      </Suspense>
+      {/* <Scripts /> */}
 
       {isSSR && <HydrationScript />}
-
-      {isServer && (
-        <script
-          type="module"
-          async
-          src={`/_fragment/news/public${script.href}`}
-        />
-      )}
+      <NoHydration>
+        {isServer && (
+          <script type="module" async src={`/_fragment/news${script.href}`} />
+        )}
+      </NoHydration>
     </div>
   );
 }
+
+// export default function Root() {
+//   return (
+//     <>
+//       <Suspense>
+//         <ErrorBoundary>
+//           <Routes>
+//             <FileRoutes />
+//           </Routes>
+//         </ErrorBoundary>
+//       </Suspense>
+//       <Scripts />
+//     </>
+//   );
+// }

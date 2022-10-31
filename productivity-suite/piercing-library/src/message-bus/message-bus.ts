@@ -137,12 +137,7 @@ export function getBus(element: Element | null): MessageBus {
     return root[messageBusProp];
   }
 
-  // Follows temporary code used only during development
-  // (the final code should include only the (un)commented
-  // error throw)
-  // (globalThis as any)[messageBusProp] = new MessageBus({});
-  return (globalThis as any)[messageBusProp];
-  // throw new Error("No global message bus defined!");
+  throw new Error("No global message bus defined!");
 }
 
 function hasMessageBus<T>(obj: T): obj is T & { [messageBusProp]: MessageBus } {

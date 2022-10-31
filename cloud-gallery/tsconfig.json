@@ -17,6 +17,10 @@
 		"isolatedModules": true,
 		// The "@builder.io/qwik/server" type is so we can use:
 		// `import { manifest } from "@qwik-client-manifest";`
-		"types": ["vite/client", "@cloudflare/workers-types", "@builder.io/qwik/server"]
+		"types": [
+			"vite/client",
+			"@cloudflare/workers-types",
+			"@builder.io/qwik/server"
+		]
 	}
 }

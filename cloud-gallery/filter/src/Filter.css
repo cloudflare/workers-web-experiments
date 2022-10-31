@@ -32,12 +32,13 @@
 .link {
 	display: block;
 	font-size: 18px;
-	padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 	text-decoration: none;
 	color: #33e;
 }
 
-.link:hover, .link:focus {
+.link:hover,
+.link:focus {
 	background-color: #efefef;
 }
 

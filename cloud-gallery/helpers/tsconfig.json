@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"declarationDir": "lib-types"
 	},
-  "declaration": true,
+	"declaration": true,
 	"outDir": "lib-types",
 	"include": ["src"]
 }

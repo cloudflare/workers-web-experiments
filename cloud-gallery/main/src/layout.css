@@ -1,20 +1,21 @@
-html, body {
-  height: 100%;
+html,
+body {
+	height: 100%;
 }
 
 .page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	box-sizing: border-box;
 }
 
 .body-fragment {
-  flex: 1 0 auto;
+	flex: 1 0 auto;
 }
 
-.header-fragment, .footer-fragment {
-  flex-grow: 0;
-  flex-shrink: 0;
+.header-fragment,
+.footer-fragment {
+	flex-grow: 0;
+	flex-shrink: 0;
 }
-

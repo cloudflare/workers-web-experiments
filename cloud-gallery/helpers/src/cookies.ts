@@ -6,36 +6,36 @@ import { parse } from "cookie";
 import { isBrowser } from "./isBrowser";
 
 export function saveCookie(name: string, value: string) {
-  if (new Blob([`${cookiesPrefix}${name}`, value]).size > cookieBytesLimit) {
-    alert(
-      `Error: The cookie bytes limit is not enough to hold the data for cookie "${name}",` +
-        " expect something not to work as it should"
-    );
-    return;
-  }
+	if (new Blob([`${cookiesPrefix}${name}`, value]).size > cookieBytesLimit) {
+		alert(
+			`Error: The cookie bytes limit is not enough to hold the data for cookie "${name}",` +
+				" expect something not to work as it should"
+		);
+		return;
+	}
 
-  const expirationDate = new Date(
-    new Date().getTime() + millisInAMonth
-  ).toUTCString();
-  document.cookie = `${cookiesPrefix}${name}=${value}; expires=${expirationDate}; path=/`;
+	const expirationDate = new Date(
+		new Date().getTime() + millisInAMonth
+	).toUTCString();
+	document.cookie = `${cookiesPrefix}${name}=${value}; expires=${expirationDate}; path=/`;
 }
 
 export function deleteCookie(name: string) {
-  const expirationDate = new Date(0).toUTCString();
-  document.cookie = `${cookiesPrefix}${name}=; expires=${expirationDate}; path=/`;
+	const expirationDate = new Date(0).toUTCString();
+	document.cookie = `${cookiesPrefix}${name}=; expires=${expirationDate}; path=/`;
 }
 
 export function getCookie(name: string) {
-  let cookieString;
+	let cookieString;
 
-  if (isBrowser()) {
-    cookieString = document.cookie || "";
-  } else {
-    const request = useEnvData<Request>("request")!;
-    const cookie = request.headers.get("cookie");
-    cookieString = cookie ?? "";
-  }
+	if (isBrowser()) {
+		cookieString = document.cookie || "";
+	} else {
+		const request = useEnvData<Request>("request")!;
+		const cookie = request.headers.get("cookie");
+		cookieString = cookie ?? "";
+	}
 
-  const cookie = parse(cookieString);
-  return cookie[`${cookiesPrefix}${name}`] ?? null;
+	const cookie = parse(cookieString);
+	return cookie[`${cookiesPrefix}${name}`] ?? null;
 }

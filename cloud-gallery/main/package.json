@@ -7,6 +7,8 @@
 		"build.client": "vite build",
 		"build.ssr": "vite build --ssr src/entry.ssr.tsx",
 		"lint": "eslint \"src/**/*.ts*\"",
+		"check-format": "prettier --check --ignore-path=../.prettierignore .",
+		"format": "prettier --write --ignore-path=../.prettierignore .",
 		"start": "npx wrangler dev --local",
 		"deploy": "npx wrangler publish",
 		"typecheck": "tsc --incremental --noEmit"

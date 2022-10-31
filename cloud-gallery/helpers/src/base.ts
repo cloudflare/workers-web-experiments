@@ -1,7 +1,7 @@
 import {
-  createContext,
-  useContextProvider,
-  useEnvData,
+	createContext,
+	useContextProvider,
+	useEnvData,
 } from "@builder.io/qwik";
 
 /**
@@ -10,7 +10,7 @@ import {
  * Primarily the `base` path of the fragment used to route asset requests to the correct Worker.
  */
 export const FragmentContext = createContext<{ base: string }>(
-  "FragmentContext"
+	"FragmentContext"
 );
 
 /**
@@ -20,8 +20,8 @@ export const FragmentContext = createContext<{ base: string }>(
  * `envData` that will only be available during first render on the server.
  */
 export function useFragmentRoot() {
-  const base = useEnvData("fragmentBase");
-  useContextProvider(FragmentContext, { base });
+	const base = useEnvData("fragmentBase");
+	useContextProvider(FragmentContext, { base });
 }
 
 /**
@@ -31,6 +31,6 @@ export function useFragmentRoot() {
  * assets that are hosted by this fragment.
  */
 export function getBase(request: Request): string {
-  const url = new URL(request.url);
-  return url.searchParams.get("base") ?? "/";
+	const url = new URL(request.url);
+	return url.searchParams.get("base") ?? "/";
 }

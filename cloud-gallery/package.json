@@ -12,7 +12,10 @@
 		"main"
 	],
 	"scripts": {
-		"test": "npm run typecheck --workspaces --if-present && npm run lint --workspaces --if-present && npm run check-format --workspaces --if-present",
+		"check": "npm run -w helpers build && npm run check:types && npm run check:lint && npm run check:format",
+		"check:types": "npm run typecheck --workspaces --if-present",
+		"check:lint": "npm run lint --workspaces --if-present",
+		"check:format": "npm run check-format --workspaces --if-present",
 		"deploy": "npm run deploy --workspaces --if-present",
 		"format": "npm run format --workspaces --if-present"
 	},

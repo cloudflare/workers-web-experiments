@@ -1,6 +1,6 @@
 import { DOMAttributes } from "react";
 import WritableDOMStream from "writable-dom";
-import { getBus } from "./message-bus/message-bus";
+import { getBus } from "./message-bus/get-bus";
 
 import { PiercingFragmentHost } from "./piercing-fragment-host/piercing-fragment-host";
 

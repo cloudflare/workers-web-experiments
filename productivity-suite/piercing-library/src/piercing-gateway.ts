@@ -4,13 +4,8 @@ import {
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
-import {
-  getMessageBusStateFromRequest,
-  MessageBus,
-  MessageBusState,
-  messageBusProp,
-  ServerSideMessageBus,
-} from "./message-bus/message-bus";
+import { MessageBusState } from "./message-bus/message-bus";
+import { getMessageBusStateFromRequest } from "./message-bus/server-side-message-bus";
 
 /**
  * Configuration object for the registration of a fragment in the app's gateway worker.

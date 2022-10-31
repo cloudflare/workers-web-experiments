@@ -6,10 +6,16 @@ export type MessageHandler = {
 
 export type MessageBusState = Record<string, { detail: any }>;
 
-export class MessageBus {
+export interface MessageBus {
+  state: MessageBusState;
+  dispatch(eventName: string, detail: any): void;
+  listen(handler: MessageHandler): (() => void) | null;
+}
+
+export class GenericMessageBus implements MessageBus {
   protected _handlers: MessageHandler[] = [];
 
-  constructor(protected _state: MessageBusState) {}
+  constructor(protected _state: MessageBusState = {}) {}
 
   get state(): MessageBusState {
     return JSON.parse(JSON.stringify(this._state));
@@ -45,47 +51,4 @@ export class MessageBus {
       this._handlers = this._handlers.filter((h) => h !== handler);
     };
   }
-}
-
-export class BrowserMessageBus extends MessageBus {}
-
-export function createBrowserMessageBusFromStateStr(stateStr: string) {
-  const state = JSON.parse(stateStr ?? "{}");
-  (globalThis as any as { [messageBusProp]?: MessageBus })[messageBusProp] =
-    new BrowserMessageBus(state);
-}
-
-export class ServerSideMessageBus extends MessageBus {}
-
-export function getMessageBusStateFromRequest(request: Request) {
-  const stateHeaderStr = request.headers.get("message-bus-state");
-  return JSON.parse(stateHeaderStr ?? "{}");
-}
-
-export function createServerSideMessageBusFromRequest(request: Request) {
-  const state = getMessageBusStateFromRequest(request);
-  (globalThis as any as { [messageBusProp]?: MessageBus })[messageBusProp] =
-    new ServerSideMessageBus(state);
-}
-
-export const messageBusProp = Symbol.for("fragment-message-bus");
-
-export function getBus(element: Element | null): MessageBus {
-  while (element) {
-    if (hasMessageBus(element)) {
-      return element[messageBusProp];
-    }
-    element = element.parentElement;
-  }
-  const root = globalThis;
-
-  if (hasMessageBus(root)) {
-    return root[messageBusProp];
-  }
-
-  throw new Error("No global message bus defined!");
-}
-
-function hasMessageBus<T>(obj: T): obj is T & { [messageBusProp]: MessageBus } {
-  return !!obj && messageBusProp in obj;
 }

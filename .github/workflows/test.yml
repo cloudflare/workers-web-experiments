@@ -27,4 +27,4 @@ jobs:
 
       - name: Run tests
         working-directory: ./cloud-gallery
-        run: npm run -w helpers build && npm run test
+        run: npm run check

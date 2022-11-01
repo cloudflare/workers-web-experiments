@@ -24,13 +24,16 @@ export class GenericMessageBus implements MessageBus {
   dispatch(eventName: string, value: any) {
     this._state[eventName] = value;
     const callbacksForEvent = this._callbacksMap.get(eventName) ?? [];
-    callbacksForEvent.forEach((callback) => callback(value));
+    setTimeout(
+      () => callbacksForEvent.forEach((callback) => callback(value)),
+      1
+    );
   }
 
   listen(eventName: string, callback: MessageBusCallback) {
     const latestValue = this.latestValue(eventName);
     if (latestValue) {
-      callback(latestValue);
+      setTimeout(() => callback(latestValue), 1);
     }
     if (!this._callbacksMap.has(eventName)) {
       this._callbacksMap.set(eventName, []);

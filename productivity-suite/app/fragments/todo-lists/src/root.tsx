@@ -31,17 +31,8 @@ export const Root = component$(() => {
   const requestCookie: string = useEnvData("requestCookie")!;
 
   useServerMount$(async () => {
-    const currentUser = await new Promise<string | null>((resolve) => {
-      getBus().listen({
-        eventName: "authentication",
-        callback: ({ username }: { username: string }) => {
-          resolve(username);
-        },
-        options: {
-          onlyReadLast: true,
-        },
-      });
-    });
+    const { username: currentUser }: { username: string } =
+      getBus().latestValue("authentication");
 
     state.currentUser = currentUser ?? undefined;
 
@@ -50,17 +41,8 @@ export const Root = component$(() => {
       : null;
     state.todoLists = todoLists ?? [];
 
-    const selectedListName = await new Promise<string | null>((resolve) => {
-      getBus().listen({
-        eventName: "todo-list-selected",
-        callback: ({ name }: { name: string }) => {
-          resolve(name);
-        },
-        options: {
-          onlyReadLast: true,
-        },
-      });
-    });
+    const { name: selectedListName }: { name: string } =
+      getBus().latestValue("todo-list-selected");
 
     const idx = state.todoLists.findIndex(
       ({ name }) => name === selectedListName

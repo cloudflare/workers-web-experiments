@@ -12,9 +12,9 @@ const gateway = new PiercingGateway<Env>({
     const currentUser = requestCookie ? getCurrentUser(requestCookie) : null;
 
     if (!("authentication" in requestMessageBusState)) {
-      requestMessageBusState["authentication"] = {
-        detail: currentUser ? { username: currentUser } : null,
-      };
+      requestMessageBusState["authentication"] = currentUser
+        ? { username: currentUser }
+        : null;
     }
 
     if (!("todo-list-selected" in requestMessageBusState) && currentUser) {
@@ -31,9 +31,7 @@ const gateway = new PiercingGateway<Env>({
         }
       }
 
-      requestMessageBusState["todo-list-selected"] = {
-        detail: { name: listName ?? null },
-      };
+      requestMessageBusState["todo-list-selected"] = { name: listName } ?? null;
     }
     return requestMessageBusState;
   },

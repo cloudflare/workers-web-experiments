@@ -13,8 +13,8 @@ export class FragmentMessageBus implements MessageBus {
     return this.parentBus.state;
   }
 
-  dispatch(eventName: string, detail: any) {
-    return this.parentBus.dispatch(eventName, detail);
+  dispatch(eventName: string, value: any) {
+    return this.parentBus.dispatch(eventName, value);
   }
 
   listen(handler: MessageHandler) {
@@ -30,5 +30,9 @@ export class FragmentMessageBus implements MessageBus {
       handlerRemover();
     }
     this.handlerRemovers = [];
+  }
+
+  latestValue(eventName: string) {
+    return this.parentBus.latestValue(eventName);
   }
 }

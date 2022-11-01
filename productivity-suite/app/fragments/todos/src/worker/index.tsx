@@ -32,31 +32,16 @@ export default {
       return response;
     }
 
+    const { username: currentUser }: { username: string } =
+      getBus().latestValue("authentication");
+    const { name: todoListName }: { name: string } =
+      getBus().latestValue("todo-list-selected");
+
     const requestCookie = request.headers.get("Cookie") || "";
-    const currentUser = await new Promise<string>((resolve) => {
-      getBus().listen({
-        eventName: "authentication",
-        callback: ({ username }: { username: string }) => {
-          resolve(username);
-        },
-        options: { onlyReadLast: true },
-      });
-    });
-
-    const listName = await new Promise<string | null>((resolve) => {
-      getBus().listen({
-        eventName: "todo-list-selected",
-        callback: ({ name }: { name: string }) => {
-          resolve(name);
-        },
-        options: { onlyReadLast: true },
-      });
-    });
-
     const todoList = await getCurrentTodoList(
       requestCookie,
       currentUser,
-      listName
+      todoListName
     );
 
     const baseUrl = request.url

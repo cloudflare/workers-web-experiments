@@ -54,22 +54,26 @@ export const Root = component$(() => {
 
   const ref = useSignal<Element>();
 
-  useClientEffect$(() => {
-    if (ref.value) {
-      getBus(ref.value).listen(
-        "todo-list-selected",
-        ({ name }: { name: string }) => {
-          const newIdxOfSelectedList = state.todoLists.findIndex(
-            ({ name: listName }) => listName === name
-          );
-          if (newIdxOfSelectedList >= 0) {
-            state.idxOfSelectedList = newIdxOfSelectedList;
-            state.selectedListName = state.todoLists[newIdxOfSelectedList].name;
+  useClientEffect$(
+    () => {
+      if (ref.value) {
+        getBus(ref.value).listen(
+          "todo-list-selected",
+          ({ name }: { name: string }) => {
+            const newIdxOfSelectedList = state.todoLists.findIndex(
+              ({ name: listName }) => listName === name
+            );
+            if (newIdxOfSelectedList >= 0) {
+              state.idxOfSelectedList = newIdxOfSelectedList;
+              state.selectedListName =
+                state.todoLists[newIdxOfSelectedList].name;
+            }
           }
-        }
-      );
-    }
-  });
+        );
+      }
+    },
+    { eagerness: "load" }
+  );
 
   return (
     <div class="todo-lists-section" ref={ref}>

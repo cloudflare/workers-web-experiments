@@ -81,6 +81,7 @@ export class PiercingFragmentOutlet extends HTMLElement {
       const fragmentStream = await this.fetchFragmentStream();
       await this.streamFragmentIntoOutlet(fragmentStream);
       fragmentHost = this.getFragmentHost(true);
+      document.dispatchEvent(new Event("qinit"));
     }
 
     if (!fragmentHost) {

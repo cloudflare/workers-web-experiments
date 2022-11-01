@@ -32,7 +32,7 @@ export const Root = component$(() => {
 
   useServerMount$(async () => {
     const currentUser = await new Promise<string | null>((resolve) => {
-      getBus(null).listen({
+      getBus().listen({
         eventName: "authentication",
         callback: ({ username }: { username: string }) => {
           resolve(username);
@@ -51,7 +51,7 @@ export const Root = component$(() => {
     state.todoLists = todoLists ?? [];
 
     const selectedListName = await new Promise<string | null>((resolve) => {
-      getBus(null).listen({
+      getBus().listen({
         eventName: "todo-list-selected",
         callback: ({ name }: { name: string }) => {
           resolve(name);

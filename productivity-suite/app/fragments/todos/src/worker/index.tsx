@@ -34,7 +34,7 @@ export default {
 
     const requestCookie = request.headers.get("Cookie") || "";
     const currentUser = await new Promise<string>((resolve) => {
-      getBus(null).listen({
+      getBus().listen({
         eventName: "authentication",
         callback: ({ username }: { username: string }) => {
           resolve(username);
@@ -44,7 +44,7 @@ export default {
     });
 
     const listName = await new Promise<string | null>((resolve) => {
-      getBus(null).listen({
+      getBus().listen({
         eventName: "todo-list-selected",
         callback: ({ name }: { name: string }) => {
           resolve(name);

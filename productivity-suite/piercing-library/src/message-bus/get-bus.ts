@@ -1,12 +1,12 @@
 import type { MessageBus } from "./message-bus";
 import { messageBusProp } from "./message-bus-prop";
 
-export function getBus(element: Element | null): MessageBus {
+export function getBus(element?: Element): MessageBus {
   while (element) {
     if (hasMessageBus(element)) {
       return element[messageBusProp];
     }
-    element = element.parentElement;
+    element = element.parentElement ?? undefined;
   }
   const root = globalThis;
 

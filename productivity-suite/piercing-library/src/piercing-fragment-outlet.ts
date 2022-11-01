@@ -115,7 +115,7 @@ export class PiercingFragmentOutlet extends HTMLElement {
       initDelayForUi
     );
 
-    const state = getBus(null).state;
+    const state = getBus().state;
 
     const req = new Request(url, {
       headers: {

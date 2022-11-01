@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await deleteCurrentUser();
-    getBus(null).dispatch("authentication", null);
+    getBus().dispatch("authentication", null);
     navigate("/login");
     setUser(null);
   }

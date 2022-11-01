@@ -6,7 +6,7 @@ export class FragmentMessageBus implements MessageBus {
   private handlerRemovers: (() => void)[] = [];
 
   constructor(host: Element) {
-    this.parentBus = getBus(host.parentElement);
+    this.parentBus = getBus(host.parentElement!);
   }
 
   get state() {

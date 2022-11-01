@@ -8,7 +8,7 @@ export interface MessageBus {
   listen<T = any>(
     eventName: string,
     callback: (value: T | undefined) => void
-  ): (() => void) | null;
+  ): () => void;
   latestValue<T = any>(eventName: string): T | undefined;
 }
 

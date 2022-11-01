@@ -19,9 +19,7 @@ export class FragmentMessageBus implements MessageBus {
 
   listen(eventName: string, callback: MessageBusCallback) {
     const callbackRemover = this.parentBus.listen(eventName, callback);
-    if (callbackRemover) {
-      this.callbackRemovers.push(callbackRemover);
-    }
+    this.callbackRemovers.push(callbackRemover);
     return callbackRemover;
   }
 

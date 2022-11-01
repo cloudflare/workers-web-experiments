@@ -7,16 +7,11 @@ import { messageBusProp } from "../message-bus/message-bus-prop";
 import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
 
 export class PiercingFragmentHost extends HTMLElement {
-  [messageBusProp]: FragmentMessageBus;
+  [messageBusProp] = new FragmentMessageBus(this);
 
   fragmentId!: string;
   queueEventListener?: (event: Event) => void;
   stylesEmbeddingObserver?: MutationObserver;
-
-  constructor() {
-    super();
-    this[messageBusProp] = new FragmentMessageBus(this);
-  }
 
   connectedCallback() {
     this.fragmentId = this.getAttribute("fragment-id")!;
@@ -30,7 +25,7 @@ export class PiercingFragmentHost extends HTMLElement {
     this[messageBusProp].clearAllHandlers();
   }
 
-  async onPiercingComplete(outlet: PiercingFragmentOutlet) {
+  onPiercingComplete() {
     this.removeStylesEmbeddingObserver();
   }
 

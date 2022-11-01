@@ -250,7 +250,6 @@ export class PiercingGateway<Env> {
   ): Promise<Response> {
     const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
     const updatedRequest = new Request(baseUrl, request);
-    updatedRequest.headers.set("accept", "text/html");
     const indexHtmlResponse = await this.fetchBaseIndexHtml(updatedRequest);
 
     const indexBody = await indexHtmlResponse.text();

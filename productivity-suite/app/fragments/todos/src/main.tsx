@@ -10,31 +10,25 @@ import { EnvContext } from "./env";
     "todos-fragment-root"
   ) as HTMLElement;
 
-  const todoListName = await Promise.race([
-    new Promise<string>((resolve) => {
-      getBus(rootElement).listen({
-        eventName: "todo-list-selected",
-        callback: ({ name }: { name: string }) => {
-          resolve(name);
-        },
-        options: { once: true },
-      });
-    }),
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
-  ]);
+  const todoListName = await new Promise<string>((resolve) => {
+    getBus(rootElement).listen({
+      eventName: "todo-list-selected",
+      callback: ({ name }: { name: string }) => {
+        resolve(name);
+      },
+      options: { onlyReadLast: true },
+    });
+  });
 
-  const currentUser = await Promise.race([
-    new Promise<string>((resolve) => {
-      getBus(rootElement).listen({
-        eventName: "authentication",
-        callback: ({ username }: { username: string }) => {
-          resolve(username);
-        },
-        options: { once: true },
-      });
-    }),
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
-  ]);
+  const currentUser = await new Promise<string>((resolve) => {
+    getBus(rootElement).listen({
+      eventName: "authentication",
+      callback: ({ username }: { username: string }) => {
+        resolve(username);
+      },
+      options: { onlyReadLast: true },
+    });
+  });
 
   const lists = currentUser ? await getTodoLists(currentUser) : [];
   const todoList = lists.find(({ name }) => todoListName === name);

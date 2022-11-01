@@ -1,7 +1,10 @@
 export type MessageHandler = {
   eventName: string;
   callback: (detail: any) => void;
-  options?: { once?: boolean };
+  options?: {
+    once?: boolean;
+    onlyReadLast?: boolean;
+  };
 };
 
 export type MessageBusState = Record<string, { detail: any }>;
@@ -40,11 +43,18 @@ export class GenericMessageBus implements MessageBus {
 
   listen(handler: MessageHandler) {
     const lastMessage = this._state[handler.eventName];
+    const oneTimeHandler = !!(
+      handler.options?.once || handler.options?.onlyReadLast
+    );
     if (lastMessage) {
       handler.callback(lastMessage.detail);
-      if (handler.options?.once) {
-        return null;
+    } else {
+      if (handler.options?.onlyReadLast) {
+        handler.callback(undefined);
       }
+    }
+    if (oneTimeHandler) {
+      return null;
     }
     this._handlers.push(handler);
     return () => {

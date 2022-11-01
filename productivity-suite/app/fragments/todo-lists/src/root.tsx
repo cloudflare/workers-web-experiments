@@ -31,20 +31,17 @@ export const Root = component$(() => {
   const requestCookie: string = useEnvData("requestCookie")!;
 
   useServerMount$(async () => {
-    const currentUser = await Promise.race([
-      new Promise<string | null>((resolve) => {
-        getBus(null).listen({
-          eventName: "authentication",
-          callback: ({ username }: { username: string }) => {
-            resolve(username);
-          },
-          options: {
-            once: true,
-          },
-        });
-      }),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
-    ]);
+    const currentUser = await new Promise<string | null>((resolve) => {
+      getBus(null).listen({
+        eventName: "authentication",
+        callback: ({ username }: { username: string }) => {
+          resolve(username);
+        },
+        options: {
+          onlyReadLast: true,
+        },
+      });
+    });
 
     state.currentUser = currentUser ?? undefined;
 
@@ -53,20 +50,17 @@ export const Root = component$(() => {
       : null;
     state.todoLists = todoLists ?? [];
 
-    const selectedListName = await Promise.race([
-      new Promise<string | null>((resolve) => {
-        getBus(null).listen({
-          eventName: "todo-list-selected",
-          callback: ({ name }: { name: string }) => {
-            resolve(name);
-          },
-          options: {
-            once: true,
-          },
-        });
-      }),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
-    ]);
+    const selectedListName = await new Promise<string | null>((resolve) => {
+      getBus(null).listen({
+        eventName: "todo-list-selected",
+        callback: ({ name }: { name: string }) => {
+          resolve(name);
+        },
+        options: {
+          onlyReadLast: true,
+        },
+      });
+    });
 
     const idx = state.todoLists.findIndex(
       ({ name }) => name === selectedListName

@@ -2,7 +2,7 @@ import {
   component$,
   useClientEffect$,
   useEnvData,
-  useMount$,
+  useServerMount$,
   useSignal,
   useStore,
   useStylesScoped$,
@@ -31,34 +31,31 @@ export const Root = component$(() => {
     selectedListName: "",
   });
 
-  useMount$(async () => {
-    // TODO: check if we can use useServerMount$ instead
-    if (typeof document === "undefined") {
-      state.currentUser = envCurrentUser;
-      state.todoLists = initialUserData.todoLists;
+  useServerMount$(async () => {
+    state.currentUser = envCurrentUser;
+    state.todoLists = initialUserData.todoLists;
 
-      const selectedListName = await Promise.race([
-        new Promise<string | null>((resolve) => {
-          getBus(null).listen({
-            eventName: "todo-list-selected",
-            callback: ({ name }: { name: string }) => {
-              resolve(name);
-            },
-            options: {
-              once: true,
-            },
-          });
-        }),
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
-      ]);
+    const selectedListName = await Promise.race([
+      new Promise<string | null>((resolve) => {
+        getBus(null).listen({
+          eventName: "todo-list-selected",
+          callback: ({ name }: { name: string }) => {
+            resolve(name);
+          },
+          options: {
+            once: true,
+          },
+        });
+      }),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+    ]);
 
-      const idx = state.todoLists.findIndex(
-        ({ name }) => name === selectedListName
-      );
+    const idx = state.todoLists.findIndex(
+      ({ name }) => name === selectedListName
+    );
 
-      state.idxOfSelectedList = idx !== -1 ? idx : state.todoLists.length - 1;
-      state.selectedListName = state.todoLists[idx]!.name;
-    }
+    state.idxOfSelectedList = idx !== -1 ? idx : state.todoLists.length - 1;
+    state.selectedListName = state.todoLists[idx]!.name;
   });
 
   const ref = useSignal<Element>();

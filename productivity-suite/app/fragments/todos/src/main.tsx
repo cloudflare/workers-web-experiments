@@ -11,10 +11,11 @@ import { EnvContext } from "./env";
   ) as HTMLElement;
 
   const todoListName =
-    getBus().latestValue<{ name: string }>("todo-list-selected")?.name ?? null;
+    getBus(rootElement).latestValue<{ name: string }>("todo-list-selected")
+      ?.name ?? null;
   const currentUser =
-    getBus().latestValue<{ username: string }>("authentication")?.username ??
-    null;
+    getBus(rootElement).latestValue<{ username: string }>("authentication")
+      ?.username ?? null;
 
   const lists = currentUser ? await getTodoLists(currentUser) : [];
   const todoList = lists.find(({ name }) => todoListName === name);

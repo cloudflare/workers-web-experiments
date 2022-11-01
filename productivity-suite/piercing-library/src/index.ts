@@ -14,5 +14,5 @@ import messageBusInlineScriptRaw from "../dist/message-bus-inline-script.js?raw"
 export const getMessageBusInlineScript = (stateStr: string) =>
   `<script>(() => {${messageBusInlineScriptRaw.replace(
     /__MESSAGE_BUS_STATE_STR_PLACEHOLDER__/g,
-    stateStr.replace(/"/g, '\\"')
+    JSON.stringify(stateStr)
   )}})();</script>`;

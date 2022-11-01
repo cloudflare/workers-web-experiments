@@ -10,10 +10,11 @@ import { EnvContext } from "./env";
     "todos-fragment-root"
   ) as HTMLElement;
 
-  const { name: todoListName }: { name: string } =
-    getBus().latestValue("todo-list-selected");
-  const { username: currentUser }: { username: string } =
-    getBus().latestValue("authentication");
+  const todoListName =
+    getBus().latestValue<{ name: string }>("todo-list-selected")?.name ?? null;
+  const currentUser =
+    getBus().latestValue<{ username: string }>("authentication")?.username ??
+    null;
 
   const lists = currentUser ? await getTodoLists(currentUser) : [];
   const todoList = lists.find(({ name }) => todoListName === name);

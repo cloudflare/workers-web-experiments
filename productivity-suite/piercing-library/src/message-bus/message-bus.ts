@@ -1,15 +1,15 @@
-export type MessageBusCallback = (value: any) => void;
+export type MessageBusCallback<T = any> = (value: T) => void;
 
 export type MessageBusState = Record<string, any>;
 
 export interface MessageBus {
   state: MessageBusState;
   dispatch(eventName: string, value: any): void;
-  listen(
+  listen<T = any>(
     eventName: string,
-    callback: (value: any) => void
+    callback: (value: T | undefined) => void
   ): (() => void) | null;
-  latestValue(eventName: string): any;
+  latestValue<T = any>(eventName: string): T | undefined;
 }
 
 export class GenericMessageBus implements MessageBus {
@@ -30,7 +30,7 @@ export class GenericMessageBus implements MessageBus {
     );
   }
 
-  listen(eventName: string, callback: MessageBusCallback) {
+  listen<T = any>(eventName: string, callback: MessageBusCallback<T>) {
     const latestValue = this.latestValue(eventName);
     if (latestValue) {
       setTimeout(() => callback(latestValue), 1);
@@ -48,7 +48,7 @@ export class GenericMessageBus implements MessageBus {
     };
   }
 
-  latestValue(eventName: string) {
+  latestValue<T = any>(eventName: string): T {
     return this._state[eventName];
   }
 }

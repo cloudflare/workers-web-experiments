@@ -30,15 +30,15 @@ export function TodoLists() {
   useEffect(() => {
     if (ref.current) {
       return (
-        getBus(ref.current).listen(
+        getBus(ref.current).listen<{ name: string; noNavigation: boolean }>(
           "todo-list-selected",
-          ({ name, noNavigation }: { name: string; noNavigation: boolean }) => {
-            if (name !== selectedListName) {
+          (listDetails) => {
+            if (listDetails?.name && listDetails.name !== selectedListName) {
               const previousNameNotProvided = !selectedListName;
-              setSelectedListName(name);
+              setSelectedListName(listDetails.name);
               setTimeout(() => {
-                if (!noNavigation) {
-                  navigate(`/todos/${name}`, {
+                if (!listDetails?.noNavigation) {
+                  navigate(`/todos/${listDetails.name}`, {
                     replace: previousNameNotProvided,
                   });
                 }

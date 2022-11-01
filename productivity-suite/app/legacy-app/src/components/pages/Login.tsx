@@ -14,9 +14,9 @@ export function Login() {
   useEffect(() => {
     if (ref.current) {
       return (
-        getBus(ref.current).listen(
+        getBus(ref.current).listen<{ username: string }>(
           "authentication",
-          (authDetails: { username: string } | null) => {
+          (authDetails) => {
             if (authDetails?.username) {
               auth.login(authDetails.username);
               setTimeout(() => navigate(from, { replace: true }), 1);

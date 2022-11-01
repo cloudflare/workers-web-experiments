@@ -21,9 +21,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<string | null>(() => {
-    const { username }: { username: string } =
-      getBus().latestValue("authentication");
-    return username;
+    const currentUser =
+      getBus().latestValue<{ username: string }>("authentication")?.username ??
+      null;
+    return currentUser;
   });
 
   async function login(username: string) {

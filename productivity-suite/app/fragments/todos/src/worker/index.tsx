@@ -32,10 +32,12 @@ export default {
       return response;
     }
 
-    const { username: currentUser }: { username: string } =
-      getBus().latestValue("authentication");
-    const { name: todoListName }: { name: string } =
-      getBus().latestValue("todo-list-selected");
+    const currentUser =
+      getBus().latestValue<{ username: string }>("authentication")?.username ??
+      null;
+    const todoListName =
+      getBus().latestValue<{ name: string }>("todo-list-selected")?.name ??
+      null;
 
     const requestCookie = request.headers.get("Cookie") || "";
     const todoList = await getCurrentTodoList(

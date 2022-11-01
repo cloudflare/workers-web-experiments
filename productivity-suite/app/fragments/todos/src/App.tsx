@@ -68,13 +68,15 @@ const App: React.FC<{
 
   useEffect(() => {
     if (ref.current) {
-      const remover = getBus(ref.current).listen(
+      const remover = getBus(ref.current).listen<{ name: string }>(
         "todo-list-selected",
-        async ({ name }: { name: string }) => {
-          const list = await getTodoList(currentUser, name);
-          if (list) {
-            setListName(list.name);
-            setTodos(list.todos);
+        async (listDetails) => {
+          if (listDetails) {
+            const list = await getTodoList(currentUser, listDetails.name);
+            if (list) {
+              setListName(list.name);
+              setTodos(list.todos);
+            }
           }
         }
       );

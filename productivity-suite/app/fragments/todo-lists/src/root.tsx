@@ -31,8 +31,9 @@ export const Root = component$(() => {
   const requestCookie: string = useEnvData("requestCookie")!;
 
   useServerMount$(async () => {
-    const { username: currentUser }: { username: string } =
-      getBus().latestValue("authentication");
+    const currentUser =
+      getBus().latestValue<{ username: string }>("authentication")?.username ??
+      null;
 
     state.currentUser = currentUser ?? undefined;
 
@@ -41,8 +42,9 @@ export const Root = component$(() => {
       : null;
     state.todoLists = todoLists ?? [];
 
-    const { name: selectedListName }: { name: string } =
-      getBus().latestValue("todo-list-selected");
+    const selectedListName =
+      getBus().latestValue<{ name: string }>("todo-list-selected")?.name ??
+      null;
 
     const idx = state.todoLists.findIndex(
       ({ name }) => name === selectedListName
@@ -57,11 +59,11 @@ export const Root = component$(() => {
   useClientEffect$(
     () => {
       if (ref.value) {
-        getBus(ref.value).listen(
+        getBus(ref.value).listen<{ name: string }>(
           "todo-list-selected",
-          ({ name }: { name: string }) => {
+          (listDetails) => {
             const newIdxOfSelectedList = state.todoLists.findIndex(
-              ({ name: listName }) => listName === name
+              ({ name }) => name === listDetails?.name
             );
             if (newIdxOfSelectedList >= 0) {
               state.idxOfSelectedList = newIdxOfSelectedList;

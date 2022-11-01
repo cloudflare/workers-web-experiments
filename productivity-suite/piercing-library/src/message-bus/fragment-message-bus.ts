@@ -32,7 +32,7 @@ export class FragmentMessageBus implements MessageBus {
     this.callbackRemovers = [];
   }
 
-  latestValue(eventName: string) {
-    return this.parentBus.latestValue(eventName);
+  latestValue<T = any>(eventName: string) {
+    return this.parentBus.latestValue<T>(eventName);
   }
 }

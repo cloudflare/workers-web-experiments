@@ -2,8 +2,6 @@ import solid from "solid-start/vite";
 import cloudflareWorkers from "solid-start-cloudflare-workers";
 import { defineConfig, PluginOption } from "vite";
 
-// mount(() => createComponent(StartClient, {}), document);
-
 export function addDefaultFnExportToBundle(regex: RegExp): PluginOption {
   return {
     name: "add-default-fn-export-to-bundle-plugin",
@@ -31,7 +29,7 @@ export function addDefaultFnExportToBundle(regex: RegExp): PluginOption {
 }
 
 export default defineConfig({
-  // base: "/_fragment/news",
+  base: "/_fragment/news",
   ssr: {
     // Vite attempts to load this as a Commonjs dependency
     noExternal: ["solid-meta"],

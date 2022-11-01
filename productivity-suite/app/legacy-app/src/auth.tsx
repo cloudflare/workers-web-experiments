@@ -3,7 +3,6 @@ import { createContext, useContext, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   deleteCurrentUser,
-  getCurrentUser,
   getUserData,
   saveCurrentUser,
   setUserData,
@@ -21,7 +20,11 @@ let AuthContext = createContext<AuthContextType>(null!);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<string | null>(getCurrentUser());
+  const [user, setUser] = useState<string | null>(() => {
+    const { username }: { username: string } =
+      getBus().latestValue("authentication");
+    return username;
+  });
 
   async function login(username: string) {
     await saveCurrentUser(username);

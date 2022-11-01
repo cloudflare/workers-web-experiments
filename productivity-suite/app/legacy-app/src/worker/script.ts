@@ -9,7 +9,9 @@ const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
   generateMessageBusState: async (requestMessageBusState, request) => {
     const requestCookie = request.headers.get("Cookie");
-    const currentUser = requestCookie ? getCurrentUser(requestCookie) : null;
+    const currentUser = requestCookie
+      ? await getCurrentUser(requestCookie)
+      : null;
 
     if (!("authentication" in requestMessageBusState)) {
       requestMessageBusState["authentication"] = currentUser
@@ -38,7 +40,7 @@ const gateway = new PiercingGateway<Env>({
 });
 
 async function isUserAuthenticated(request: Request) {
-  const currentUser = getCurrentUser(request.headers.get("Cookie") || "");
+  const currentUser = await getCurrentUser(request.headers.get("Cookie") || "");
   return !!currentUser;
 }
 

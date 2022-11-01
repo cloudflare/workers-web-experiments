@@ -1,7 +1,7 @@
 import { getBus } from "piercing-library";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { getCurrentUser, getTodoLists } from "shared";
+import { getTodoLists } from "shared";
 import App from "./App";
 import { EnvContext } from "./env";
 
@@ -23,8 +23,18 @@ import { EnvContext } from "./env";
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
   ]);
 
-  // Note: the current user should come from the message bus, I think?
-  const currentUser = getCurrentUser();
+  const currentUser = await Promise.race([
+    new Promise<string>((resolve) => {
+      getBus(rootElement).listen({
+        eventName: "authentication",
+        callback: ({ username }: { username: string }) => {
+          resolve(username);
+        },
+        options: { once: true },
+      });
+    }),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+  ]);
 
   const lists = currentUser ? await getTodoLists(currentUser) : [];
   const todoList = lists.find(({ name }) => todoListName === name);

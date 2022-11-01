@@ -8,18 +8,26 @@ export interface Env {
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
   generateMessageBusState: async (requestMessageBusState, request) => {
-    if (!("todo-list-selected" in requestMessageBusState)) {
+    const requestCookie = request.headers.get("Cookie");
+    const currentUser = requestCookie ? getCurrentUser(requestCookie) : null;
+
+    if (!("authentication" in requestMessageBusState)) {
+      requestMessageBusState["authentication"] = {
+        detail: currentUser ? { username: currentUser } : null,
+      };
+    }
+
+    if (!("todo-list-selected" in requestMessageBusState) && currentUser) {
       const match = /\/todos\/([^/]+)$/.exec(request.url);
       let listName = match?.[1] && decodeURIComponent(match[1]);
 
-      const requestCookie = request.headers.get("Cookie");
-      if (!listName && requestCookie) {
-        const currentUser = getCurrentUser(requestCookie);
-        if (currentUser) {
-          const lists = await getTodoLists(currentUser, requestCookie);
-          if (lists.length) {
-            listName = lists[lists.length - 1].name;
-          }
+      const lists = await getTodoLists(currentUser, requestCookie!);
+      // make sure that the provided listName is the name of an existing list
+      listName = lists.find(({ name }) => name === listName)?.name;
+
+      if (!listName) {
+        if (lists.length) {
+          listName = lists[lists.length - 1].name;
         }
       }
 

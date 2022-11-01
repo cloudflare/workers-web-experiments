@@ -7,7 +7,7 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
-import type { TodoList } from "shared";
+import { getTodoLists, TodoList } from "shared";
 
 import styles from "./root.css?inline";
 import { dispatchSelectedListUpdated } from "./dispatchSelectedListUpdated";
@@ -16,9 +16,6 @@ import { getBus } from "piercing-library";
 
 export const Root = component$(() => {
   useStylesScoped$(styles);
-
-  const envCurrentUser: string = useEnvData("currentUser")!;
-  const initialUserData: { todoLists: TodoList[] } = useEnvData("userData")!;
 
   const state = useStore<{
     currentUser?: string;
@@ -31,9 +28,30 @@ export const Root = component$(() => {
     selectedListName: "",
   });
 
+  const requestCookie: string = useEnvData("requestCookie")!;
+
   useServerMount$(async () => {
-    state.currentUser = envCurrentUser;
-    state.todoLists = initialUserData.todoLists;
+    const currentUser = await Promise.race([
+      new Promise<string | null>((resolve) => {
+        getBus(null).listen({
+          eventName: "authentication",
+          callback: ({ username }: { username: string }) => {
+            resolve(username);
+          },
+          options: {
+            once: true,
+          },
+        });
+      }),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+    ]);
+
+    state.currentUser = currentUser ?? undefined;
+
+    const todoLists = currentUser
+      ? await getTodoLists(currentUser, requestCookie)
+      : null;
+    state.todoLists = todoLists ?? [];
 
     const selectedListName = await Promise.race([
       new Promise<string | null>((resolve) => {

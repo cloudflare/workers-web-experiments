@@ -10,7 +10,7 @@ import {
   wrapStreamInText,
 } from "piercing-library";
 import { EnvContext } from "../env";
-import { getCurrentUser, getTodoList, getTodoLists, TodoList } from "shared";
+import { getTodoList, getTodoLists, TodoList } from "shared";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
@@ -33,7 +33,18 @@ export default {
     }
 
     const requestCookie = request.headers.get("Cookie") || "";
-    const currentUser = await getCurrentUser(requestCookie);
+    const currentUser = await Promise.race([
+      new Promise<string>((resolve) => {
+        getBus(null).listen({
+          eventName: "authentication",
+          callback: ({ username }: { username: string }) => {
+            resolve(username);
+          },
+          options: { once: true },
+        });
+      }),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 500)),
+    ]);
 
     const listName = await Promise.race([
       new Promise<string | null>((resolve) => {

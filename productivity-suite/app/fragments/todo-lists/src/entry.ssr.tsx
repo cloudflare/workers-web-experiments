@@ -1,6 +1,5 @@
 import { renderToStream } from "@builder.io/qwik/server";
 import { manifest } from "@qwik-client-manifest";
-import { getCurrentUser, getUserData } from "shared";
 import { Root } from "./root";
 import { createServerSideMessageBusFromRequest } from "piercing-library";
 
@@ -10,12 +9,6 @@ export default {
     const { writable, readable } = new TransformStream();
     const writer = writable.getWriter();
     const requestCookie = request.headers.get("Cookie") || "";
-
-    const currentUser = await getCurrentUser(requestCookie);
-    const userData =
-      (currentUser && getUserData(currentUser, requestCookie)) || null;
-
-    const url = new URL(request.url);
 
     const stream = {
       write: (chunk: any) => {
@@ -35,8 +28,7 @@ export default {
       base: "_fragment/todo-lists/build",
       stream,
       envData: {
-        currentUser,
-        userData,
+        requestCookie,
       },
     }).finally(() => writer.close());
 

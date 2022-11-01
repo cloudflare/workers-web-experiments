@@ -139,14 +139,16 @@ export const TodoListsCarousel = component$(
               state.todoLists = state.todoLists
                 .slice(0, idxOfSelectedList)
                 .concat(state.todoLists.slice(idxOfSelectedList + 1));
+              let newIdxOfSelectedList = idxOfSelectedList;
               if (idxOfSelectedList > 0) {
+                newIdxOfSelectedList = idxOfSelectedList - 1;
                 onUpdateSelectedListDetails$({
-                  idx: idxOfSelectedList - 1,
-                  name: state.todoLists[idxOfSelectedList].name,
+                  idx: newIdxOfSelectedList,
+                  name: state.todoLists[newIdxOfSelectedList].name,
                 });
               }
               onDispatchSelectedListUpdated$(
-                state.todoLists[idxOfSelectedList]
+                state.todoLists[newIdxOfSelectedList]
               );
             }
           }}

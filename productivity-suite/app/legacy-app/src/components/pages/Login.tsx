@@ -19,7 +19,7 @@ export function Login() {
           (authDetails) => {
             if (authDetails?.username) {
               auth.login(authDetails.username);
-              setTimeout(() => navigate(from, { replace: true }), 1);
+              navigate(from, { replace: true });
             }
           }
         ) ?? undefined

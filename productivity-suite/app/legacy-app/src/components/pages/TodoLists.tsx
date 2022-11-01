@@ -36,13 +36,11 @@ export function TodoLists() {
             if (listDetails?.name && listDetails.name !== selectedListName) {
               const previousNameNotProvided = !selectedListName;
               setSelectedListName(listDetails.name);
-              setTimeout(() => {
-                if (!listDetails?.noNavigation) {
-                  navigate(`/todos/${listDetails.name}`, {
-                    replace: previousNameNotProvided,
-                  });
-                }
-              }, 1);
+              if (!listDetails?.noNavigation) {
+                navigate(`/todos/${listDetails.name}`, {
+                  replace: previousNameNotProvided,
+                });
+              }
             }
           }
         ) ?? undefined

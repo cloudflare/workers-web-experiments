@@ -291,9 +291,9 @@ export class PiercingGateway<Env> {
       const stateHeaderStr = request.headers.get("message-bus-state");
       let indexBody = (await response.text()).replace(
         "</head>",
-        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}
-        ${piercingFragmentHostInlineScript}
-        </head>`
+        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
+          `${piercingFragmentHostInlineScript}\n` +
+          "</head>"
       );
 
       // We need to include the qwikLoader script here

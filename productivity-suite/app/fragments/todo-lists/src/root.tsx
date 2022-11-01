@@ -56,9 +56,9 @@ export const Root = component$(() => {
 
   useClientEffect$(() => {
     if (ref.value) {
-      getBus(ref.value).listen({
-        eventName: "todo-list-selected",
-        callback: ({ name }: { name: string }) => {
+      getBus(ref.value).listen(
+        "todo-list-selected",
+        ({ name }: { name: string }) => {
           const newIdxOfSelectedList = state.todoLists.findIndex(
             ({ name: listName }) => listName === name
           );
@@ -66,8 +66,8 @@ export const Root = component$(() => {
             state.idxOfSelectedList = newIdxOfSelectedList;
             state.selectedListName = state.todoLists[newIdxOfSelectedList].name;
           }
-        },
-      });
+        }
+      );
     }
   });
 

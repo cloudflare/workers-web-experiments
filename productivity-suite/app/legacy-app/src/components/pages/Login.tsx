@@ -14,15 +14,15 @@ export function Login() {
   useEffect(() => {
     if (ref.current) {
       return (
-        getBus(ref.current).listen({
-          eventName: "authentication",
-          callback: (authDetails: { username: string } | null) => {
+        getBus(ref.current).listen(
+          "authentication",
+          (authDetails: { username: string } | null) => {
             if (authDetails?.username) {
               auth.login(authDetails.username);
               setTimeout(() => navigate(from, { replace: true }), 1);
             }
-          },
-        }) ?? undefined
+          }
+        ) ?? undefined
       );
     }
   }, [ref.current]);

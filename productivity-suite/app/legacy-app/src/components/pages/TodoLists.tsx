@@ -16,7 +16,7 @@ export function TodoLists() {
       : pathname;
     const match = path.match(/^\/todos\/([^\/]+)$/);
     const listName = match?.[1];
-    if (listName) {
+    if (listName && ref.current) {
       if (listName !== selectedListName) {
         setSelectedListName(listName);
         getBus(ref.current).dispatch("todo-list-selected", {
@@ -30,15 +30,9 @@ export function TodoLists() {
   useEffect(() => {
     if (ref.current) {
       return (
-        getBus(ref.current).listen({
-          eventName: "todo-list-selected",
-          callback: ({
-            name,
-            noNavigation,
-          }: {
-            name: string;
-            noNavigation: boolean;
-          }) => {
+        getBus(ref.current).listen(
+          "todo-list-selected",
+          ({ name, noNavigation }: { name: string; noNavigation: boolean }) => {
             if (name !== selectedListName) {
               const previousNameNotProvided = !selectedListName;
               setSelectedListName(name);
@@ -50,8 +44,8 @@ export function TodoLists() {
                 }
               }, 1);
             }
-          },
-        }) ?? undefined
+          }
+        ) ?? undefined
       );
     }
   }, [ref.current]);

@@ -1,19 +1,19 @@
-export type MessageHandler = {
-  eventName: string;
-  callback: (value: any) => void;
-};
+export type MessageBusCallback = (value: any) => void;
 
 export type MessageBusState = Record<string, any>;
 
 export interface MessageBus {
   state: MessageBusState;
   dispatch(eventName: string, value: any): void;
-  listen(handler: MessageHandler): (() => void) | null;
+  listen(
+    eventName: string,
+    callback: (value: any) => void
+  ): (() => void) | null;
   latestValue(eventName: string): any;
 }
 
 export class GenericMessageBus implements MessageBus {
-  protected _handlers: MessageHandler[] = [];
+  protected _callbacksMap: Map<string, MessageBusCallback[]> = new Map();
 
   constructor(protected _state: MessageBusState = {}) {}
 
@@ -23,26 +23,25 @@ export class GenericMessageBus implements MessageBus {
 
   dispatch(eventName: string, value: any) {
     this._state[eventName] = value;
-    const handlersForEvent = this._handlers.filter(
-      ({ eventName: handlerEventName }) => handlerEventName === eventName
-    );
-    const handlersToRemove: MessageHandler[] = [];
-    handlersForEvent.forEach((handler) => {
-      handler.callback(value);
-    });
-    this._handlers = this._handlers.filter(
-      (handler) => !handlersToRemove.includes(handler)
-    );
+    const callbacksForEvent = this._callbacksMap.get(eventName) ?? [];
+    callbacksForEvent.forEach((callback) => callback(value));
   }
 
-  listen(handler: MessageHandler) {
-    const latestValue = this.latestValue(handler.eventName);
+  listen(eventName: string, callback: MessageBusCallback) {
+    const latestValue = this.latestValue(eventName);
     if (latestValue) {
-      handler.callback(latestValue);
+      callback(latestValue);
     }
-    this._handlers.push(handler);
+    if (!this._callbacksMap.has(eventName)) {
+      this._callbacksMap.set(eventName, []);
+    }
+    this._callbacksMap.get(eventName)!.push(callback);
     return () => {
-      this._handlers = this._handlers.filter((h) => h !== handler);
+      const callbacks = this._callbacksMap.get(eventName)!;
+      this._callbacksMap.set(
+        eventName,
+        callbacks.filter((h) => h !== callback)
+      );
     };
   }
 

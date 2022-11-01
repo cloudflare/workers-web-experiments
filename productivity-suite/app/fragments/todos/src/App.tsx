@@ -67,18 +67,17 @@ const App: React.FC<{
   }
 
   useEffect(() => {
-    // Note: only runs on the client
     if (ref.current) {
-      const remover = getBus(ref.current).listen({
-        eventName: "todo-list-selected",
-        callback: async ({ name }: { name: string }) => {
+      const remover = getBus(ref.current).listen(
+        "todo-list-selected",
+        async ({ name }: { name: string }) => {
           const list = await getTodoList(currentUser, name);
           if (list) {
             setListName(list.name);
             setTodos(list.todos);
           }
-        },
-      });
+        }
+      );
       return remover ?? undefined;
     }
   }, [ref.current]);

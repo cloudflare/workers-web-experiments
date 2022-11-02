@@ -1,11 +1,11 @@
 import { renderToStream } from "@builder.io/qwik/server";
 import { manifest } from "@qwik-client-manifest";
 import { Root } from "./root";
-import { createServerSideMessageBusFromRequest } from "piercing-library";
+import { initializeServerSideMessageBus } from "piercing-library";
 
 export default {
   async fetch(request: Request): Promise<Response> {
-    createServerSideMessageBusFromRequest(request);
+    initializeServerSideMessageBus(request);
     const { writable, readable } = new TransformStream();
     const writer = writable.getWriter();
     const requestCookie = request.headers.get("Cookie") || "";

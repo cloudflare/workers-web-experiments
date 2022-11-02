@@ -5,7 +5,7 @@ import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 // @ts-ignore
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 import {
-  createServerSideMessageBusFromRequest,
+  initializeServerSideMessageBus,
   getBus,
   wrapStreamInText,
 } from "piercing-library";
@@ -23,7 +23,7 @@ export default {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
-    createServerSideMessageBusFromRequest(request);
+    initializeServerSideMessageBus(request);
     const url = new URL(request.url);
     const response = await fetchAsset(request, ctx, env);
 

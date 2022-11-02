@@ -9,7 +9,7 @@ export { PiercingGateway } from "./piercing-gateway";
 export type { FragmentConfig } from "./piercing-gateway";
 
 export { getBus } from "./message-bus/get-bus";
-export { createServerSideMessageBusFromRequest } from "./message-bus/server-side-message-bus";
+export { initializeServerSideMessageBus } from "./message-bus/server-side-message-bus";
 import messageBusInlineScriptRaw from "../dist/message-bus-inline-script.js?raw";
 export const getMessageBusInlineScript = (stateStr: string) =>
   `<script>(() => {${messageBusInlineScriptRaw.replace(

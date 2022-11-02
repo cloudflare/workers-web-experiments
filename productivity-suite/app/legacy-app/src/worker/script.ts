@@ -14,9 +14,9 @@ const gateway = new PiercingGateway<Env>({
       : null;
 
     if (!("authentication" in requestMessageBusState)) {
-      requestMessageBusState["authentication"] = currentUser
-        ? { username: currentUser }
-        : null;
+      requestMessageBusState["authentication"] = currentUser && {
+        username: currentUser,
+      };
     }
 
     if (!("todo-list-selected" in requestMessageBusState) && currentUser) {

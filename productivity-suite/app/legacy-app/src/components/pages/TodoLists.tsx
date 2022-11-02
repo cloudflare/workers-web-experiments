@@ -10,15 +10,17 @@ export function TodoLists() {
   const location = useLocation();
 
   useEffect(() => {
-    const selectedListName =
-      getBus().latestValue<{ name: string }>("todo-list-selected")?.name ??
-      null;
-
-    if (selectedListName && ref.current) {
-      if (selectedListName !== selectedListName) {
-        setSelectedListName(selectedListName);
+    const pathname = location.pathname;
+    const path = pathname.includes("%")
+      ? decodeURIComponent(pathname)
+      : pathname;
+    const match = path.match(/^\/todos\/([^\/]+)$/);
+    const listName = match?.[1];
+    if (listName && ref.current) {
+      if (listName !== selectedListName) {
+        setSelectedListName(listName);
         getBus(ref.current).dispatch("todo-list-selected", {
-          name: selectedListName,
+          name: listName,
           noNavigation: true,
         });
       }

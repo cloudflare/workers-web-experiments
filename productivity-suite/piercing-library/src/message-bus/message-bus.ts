@@ -40,11 +40,14 @@ export class GenericMessageBus implements MessageBus {
     }
     this._callbacksMap.get(eventName)!.push(callback);
     return () => {
-      const callbacks = this._callbacksMap.get(eventName)!;
-      this._callbacksMap.set(
-        eventName,
-        callbacks.filter((h) => h !== callback)
+      const callbacks = (this._callbacksMap.get(eventName) ?? []).filter(
+        (h) => h !== callback
       );
+      if (callbacks.length) {
+        this._callbacksMap.set(eventName, callbacks);
+      } else {
+        this._callbacksMap.delete(eventName);
+      }
     };
   }
 

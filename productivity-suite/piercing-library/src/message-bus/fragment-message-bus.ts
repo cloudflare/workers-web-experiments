@@ -20,7 +20,12 @@ export class FragmentMessageBus implements MessageBus {
   listen(eventName: string, callback: MessageBusCallback) {
     const callbackRemover = this.parentBus.listen(eventName, callback);
     this.callbackRemovers.push(callbackRemover);
-    return callbackRemover;
+    return () => {
+      this.callbackRemovers = this.callbackRemovers.filter(
+        (remover) => remover !== callbackRemover
+      );
+      callbackRemover();
+    };
   }
 
   clearAllHandlers() {

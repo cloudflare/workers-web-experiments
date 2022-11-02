@@ -5,7 +5,7 @@ import "./TodoLists.css";
 
 export function TodoLists() {
   const ref = useRef<HTMLDivElement>(null);
-  const [selectedListName, setSelectedListName] = useState<string | null>(null);
+  const selectedListName = useRef<string | null>(null);
 
   const location = useLocation();
 
@@ -17,8 +17,8 @@ export function TodoLists() {
     const match = path.match(/^\/todos\/([^\/]+)$/);
     const listName = match?.[1];
     if (listName && ref.current) {
-      if (listName !== selectedListName) {
-        setSelectedListName(listName);
+      if (listName !== selectedListName.current) {
+        selectedListName.current = listName;
         getBus(ref.current).dispatch("todo-list-selected", {
           name: listName,
           noNavigation: true,
@@ -33,10 +33,13 @@ export function TodoLists() {
         getBus(ref.current).listen<{ name: string; noNavigation: boolean }>(
           "todo-list-selected",
           (listDetails) => {
-            if (listDetails?.name && listDetails.name !== selectedListName) {
+            if (
+              listDetails.name &&
+              listDetails.name !== selectedListName.current
+            ) {
               const previousNameNotProvided = !selectedListName;
-              setSelectedListName(listDetails.name);
-              if (!listDetails?.noNavigation) {
+              selectedListName.current = listDetails.name;
+              if (!listDetails.noNavigation) {
                 navigate(`/todos/${listDetails.name}`, {
                   replace: previousNameNotProvided,
                 });

@@ -1,5 +1,9 @@
 import { getBus } from "./get-bus";
-import type { MessageBus, MessageBusCallback } from "./message-bus";
+import type {
+  MessageBus,
+  MessageBusCallback,
+  MessageBusValue,
+} from "./message-bus";
 
 export class FragmentMessageBus implements MessageBus {
   private parentBus: MessageBus;
@@ -17,7 +21,10 @@ export class FragmentMessageBus implements MessageBus {
     return this.parentBus.dispatch(eventName, value);
   }
 
-  listen(eventName: string, callback: MessageBusCallback) {
+  listen<T extends MessageBusValue>(
+    eventName: string,
+    callback: MessageBusCallback<T>
+  ) {
     const callbackRemover = this.parentBus.listen(eventName, callback);
     this.callbackRemovers.push(callbackRemover);
     return () => {
@@ -35,7 +42,7 @@ export class FragmentMessageBus implements MessageBus {
     this.callbackRemovers = [];
   }
 
-  latestValue<T = any>(eventName: string) {
+  latestValue<T extends MessageBusValue>(eventName: string) {
     return this.parentBus.latestValue<T>(eventName);
   }
 }

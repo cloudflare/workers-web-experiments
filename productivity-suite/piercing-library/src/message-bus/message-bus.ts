@@ -1,19 +1,29 @@
-export type MessageBusCallback<T = any> = (value: T) => void;
+export type MessageBusValue =
+  | null
+  | string
+  | number
+  | boolean
+  | {
+      [x: string]: MessageBusValue;
+    }
+  | Array<MessageBusValue>;
 
 export type MessageBusState = Record<string, any>;
 
+export type MessageBusCallback<T extends MessageBusValue> = (value: T) => void;
+
 export interface MessageBus {
   state: MessageBusState;
-  dispatch(eventName: string, value: any): void;
-  listen<T = any>(
+  dispatch(eventName: string, value: MessageBusValue): void;
+  listen<T extends MessageBusValue>(
     eventName: string,
-    callback: (value: T | undefined) => void
+    callback: (value: T) => void
   ): () => void;
-  latestValue<T = any>(eventName: string): T | undefined;
+  latestValue<T extends MessageBusValue>(eventName: string): T | undefined;
 }
 
 export class GenericMessageBus implements MessageBus {
-  protected _callbacksMap: Map<string, MessageBusCallback[]> = new Map();
+  protected _callbacksMap: Map<string, MessageBusCallback<any>[]> = new Map();
 
   constructor(protected _state: MessageBusState = {}) {}
 
@@ -21,7 +31,7 @@ export class GenericMessageBus implements MessageBus {
     return JSON.parse(JSON.stringify(this._state));
   }
 
-  dispatch(eventName: string, value: any) {
+  dispatch(eventName: string, value: MessageBusValue) {
     this._state[eventName] = value;
     const callbacksForEvent = this._callbacksMap.get(eventName) ?? [];
     setTimeout(
@@ -30,9 +40,12 @@ export class GenericMessageBus implements MessageBus {
     );
   }
 
-  listen<T = any>(eventName: string, callback: MessageBusCallback<T>) {
-    const latestValue = this.latestValue(eventName);
-    if (latestValue) {
+  listen<T extends MessageBusValue>(
+    eventName: string,
+    callback: MessageBusCallback<T>
+  ) {
+    const latestValue = this.latestValue<T>(eventName);
+    if (latestValue !== undefined) {
       setTimeout(() => callback(latestValue), 1);
     }
     if (!this._callbacksMap.has(eventName)) {
@@ -51,7 +64,7 @@ export class GenericMessageBus implements MessageBus {
     };
   }
 
-  latestValue<T = any>(eventName: string): T {
-    return this._state[eventName];
+  latestValue<T extends MessageBusValue>(eventName: string): T | undefined {
+    return this._state[eventName] ?? undefined;
   }
 }

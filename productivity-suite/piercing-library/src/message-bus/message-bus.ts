@@ -1,25 +1,25 @@
-export type MessageBusValue =
+export type JSONValue =
   | null
   | string
   | number
   | boolean
   | {
-      [x: string]: MessageBusValue;
+      [x: string]: JSONValue;
     }
-  | Array<MessageBusValue>;
+  | Array<JSONValue>;
 
 export type MessageBusState = Record<string, any>;
 
-export type MessageBusCallback<T extends MessageBusValue> = (value: T) => void;
+export type MessageBusCallback<T extends JSONValue> = (value: T) => void;
 
 export interface MessageBus {
   state: MessageBusState;
-  dispatch(eventName: string, value: MessageBusValue): void;
-  listen<T extends MessageBusValue>(
+  dispatch(eventName: string, value: JSONValue): void;
+  listen<T extends JSONValue>(
     eventName: string,
     callback: (value: T) => void
   ): () => void;
-  latestValue<T extends MessageBusValue>(eventName: string): T | undefined;
+  latestValue<T extends JSONValue>(eventName: string): T | undefined;
 }
 
 export class GenericMessageBus implements MessageBus {
@@ -31,7 +31,7 @@ export class GenericMessageBus implements MessageBus {
     return JSON.parse(JSON.stringify(this._state));
   }
 
-  dispatch(eventName: string, value: MessageBusValue) {
+  dispatch(eventName: string, value: JSONValue) {
     this._state[eventName] = value;
     const callbacksForEvent = this._callbacksMap.get(eventName) ?? [];
     setTimeout(
@@ -40,7 +40,7 @@ export class GenericMessageBus implements MessageBus {
     );
   }
 
-  listen<T extends MessageBusValue>(
+  listen<T extends JSONValue>(
     eventName: string,
     callback: MessageBusCallback<T>
   ) {
@@ -64,7 +64,7 @@ export class GenericMessageBus implements MessageBus {
     };
   }
 
-  latestValue<T extends MessageBusValue>(eventName: string): T | undefined {
+  latestValue<T extends JSONValue>(eventName: string): T | undefined {
     return this._state[eventName] ?? undefined;
   }
 }

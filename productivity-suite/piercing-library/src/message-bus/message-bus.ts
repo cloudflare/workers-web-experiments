@@ -65,6 +65,6 @@ export class GenericMessageBus implements MessageBus {
   }
 
   latestValue<T extends JSONValue>(eventName: string): T | undefined {
-    return this._state[eventName] ?? undefined;
+    return this._state[eventName];
   }
 }

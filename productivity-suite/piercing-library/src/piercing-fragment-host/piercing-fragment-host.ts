@@ -14,7 +14,16 @@ export class PiercingFragmentHost extends HTMLElement {
   stylesEmbeddingObserver?: MutationObserver;
 
   connectedCallback() {
-    this.fragmentId = this.getAttribute("fragment-id")!;
+    const fragmentId = this.getAttribute("fragment-id");
+
+    if (!fragmentId) {
+      throw new Error(
+        "The fragment outlet component has been applied without" +
+          " providing a fragment-id"
+      );
+    }
+
+    this.fragmentId = fragmentId;
 
     if (!this.fragmentIsPierced) {
       this.setStylesEmbeddingObserver();

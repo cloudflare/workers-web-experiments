@@ -89,6 +89,10 @@ export class PiercingFragmentOutlet extends HTMLElement {
           " it could not be fetched"
       );
     }
+    // We need to dispatch a qinit so that Qwik can run different necessary
+    // checks/logic on Qwik fragments (which it would otherwise not with this
+    // fragments implementation).
+    // (for more info see: https://github.com/BuilderIO/qwik/issues/1947)
     document.dispatchEvent(new Event("qinit"));
   }
 

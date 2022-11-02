@@ -1,4 +1,5 @@
 import {
+  $,
   component$,
   useClientEffect$,
   useEnvData,
@@ -10,7 +11,6 @@ import {
 import { getTodoLists, TodoList } from "shared";
 
 import styles from "./root.css?inline";
-import { dispatchSelectedListUpdated } from "./dispatchSelectedListUpdated";
 import { TodoListsCarousel } from "./components/TodoListsCarousel";
 import { getBus } from "piercing-library";
 
@@ -51,7 +51,7 @@ export const Root = component$(() => {
     );
 
     state.idxOfSelectedList = idx !== -1 ? idx : state.todoLists.length - 1;
-    state.selectedListName = state.todoLists[idx]!.name;
+    state.selectedListName = state.todoLists[idx].name;
   });
 
   const ref = useSignal<Element>();
@@ -74,7 +74,15 @@ export const Root = component$(() => {
         );
       }
     },
+    // Qwik doesn't trigger `useClientEffect$`s in certain scenarios
+    // so we need to add this flag and also emit a qinit events after
+    // adding/moving qwik fragments.
+    // (for more info see: https://github.com/BuilderIO/qwik/issues/1947)
     { eagerness: "load" }
+  );
+
+  const dispatchSelectedListUpdated = $((el: Element, name: string) =>
+    getBus(el).dispatch("todo-list-selected", { name })
   );
 
   return (

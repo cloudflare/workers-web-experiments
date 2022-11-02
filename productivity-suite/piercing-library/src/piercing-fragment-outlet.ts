@@ -96,17 +96,9 @@ export class PiercingFragmentOutlet extends HTMLElement {
     unmountedFragmentIds.add(this.fragmentId);
   }
 
-  private pierceFragmentIntoDOM(contentWrapper: Element) {
+  private pierceFragmentIntoDOM(fragmentHost: PiercingFragmentHost) {
     this.innerHTML == "";
-
-    const activeElementWithinFragmentContent = contentWrapper.contains(
-      document.activeElement
-    )
-      ? (document.activeElement as HTMLElement)
-      : null;
-
-    this.appendChild(contentWrapper);
-    activeElementWithinFragmentContent?.focus();
+    fragmentHost.pierceInto(this);
   }
 
   private async fetchFragmentStream() {

@@ -8,6 +8,7 @@ import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
 
 export class PiercingFragmentHost extends HTMLElement {
   [messageBusProp] = new FragmentMessageBus(this);
+  private cleanup = true;
 
   fragmentId!: string;
   queueEventListener?: (event: Event) => void;
@@ -31,7 +32,24 @@ export class PiercingFragmentHost extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this[messageBusProp].clearAllHandlers();
+    if (this.cleanup) {
+      // Only remove handlers if we are actually in cleanup mode.
+      this[messageBusProp].clearAllHandlers();
+    }
+  }
+
+  pierceInto(element: Element) {
+    const activeElement = this.contains(document.activeElement)
+      ? (document.activeElement as HTMLElement)
+      : null;
+
+    // When we are simply moving the fragment (rather than destroying it)
+    // we do not want to cleanup the event listeners.
+    this.cleanup = false;
+    element.appendChild(this);
+    this.cleanup = true;
+
+    activeElement?.focus();
   }
 
   onPiercingComplete() {

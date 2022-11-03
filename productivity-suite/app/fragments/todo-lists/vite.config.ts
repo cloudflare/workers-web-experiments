@@ -8,6 +8,13 @@ export default defineConfig(() => {
     ssr: { target: "webworker", noExternal: true },
     plugins: [qwikVite(), tsconfigPaths()],
     build: {
+      // minify: false,
+      // sourcemap: "inline",
+      // esbuild: {
+      //   minifySyntax: false,
+      //   minifyIdentifiers: false,
+      //   minifyWhitespace: false,
+      // },
       rollupOptions: {
         external: ["../../_shared/*.ts"],
       },

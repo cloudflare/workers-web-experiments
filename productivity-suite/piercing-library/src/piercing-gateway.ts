@@ -3,6 +3,7 @@ import {
   piercingFragmentHostInlineScript,
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
+// import qwikloader from "@builder.io/qwik/qwikloader.debug.js?raw";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";

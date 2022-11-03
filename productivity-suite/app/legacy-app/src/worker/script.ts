@@ -210,7 +210,7 @@ gateway.registerFragment({
   shouldBeIncluded: async (request: Request) =>
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
-    /^\/(news(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
+    /^\/news(\/[^/]+)?$/.test(new URL(request.url).pathname),
   transformRequest: (
     request: Request,
     env: Env,

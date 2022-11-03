@@ -1,5 +1,5 @@
 import { getBus } from "piercing-library";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./TodoLists.css";
 
@@ -10,12 +10,7 @@ export function TodoLists() {
   const location = useLocation();
 
   useEffect(() => {
-    const pathname = location.pathname;
-    const path = pathname.includes("%")
-      ? decodeURIComponent(pathname)
-      : pathname;
-    const match = path.match(/^\/todos\/([^\/]+)$/);
-    const listName = match?.[1];
+    const listName = getListNameFromPath(location.pathname);
     if (listName && ref.current) {
       if (listName !== selectedListName.current) {
         selectedListName.current = listName;
@@ -37,11 +32,10 @@ export function TodoLists() {
               listDetails.name &&
               listDetails.name !== selectedListName.current
             ) {
-              const previousNameNotProvided = !selectedListName;
               selectedListName.current = listDetails.name;
               if (!listDetails.noNavigation) {
                 navigate(`/todos/${listDetails.name}`, {
-                  replace: previousNameNotProvided,
+                  replace: !getListNameFromPath(location.pathname),
                 });
               }
             }
@@ -59,4 +53,11 @@ export function TodoLists() {
       <piercing-fragment-outlet fragment-id="todos" />
     </div>
   );
+}
+
+function getListNameFromPath(pathname: string) {
+  const path = pathname.includes("%") ? decodeURIComponent(pathname) : pathname;
+  const match = path.match(/^\/todos\/([^\/]+)$/);
+  const listName = match?.[1];
+  return listName;
 }

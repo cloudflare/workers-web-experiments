@@ -14,12 +14,10 @@
     "deploy.react": "npm run build.react && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main",
     "deploy.worker": "wrangler publish"
   },
-  "// React note for the blog post - 1": "make sure to remember to mention that we need the react experimental packages",
-  "// React note for the blog post - 2": "and that for compatibility with the react-router-dom we need to add `-f` to `npm i`",
   "dependencies": {
     "piercing-library": "file:../../piercing-library",
-    "react": "0.0.0-experimental-65b3449c8-20221005",
-    "react-dom": "0.0.0-experimental-65b3449c8-20221005",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
     "react-router-dom": "^6.4.1",
     "shared": "file:../shared"
   },

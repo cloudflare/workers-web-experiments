@@ -219,13 +219,8 @@ gateway.registerFragment({
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/news\/([^/]+)$/.exec(path);
-    const listName = match?.[1] && decodeURIComponent(match[1]);
-
-    const params = url.searchParams;
-    if (listName) {
-      params.append("listName", listName);
-    }
-    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+    // todo: add pagination and/or routing to request searchParams here
+    return request;
   },
 });
 

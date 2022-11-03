@@ -7,7 +7,7 @@ import { messageBusProp } from "../message-bus/message-bus-prop";
 import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
 
 export class PiercingFragmentHost extends HTMLElement {
-  [messageBusProp] = new FragmentMessageBus(this);
+  private [messageBusProp] = new FragmentMessageBus(this);
   private cleanup = true;
 
   fragmentId!: string;

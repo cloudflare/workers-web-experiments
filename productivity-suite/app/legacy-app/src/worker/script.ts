@@ -173,4 +173,55 @@ gateway.registerFragment({
   },
 });
 
+gateway.registerFragment({
+  fragmentId: "news",
+  // Note: deployment part of the url is fine also for local development since then
+  //       only the path part of the url is being used
+  getBaseUrl: () =>
+    `https://productivity-suite-news-fragment.devdash.workers.dev`,
+  prePiercingStyles: `
+    :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
+      position: absolute;
+      margin: 0 1rem;
+      top: 13.9rem;
+      left: 0;
+      right: 0;
+    }
+
+    @media (max-width: 45rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
+        top: 14.05rem;
+      }
+    }
+
+    @media (max-width: 35rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
+        top: 29rem;
+      }
+    }
+
+    @media (max-width: 25rem) {
+      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
+        top: 29.65rem;
+        margin: 0;
+      }
+    }
+    `,
+  shouldBeIncluded: async (request: Request) =>
+    isPiercingEnabled(request) &&
+    (await isUserAuthenticated(request)) &&
+    /^\/news(\/[^/]+)?$/.test(new URL(request.url).pathname),
+  transformRequest: (
+    request: Request,
+    env: Env,
+    thisConfig: FragmentConfig<Env>
+  ) => {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    const match = /\/news\/([^/]+)$/.exec(path);
+    // todo: add pagination and/or routing to request searchParams here
+    return request;
+  },
+});
+
 export default gateway;

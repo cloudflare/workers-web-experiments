@@ -8,7 +8,8 @@
 		"app/legacy-app",
 		"app/fragments/login",
 		"app/fragments/todo-lists",
-		"app/fragments/todos"
+		"app/fragments/todos",
+		"app/fragments/news"
 	],
 	"scripts": {
 		"start": "node ./scripts/start-dev.js",

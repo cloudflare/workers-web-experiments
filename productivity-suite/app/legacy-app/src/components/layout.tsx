@@ -28,9 +28,9 @@ function Header() {
 function NavBar() {
   const navBarLinks = [
     { path: "/todos", text: "Todo Lists" },
+    { path: "/news", text: "News" },
     { path: "/calendar", text: "Calendar" },
     { path: "/contacts", text: "Contacts" },
-    { path: "/news", text: "News" },
   ];
 
   return (

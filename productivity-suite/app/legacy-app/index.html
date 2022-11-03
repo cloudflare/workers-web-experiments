@@ -154,10 +154,8 @@
       }
 
       body.show-seams #root,
-      body.show-seams piercing-fragment-host,
-      body.show-seams piercing-fragment-outlet {
+      body.show-seams piercing-fragment-host {
         outline: 3px dashed var(--seams-color);
-        position: relative;
       }
 
       body.show-seams #root {
@@ -165,17 +163,22 @@
         outline-offset: -3px;
       }
 
-      body.show-seams piercing-fragment-outlet[fragment-id="todos"] {
+      body.show-seams piercing-fragment-host[fragment-id="todos"] {
         --seams-color: #31909b;
       }
 
-      body.show-seams piercing-fragment-outlet[fragment-id="login"],
-      body.show-seams piercing-fragment-outlet[fragment-id="todo-lists"] {
+      body.show-seams piercing-fragment-host[fragment-id="login"],
+      body.show-seams piercing-fragment-host[fragment-id="todo-lists"] {
         --seams-color: #4f2574;
       }
 
-      body.show-seams piercing-fragment-outlet {
+      body.show-seams piercing-fragment-host {
+        display: block;
         outline-offset: 10px;
+      }
+
+      body.show-seams piercing-fragment-outlet > piercing-fragment-host {
+        position: relative;
       }
 
       body.show-seams #root::after,

@@ -86,7 +86,9 @@ Alternatively you can run all the processes manually in separate terminals in th
 
 ## How to deploy the app
 
-If you want you can deploy your version of the application using your Cloudflare account, to do so, you just need to modify the `deploy.react` script in `productivity-suite/app/legacy-app/package.json` and replace the existing `CLOUDFLARE_ACCOUNT_ID` with your own.
+If you want you can deploy your version of the application using your Cloudflare account.
+
+To do so you need update the value of the `account_id` present in all the `wrangler.toml` files and the `CLOUDFLARE_ACCOUNT_ID` present in the `deploy.react` script in `productivity-suite/app/legacy-app/package.json` with your cloudflare account id (this only needs to be done once).
 
 After that in the `productivity-suite` directory you can simply run
 

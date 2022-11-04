@@ -30,6 +30,9 @@ export function wrapAndExportMount(regex: RegExp): PluginOption {
 
 export default defineConfig({
   base: "/_fragment/news",
+  build: {
+    minify: false,
+  },
   ssr: {
     // Vite attempts to load this as a Commonjs dependency
     noExternal: ["solid-meta"],

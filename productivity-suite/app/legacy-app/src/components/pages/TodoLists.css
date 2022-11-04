@@ -1,11 +1,10 @@
 .todo-lists-page {
     padding: 1rem;
-    overflow: hidden;
 }
 
 .todo-lists-page piercing-fragment-outlet {
     display: block;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 .todos {

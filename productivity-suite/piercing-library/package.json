@@ -7,12 +7,14 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "npm run build.host-inline-script; npm run build.lib",
+    "build": "npm run build.host-inline-script; npm run build.message-bus-inline-script ; npm run build.lib",
     "build.host-inline-script": "tsc && vite build -c ./piercing-fragment-host.vite.config.ts",
+    "build.message-bus-inline-script": "tsc && vite build -c ./message-bus.vite.config.ts",
     "build.lib": "tsc && vite build",
     "prebuild.watch": "npm run prebuild",
-    "build.watch": "concurrently 'npm run build.host-inline-script.watch' 'npm run build.lib.watch'",
+    "build.watch": "concurrently 'npm run build.host-inline-script.watch' 'npm run build.message-bus-inline-script.watch' 'npm run build.lib.watch'",
     "build.host-inline-script.watch": "tsc && vite build -c ./piercing-fragment-host.vite.config.ts -w",
+    "build.message-bus-inline-script.watch": "tsc && vite build -c ./message-bus.vite.config.ts -w",
     "build.lib.watch": "tsc && vite build -w"
   },
   "dependencies": {

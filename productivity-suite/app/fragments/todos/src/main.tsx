@@ -1,26 +1,27 @@
+import { getBus } from "piercing-library";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { getCurrentUser, getTodoList, getTodoLists } from "shared";
+import { getTodoLists } from "shared";
 import App from "./App";
 import { EnvContext } from "./env";
 
 (async () => {
-  const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
-  const listName = match?.[1] ?? null;
-  let todoList = null;
+  const rootElement = document.getElementById(
+    "todos-fragment-root"
+  ) as HTMLElement;
 
-  const currentUser = getCurrentUser();
+  const todoListName =
+    getBus(rootElement).latestValue<{ name: string }>("todo-list-selected")
+      ?.name ?? null;
+  const currentUser =
+    getBus(rootElement).latestValue<{ username: string }>("authentication")
+      ?.username ?? null;
 
-  if (currentUser) {
-    if (listName) {
-      const list = await getTodoList(currentUser, decodeURIComponent(listName));
-      if (list) {
-        todoList = list;
-      }
-    } else {
-      const lists = await getTodoLists(currentUser);
-      todoList = lists[lists.length - 1];
-    }
+  const lists = currentUser ? await getTodoLists(currentUser) : [];
+  const todoList = lists.find(({ name }) => todoListName === name);
+
+  if (!todoList) {
+    throw new Error(`todoList "${todoListName}" not found`);
   }
 
   const application = (
@@ -30,10 +31,6 @@ import { EnvContext } from "./env";
       </EnvContext.Provider>
     </React.StrictMode>
   );
-
-  const rootElement = document.getElementById(
-    "todos-fragment-root"
-  ) as HTMLElement;
 
   const appWasSSRed = rootElement.children.length > 0;
 

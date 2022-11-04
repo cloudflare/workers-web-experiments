@@ -187,7 +187,6 @@
 
 .active {
   font-weight: bolder;
-  font-size: 1.2rem;
   transition: font-weight 0.1s;
 }
 

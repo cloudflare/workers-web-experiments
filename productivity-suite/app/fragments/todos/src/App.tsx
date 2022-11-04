@@ -1,5 +1,6 @@
-import { useContext, useState } from "react";
-import { removeTodo, Todo, TodoList } from "shared";
+import { getBus } from "piercing-library";
+import { useContext, useEffect, useRef, useState } from "react";
+import { getTodoList, removeTodo, Todo, TodoList } from "shared";
 import "./App.css";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -11,8 +12,9 @@ import { TodoType } from "./todoType";
 const App: React.FC<{
   todoList: TodoList | null;
 }> = ({ todoList }) => {
-  const listName = todoList?.name ?? null;
-
+  const [listName, setListName] = useState<string | null>(
+    todoList?.name ?? null
+  );
   const [todos, setTodos] = useState<Todo[]>(todoList?.todos ?? []);
 
   const [todosSelection, setTodosSelection] = useState<TodoType>(TodoType.all);
@@ -21,6 +23,8 @@ const App: React.FC<{
 
   const activeTodos = todos.filter(({ completed }) => !completed);
   const completedTodos = todos.filter(({ completed }) => completed);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const todosMap: Record<TodoType, Todo[]> = {
     [TodoType.all]: todos,
@@ -62,8 +66,26 @@ const App: React.FC<{
     setTodos(todos.filter(({ completed }) => !completed));
   }
 
+  useEffect(() => {
+    if (ref.current) {
+      const remover = getBus(ref.current).listen<{ name: string }>(
+        "todo-list-selected",
+        async (listDetails) => {
+          if (listDetails) {
+            const list = await getTodoList(currentUser, listDetails.name);
+            if (list) {
+              setListName(list.name);
+              setTodos(list.todos);
+            }
+          }
+        }
+      );
+      return remover ?? undefined;
+    }
+  }, [ref.current]);
+
   return (
-    <div className="todo-mvc-wrapper">
+    <div className="todo-mvc-wrapper" ref={ref}>
       <section className="todo-mvc">
         <Header
           todos={todos}

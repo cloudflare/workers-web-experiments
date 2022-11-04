@@ -183,10 +183,7 @@ export function getUserData(user: string, cookieToUse?: string) {
   return data;
 }
 
-// Note: getCurrentUser should be async (to follow more precisely a real world scenario)
-//       it is not because in the React routing we need to check for the auth immediately
-//       so we need to have the user details right away (unless I'm missing something)
-export function getCurrentUser(cookieToUse?: string) {
+export async function getCurrentUser(cookieToUse?: string) {
   return getCookie(`${cookiesPrefix}currentUser`, cookieToUse);
 }
 

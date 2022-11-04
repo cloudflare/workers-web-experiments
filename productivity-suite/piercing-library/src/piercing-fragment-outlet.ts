@@ -1,7 +1,7 @@
 import { DOMAttributes } from "react";
 import WritableDOMStream from "writable-dom";
+import { getBus } from "./message-bus/get-bus";
 
-import { PiercingEvent, piercingEventType } from "./piercing-events";
 import { PiercingFragmentHost } from "./piercing-fragment-host/piercing-fragment-host";
 
 /**
@@ -56,7 +56,6 @@ export class PiercingFragmentOutlet extends HTMLElement {
   private readonly piercingFragmentOutlet = true;
 
   private fragmentId!: string;
-  private customEventListener: EventListener | null = null;
 
   constructor() {
     super();
@@ -90,27 +89,20 @@ export class PiercingFragmentOutlet extends HTMLElement {
           " it could not be fetched"
       );
     }
-
-    this.initializeCustomEventListener(fragmentHost);
+    // We need to dispatch a qinit so that Qwik can run different necessary
+    // checks/logic on Qwik fragments (which it would otherwise not with this
+    // fragments implementation).
+    // (for more info see: https://github.com/BuilderIO/qwik/issues/1947)
+    document.dispatchEvent(new Event("qinit"));
   }
 
   disconnectedCallback() {
-    this.removePiercingEventListener();
-
     unmountedFragmentIds.add(this.fragmentId);
   }
 
-  private pierceFragmentIntoDOM(contentWrapper: Element) {
+  private pierceFragmentIntoDOM(fragmentHost: PiercingFragmentHost) {
     this.innerHTML == "";
-
-    const activeElementWithinFragmentContent = contentWrapper.contains(
-      document.activeElement
-    )
-      ? (document.activeElement as HTMLElement)
-      : null;
-
-    this.appendChild(contentWrapper);
-    activeElementWithinFragmentContent?.focus();
+    fragmentHost.pierceInto(this);
   }
 
   private async fetchFragmentStream() {
@@ -119,7 +111,15 @@ export class PiercingFragmentOutlet extends HTMLElement {
       () => this.dispatchEvent(new CustomEvent("FetchingStarted")),
       initDelayForUi
     );
-    const response = await fetch(url);
+
+    const state = getBus().state;
+
+    const req = new Request(url, {
+      headers: {
+        "message-bus-state": JSON.stringify(state),
+      },
+    });
+    const response = await fetch(req);
     this.dispatchEvent(new CustomEvent("FetchingCompleted"));
     if (!response.body) {
       throw new Error(
@@ -131,31 +131,7 @@ export class PiercingFragmentOutlet extends HTMLElement {
   }
 
   private getFragmentUrl(): string {
-    const fragmentFetchBase = `/piercing-fragment/${this.fragmentId}`;
-
-    const fragmentFetchParams = this.getFragmentFetchParams();
-
-    const searchParamsStr = fragmentFetchParams
-      ? `?${new URLSearchParams([
-          ...Object.entries(fragmentFetchParams),
-        ]).toString()}`
-      : "";
-
-    return `${fragmentFetchBase}${searchParamsStr}`;
-  }
-
-  private getFragmentFetchParams(): { [key: string]: string } | null {
-    const attribute = this.getAttribute("fragment-fetch-params");
-    if (!attribute) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(attribute);
-    } catch (error: any) {
-      console.error(error);
-      return null;
-    }
+    return `/piercing-fragment/${this.fragmentId}`;
   }
 
   private async streamFragmentIntoOutlet(fragmentStream: ReadableStream) {
@@ -186,33 +162,6 @@ export class PiercingFragmentOutlet extends HTMLElement {
     return (insideOutlet ? this : document).querySelector(
       `piercing-fragment-host[fragment-id="${this.fragmentId}"]`
     );
-  }
-
-  private initializeCustomEventListener(fragmentHost: PiercingFragmentHost) {
-    const piercingEventListener = ({ type, payload }: PiercingEvent) => {
-      const pascalCaseEventType = type
-        .replace(/(^.)|(-.)/g, (c) => c.toUpperCase())
-        .replaceAll("-", "");
-      this.dispatchEvent(
-        new CustomEvent(pascalCaseEventType, { detail: payload })
-      );
-    };
-    this.customEventListener = (({ detail }: CustomEvent<PiercingEvent>) =>
-      piercingEventListener(detail)) as EventListener;
-
-    this.addEventListener(piercingEventType, this.customEventListener);
-
-    setTimeout(() => fragmentHost.onPiercingComplete(this), initDelayForUi);
-  }
-
-  private removePiercingEventListener() {
-    if (this.customEventListener) {
-      const fragmentHost = this.getFragmentHost(true);
-      fragmentHost?.removeEventListener(
-        piercingEventType,
-        this.customEventListener
-      );
-    }
   }
 }
 

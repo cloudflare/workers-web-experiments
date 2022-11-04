@@ -1,5 +1,5 @@
 import { FragmentConfig, PiercingGateway } from "piercing-library";
-import { getCurrentUser } from "shared";
+import { getCurrentUser, getTodoLists } from "shared";
 
 export interface Env {
   APP_BASE_URL: string;
@@ -7,6 +7,36 @@ export interface Env {
 
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
+  generateMessageBusState: async (requestMessageBusState, request) => {
+    const requestCookie = request.headers.get("Cookie");
+    const currentUser = requestCookie
+      ? await getCurrentUser(requestCookie)
+      : null;
+
+    if (!("authentication" in requestMessageBusState)) {
+      requestMessageBusState["authentication"] = currentUser && {
+        username: currentUser,
+      };
+    }
+
+    if (!("todo-list-selected" in requestMessageBusState) && currentUser) {
+      const match = /\/todos\/([^/]+)$/.exec(request.url);
+      let listName = match?.[1] && decodeURIComponent(match[1]);
+
+      const lists = await getTodoLists(currentUser, requestCookie!);
+      // make sure that the provided listName is the name of an existing list
+      listName = lists.find(({ name }) => name === listName)?.name;
+
+      if (!listName) {
+        if (lists.length) {
+          listName = lists[lists.length - 1].name;
+        }
+      }
+
+      requestMessageBusState["todo-list-selected"] = { name: listName } ?? null;
+    }
+    return requestMessageBusState;
+  },
 });
 
 async function isUserAuthenticated(request: Request) {
@@ -32,8 +62,8 @@ gateway.registerFragment({
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
       top: 10.45rem;
-      left: 0;
-      right: 0;
+      left: 1rem;
+      right: 1rem;
     }
 
     @media (max-width: 45rem) {
@@ -66,24 +96,19 @@ gateway.registerFragment({
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
-      top: 14.6rem;
+      top: 14.7rem;
       left: 2rem;
       right: 2rem;
     }
 
-    @media (max-width: 52rem) {
-      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 14.62rem;
-      }
-    }
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 14.8rem;
+        top: 14.85rem;
       }
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 29.67rem;
+        top: 29.87rem;
       }
     }
     @media (max-width: 25rem) {
@@ -125,29 +150,24 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
-      top: 22.6rem;
-      left: 0;
-      right: 0;
+      top: 23.7rem;
+      left: 2rem;
+      right: 2rem;
     }
 
-    @media (max-width: 52rem) {
-      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 22.75rem;
-      }
-    }
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 22.9rem;
+        top: 23.97rem;
       }
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 37.85rem;
+        top: 39.03rem;
       }
     }
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 41.7rem;
+        top: 42.7rem;
       }
     }
     `,

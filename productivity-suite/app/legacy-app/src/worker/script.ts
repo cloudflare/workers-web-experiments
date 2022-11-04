@@ -150,24 +150,24 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
-      top: 22.7rem;
+      top: 23.7rem;
       left: 2rem;
       right: 2rem;
     }
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 22.97rem;
+        top: 23.97rem;
       }
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 38.03rem;
+        top: 39.03rem;
       }
     }
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 41.7rem;
+        top: 42.7rem;
       }
     }
     `,

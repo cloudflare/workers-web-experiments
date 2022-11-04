@@ -159,18 +159,30 @@
         border-radius: 1px;
       }
 
+      piercing-fragment-host {
+        max-width: 80vw;
+        margin-inline: auto;
+      }
+
       body.show-seams #root {
         --seams-color: #fc9003;
         outline-offset: -3px;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="login"] {
+        --seams-color: #409f20;
       }
 
       body.show-seams piercing-fragment-host[fragment-id="todos"] {
         --seams-color: #31909b;
       }
 
-      body.show-seams piercing-fragment-host[fragment-id="login"],
       body.show-seams piercing-fragment-host[fragment-id="todo-lists"] {
         --seams-color: #4f2574;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="news"] {
+        --seams-color: #0322fc;
       }
 
       body.show-seams piercing-fragment-host {
@@ -227,7 +239,7 @@
   <body>
     <div class="piercing-options-wrapper">
       <div class="spa-delay-slider-wrapper">
-        <label for="spa-delay-slider-input">SPA <span class="desktop-text">bootstrap</span> delay: </label>
+        <label for="spa-delay-slider-input">Legacy app<span class="desktop-text"> bootstrap</span> delay: </label>
         <input type="range" min="0" max="10" value="3" id="spa-delay-slider-input">
         <span id="spa-delay-slider-output"></span>
       </div>

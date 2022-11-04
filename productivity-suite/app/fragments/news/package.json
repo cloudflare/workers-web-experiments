@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "solid-start dev",
     "build": "solid-start build",
-    "start": "npx wrangler dev --local"
+    "start": "npx wrangler dev --local",
+    "deploy": "npx wrangler publish"
   },
   "type": "module",
   "main": "./dist/index.js",

@@ -31,11 +31,6 @@ export function TodoLists() {
         selectedListName !== undefined &&
         selectedListRef.current !== selectedListName
       ) {
-        console.log(
-          "initial navigation",
-          selectedListName,
-          selectedListRef.current
-        );
         selectedListRef.current = selectedListName;
         document.head.title = `Todos: ${selectedListRef.current}`;
         navigate(`/todos/${selectedListRef.current}`);
@@ -47,7 +42,6 @@ export function TodoLists() {
     if (busRef.current) {
       const name = getListNameFromPath(location.pathname);
       if (name !== undefined && name !== selectedListRef.current) {
-        console.log("dispatch event", name, selectedListRef.current);
         selectedListRef.current = name;
         busRef.current.dispatch("todo-list-selected", {
           name,
@@ -62,11 +56,6 @@ export function TodoLists() {
         "todo-list-selected",
         (listEvent) => {
           if (listEvent.name && listEvent.name !== selectedListRef.current) {
-            console.log(
-              "event driven navigation",
-              listEvent.name,
-              selectedListRef.current
-            );
             selectedListRef.current = listEvent.name;
             document.head.title = `Todos: ${selectedListRef.current}`;
             navigate(`/todos/${listEvent.name}`);

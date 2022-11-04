@@ -1,54 +1,84 @@
 import { getBus } from "piercing-library";
+import { MessageBus } from "piercing-library/dist/message-bus/message-bus";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./TodoLists.css";
 
-export function TodoLists() {
-  const ref = useRef<HTMLDivElement>(null);
-  const selectedListName = useRef<string | null>(null);
+type TodoListSelectedEvent = {
+  name: string;
+};
 
+export function TodoLists() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const elementRef = useRef<HTMLDivElement>(null);
+  const selectedListRef = useRef<string>();
+  const busRef = useRef<MessageBus>();
 
   useEffect(() => {
-    const listName = getListNameFromPath(location.pathname);
-    if (listName && ref.current) {
-      if (listName !== selectedListName.current) {
-        selectedListName.current = listName;
-        getBus(ref.current).dispatch("todo-list-selected", {
-          name: listName,
-          noNavigation: true,
+    if (elementRef.current) {
+      busRef.current = getBus(elementRef.current);
+    }
+  }, [elementRef]);
+
+  useEffect(() => {
+    if (busRef.current && selectedListRef.current === undefined) {
+      const selectedListName =
+        busRef.current.latestValue<TodoListSelectedEvent>(
+          "todo-list-selected"
+        )?.name;
+      if (
+        selectedListName !== undefined &&
+        selectedListRef.current !== selectedListName
+      ) {
+        console.log(
+          "initial navigation",
+          selectedListName,
+          selectedListRef.current
+        );
+        selectedListRef.current = selectedListName;
+        document.head.title = `Todos: ${selectedListRef.current}`;
+        navigate(`/todos/${selectedListRef.current}`);
+      }
+    }
+  }, [busRef.current]);
+
+  useEffect(() => {
+    if (busRef.current) {
+      const name = getListNameFromPath(location.pathname);
+      if (name !== undefined && name !== selectedListRef.current) {
+        console.log("dispatch event", name, selectedListRef.current);
+        selectedListRef.current = name;
+        busRef.current.dispatch("todo-list-selected", {
+          name,
         });
       }
     }
-  }, [location]);
+  }, [busRef, location.pathname]);
 
   useEffect(() => {
-    if (ref.current) {
-      return (
-        getBus(ref.current).listen<{ name: string; noNavigation: boolean }>(
-          "todo-list-selected",
-          (listDetails) => {
-            if (
-              listDetails.name &&
-              listDetails.name !== selectedListName.current
-            ) {
-              selectedListName.current = listDetails.name;
-              if (!listDetails.noNavigation) {
-                navigate(`/todos/${listDetails.name}`, {
-                  replace: !getListNameFromPath(location.pathname),
-                });
-              }
-            }
+    if (busRef.current) {
+      const remover = busRef.current.listen<TodoListSelectedEvent>(
+        "todo-list-selected",
+        (listEvent) => {
+          if (listEvent.name && listEvent.name !== selectedListRef.current) {
+            console.log(
+              "event driven navigation",
+              listEvent.name,
+              selectedListRef.current
+            );
+            selectedListRef.current = listEvent.name;
+            document.head.title = `Todos: ${selectedListRef.current}`;
+            navigate(`/todos/${listEvent.name}`);
           }
-        ) ?? undefined
+        }
       );
+      return remover;
     }
-  }, [ref.current]);
-
-  const navigate = useNavigate();
+  }, [busRef]);
 
   return (
-    <div className="todo-lists-page" ref={ref}>
+    <div className="todo-lists-page" ref={elementRef}>
       <piercing-fragment-outlet fragment-id="todo-lists" />
       <piercing-fragment-outlet fragment-id="todos" />
     </div>

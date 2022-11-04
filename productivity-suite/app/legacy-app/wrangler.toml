@@ -2,6 +2,9 @@ name = "productivity-suite"
 main = "src/worker/script.ts"
 compatibility_date = "2022-10-05"
 
+# `web-experiments` account (replace this with your own account id)
+account_id = "8ed4d03ac99f77561d0e8c9cbcc76cb6"
+
 [dev]
 port = 8987
 

@@ -11,8 +11,8 @@ import { initialPlaceholderTodoList } from "./initialPlaceholderTodoList";
 
 interface AuthContextType {
   user: string | null;
-  login: (userName: string) => void;
-  logout: () => void;
+  login: (userName: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 let AuthContext = createContext<AuthContextType>(null!);

@@ -1,67 +1,82 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { TodoList } from "shared";
+import { getBus } from "piercing-library";
+import { MessageBus } from "piercing-library/dist/message-bus/message-bus";
+import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./TodoLists.css";
 
-export function TodoLists() {
-  const [selectedListName, setSelectedListName] = useState<string | null>(null);
+type TodoListSelectedEvent = {
+  name: string;
+};
 
-  const [todoEnteringAnimation, setTodoEnteringAnimation] = useState<
-    "previous" | "next" | undefined
-  >();
-  const [showTodos, setShowTodos] = useState<boolean>(true);
+export function TodoLists() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const elementRef = useRef<HTMLDivElement>(null);
+  const selectedListRef = useRef<string>();
+  const busRef = useRef<MessageBus>();
 
   useEffect(() => {
-    const match = /\/todos\/([^/]+)/.exec(window.location.pathname);
-    if (match) {
-      setSelectedListName(decodeURIComponent(match[1]));
+    if (elementRef.current) {
+      busRef.current = getBus(elementRef.current);
     }
-  }, []);
+  }, [elementRef]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (busRef.current && selectedListRef.current === undefined) {
+      const selectedListName =
+        busRef.current.latestValue<TodoListSelectedEvent>(
+          "todo-list-selected"
+        )?.name;
+      if (
+        selectedListName !== undefined &&
+        selectedListRef.current !== selectedListName
+      ) {
+        selectedListRef.current = selectedListName;
+        document.head.title = `Todos: ${selectedListRef.current}`;
+        navigate(`/todos/${selectedListRef.current}`);
+      }
+    }
+  }, [busRef.current]);
 
-  const fragmentFetchParams = selectedListName
-    ? JSON.stringify({
-        listName: selectedListName,
-      })
-    : "null";
+  useEffect(() => {
+    if (busRef.current) {
+      const name = getListNameFromPath(location.pathname);
+      if (name !== undefined && name !== selectedListRef.current) {
+        selectedListRef.current = name;
+        busRef.current.dispatch("todo-list-selected", {
+          name,
+        });
+      }
+    }
+  }, [busRef, location.pathname]);
 
-  function updateSelectedListName(newListName: string) {
-    setSelectedListName(newListName);
-    navigate(`/todos/${newListName}`, { replace: true });
-  }
-
-  function updateSelectedList(list: TodoList, which?: "previous" | "next") {
-    setShowTodos(false);
-    setTodoEnteringAnimation(which);
-    setTimeout(() => {
-      setShowTodos(true);
-      updateSelectedListName(list.name);
-    }, 50);
-    setTimeout(() => setTodoEnteringAnimation(undefined), 250);
-  }
+  useEffect(() => {
+    if (busRef.current) {
+      const remover = busRef.current.listen<TodoListSelectedEvent>(
+        "todo-list-selected",
+        (listEvent) => {
+          if (listEvent.name && listEvent.name !== selectedListRef.current) {
+            selectedListRef.current = listEvent.name;
+            document.head.title = `Todos: ${selectedListRef.current}`;
+            navigate(`/todos/${listEvent.name}`);
+          }
+        }
+      );
+      return remover;
+    }
+  }, [busRef]);
 
   return (
-    <div className="todo-lists-page">
-      <piercing-fragment-outlet
-        fragment-id="todo-lists"
-        fragment-fetch-params={fragmentFetchParams}
-        onTodoListSelected={(event: {
-          detail: {
-            list: TodoList;
-            which?: "previous" | "next";
-          };
-        }) => updateSelectedList(event.detail.list, event.detail.which)}
-      />
-      {showTodos && (
-        <piercing-fragment-outlet
-          className={`todos ${
-            todoEnteringAnimation ? `todos-${todoEnteringAnimation}` : ""
-          }`}
-          fragment-id="todos"
-          fragment-fetch-params={fragmentFetchParams}
-        />
-      )}
+    <div className="todo-lists-page" ref={elementRef}>
+      <piercing-fragment-outlet fragment-id="todo-lists" />
+      <piercing-fragment-outlet fragment-id="todos" />
     </div>
   );
+}
+
+function getListNameFromPath(pathname: string) {
+  const path = pathname.includes("%") ? decodeURIComponent(pathname) : pathname;
+  const match = path.match(/^\/todos\/([^\/]+)$/);
+  const listName = match?.[1];
+  return listName;
 }

@@ -1,108 +1,104 @@
-import type { PiercingEvent } from "../piercing-events";
-import { piercingEventType } from "../piercing-events";
-
 // Important: we only need to import the type, do not import the class itself
 //            as it would bloat the script (which needs to be very light)
 import type { PiercingFragmentOutlet } from "../piercing-fragment-outlet";
 
+// The following two files are to be kept lean as well to keep the inline script small
+import { messageBusProp } from "../message-bus/message-bus-prop";
+import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
+
 export class PiercingFragmentHost extends HTMLElement {
-	fragmentId!: string;
-	piercingEventsQueue: CustomEvent<PiercingEvent>[] = [];
-	queueEventListener?: (event: Event) => void;
-	stylesEmbeddingObserver?: MutationObserver;
+  private [messageBusProp] = new FragmentMessageBus(this);
+  private cleanup = true;
 
-	constructor() {
-		super();
-	}
+  fragmentId!: string;
+  queueEventListener?: (event: Event) => void;
+  stylesEmbeddingObserver?: MutationObserver;
 
-	async connectedCallback() {
-		this.fragmentId = this.getAttribute("fragment-id")!;
+  connectedCallback() {
+    const fragmentId = this.getAttribute("fragment-id");
 
-		this.setQueueEventListener();
+    if (!fragmentId) {
+      throw new Error(
+        "The fragment outlet component has been applied without" +
+          " providing a fragment-id"
+      );
+    }
 
-		if (!this.fragmentIsPierced) {
-			this.setStylesEmbeddingObserver();
-		}
-	}
+    this.fragmentId = fragmentId;
 
-	async onPiercingComplete(outlet: PiercingFragmentOutlet) {
-		await this.flushPiercingEventsQueue(outlet);
-		this.removeQueueEventListener();
-		this.removeStylesEmbeddingObserver();
-	}
+    if (!this.fragmentIsPierced) {
+      this.setStylesEmbeddingObserver();
+    }
+  }
 
-	private get fragmentIsPierced() {
-		return (this.parentElement as any).piercingFragmentOutlet;
-	}
+  disconnectedCallback() {
+    if (this.cleanup) {
+      // Only remove handlers if we are actually in cleanup mode.
+      this[messageBusProp].clearAllHandlers();
+    }
+  }
 
-	private async flushPiercingEventsQueue(outlet: PiercingFragmentOutlet) {
-		while (this.piercingEventsQueue.length) {
-			const piercingEvent = this.piercingEventsQueue.shift()!;
-			await new Promise<void>((resolve) => {
-				outlet.dispatchEvent(piercingEvent);
-				resolve();
-			});
-		}
-	}
+  pierceInto(element: Element) {
+    const activeElement = this.contains(document.activeElement)
+      ? (document.activeElement as HTMLElement)
+      : null;
 
-	private setQueueEventListener() {
-		if (!this.fragmentIsPierced) {
-			this.queueEventListener = (event: Event) => {
-				if (event.type === piercingEventType) {
-					event.stopPropagation();
-					this.piercingEventsQueue.push(event as CustomEvent<PiercingEvent>);
-				}
-			};
-			this.addEventListener(piercingEventType, this.queueEventListener);
-		}
-	}
+    // When we are simply moving the fragment (rather than destroying it)
+    // we do not want to cleanup the event listeners.
+    this.cleanup = false;
+    element.appendChild(this);
+    this.cleanup = true;
 
-	private removeQueueEventListener() {
-		if (this.queueEventListener) {
-			this.removeEventListener(piercingEventType, this.queueEventListener);
-			this.queueEventListener = undefined;
-		}
-	}
+    activeElement?.focus();
+  }
 
-	private setStylesEmbeddingObserver() {
-		this.stylesEmbeddingObserver = new MutationObserver((mutationsList) => {
-			const elementsHaveBeenAdded = mutationsList.some((mutationRecord) => {
-				for (const addedNode of mutationRecord.addedNodes) {
-					if (addedNode.nodeType === Node.ELEMENT_NODE) {
-						return true;
-					}
-				}
-				return false;
-			});
-			if (elementsHaveBeenAdded) {
-				// if any element has been added then we need to make sure that
-				// there aren't external css links (and embed them if there are)
-				this.embedStyles();
-			}
-		});
-		this.stylesEmbeddingObserver.observe(this, {
-			childList: true,
-			subtree: true,
-		});
-	}
+  onPiercingComplete() {
+    this.removeStylesEmbeddingObserver();
+  }
 
-	private removeStylesEmbeddingObserver() {
-		this.stylesEmbeddingObserver?.disconnect();
-		this.stylesEmbeddingObserver = undefined;
-	}
+  private get fragmentIsPierced() {
+    return (this.parentElement as any).piercingFragmentOutlet;
+  }
 
-	private embedStyles() {
-		this.querySelectorAll('link[href][rel="stylesheet"]').forEach((el) => {
-			const styleLink = el as HTMLStyleElement;
-			if (styleLink.sheet) {
-				let rulesText = "";
-				for (const { cssText } of styleLink.sheet.cssRules) {
-					rulesText += cssText + "\n";
-				}
-				const styleElement = document.createElement("style");
-				styleElement.textContent = rulesText;
-				styleLink.replaceWith(styleElement);
-			}
-		});
-	}
+  private setStylesEmbeddingObserver() {
+    this.stylesEmbeddingObserver = new MutationObserver((mutationsList) => {
+      const elementsHaveBeenAdded = mutationsList.some((mutationRecord) => {
+        for (const addedNode of mutationRecord.addedNodes) {
+          if (addedNode.nodeType === Node.ELEMENT_NODE) {
+            return true;
+          }
+        }
+        return false;
+      });
+      if (elementsHaveBeenAdded) {
+        // if any element has been added then we need to make sure that
+        // there aren't external css links (and embed them if there are)
+        this.embedStyles();
+      }
+    });
+    this.stylesEmbeddingObserver.observe(this, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  private removeStylesEmbeddingObserver() {
+    this.stylesEmbeddingObserver?.disconnect();
+    this.stylesEmbeddingObserver = undefined;
+  }
+
+  private embedStyles() {
+    this.querySelectorAll('link[href][rel="stylesheet"]').forEach((el) => {
+      const styleLink = el as HTMLStyleElement;
+      if (styleLink.sheet) {
+        let rulesText = "";
+        for (const { cssText } of styleLink.sheet.cssRules) {
+          rulesText += cssText + "\n";
+        }
+        const styleElement = document.createElement("style");
+        styleElement.textContent = rulesText;
+        styleLink.replaceWith(styleElement);
+      }
+    });
+  }
 }

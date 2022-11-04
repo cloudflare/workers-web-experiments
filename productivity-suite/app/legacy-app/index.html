@@ -154,10 +154,9 @@
       }
 
       body.show-seams #root,
-      body.show-seams piercing-fragment-host,
-      body.show-seams piercing-fragment-outlet {
-        outline: 3px dashed var(--seams-color);
-        position: relative;
+      body.show-seams piercing-fragment-host {
+        outline: 2px dashed var(--seams-color);
+        border-radius: 1px;
       }
 
       body.show-seams #root {
@@ -165,31 +164,38 @@
         outline-offset: -3px;
       }
 
-      body.show-seams piercing-fragment-outlet[fragment-id="todos"] {
+      body.show-seams piercing-fragment-host[fragment-id="todos"] {
         --seams-color: #31909b;
       }
 
-      body.show-seams piercing-fragment-outlet[fragment-id="login"],
-      body.show-seams piercing-fragment-outlet[fragment-id="todo-lists"] {
+      body.show-seams piercing-fragment-host[fragment-id="login"],
+      body.show-seams piercing-fragment-host[fragment-id="todo-lists"] {
         --seams-color: #4f2574;
       }
 
-      body.show-seams piercing-fragment-outlet {
+      body.show-seams piercing-fragment-host {
+        display: block;
         outline-offset: 10px;
+      }
+
+      body.show-seams piercing-fragment-outlet > piercing-fragment-host {
+        position: relative;
       }
 
       body.show-seams #root::after,
       body.show-seams piercing-fragment-host::before {
         content: 'fragment';
         position: absolute;
-        top: 3px;
-        left: 3px;
-        background-color: #FeFeFee8;
+        top: -0.7rem;
+        left: 0.5rem;
+        background-color: white;
         color: var(--seams-color);
         font-weight: 500;
         font-size: 0.8rem;
-        padding: .5rem;
+        padding: 0.25rem 0.5rem;
         z-index: 999;
+        border: currentColor 1px solid;
+        border-radius: 5px;
       }
 
       body.show-seams piercing-fragment-host[fragment-id="todos"]::before {
@@ -204,18 +210,16 @@
         content: 'login fragment';
       }
 
-      body.show-seams #root::after {
-        top: 3px;
-        left: 3px;
-      }
-
       body.show-seams piercing-fragment-host::before {
-        top: -10px;
-        left: -10px;
+        top: -1.5rem;
+        left: 0;
       }
 
       body.show-seams #root::after {
         content: 'Legacy app';
+      }
+      body.show-seams #root {
+        position: relative;
       }
 
     </style>

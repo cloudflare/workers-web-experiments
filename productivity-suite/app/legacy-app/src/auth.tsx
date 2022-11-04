@@ -1,8 +1,8 @@
+import { getBus } from "piercing-library";
 import { createContext, useContext, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   deleteCurrentUser,
-  getCurrentUser,
   getUserData,
   saveCurrentUser,
   setUserData,
@@ -20,7 +20,12 @@ let AuthContext = createContext<AuthContextType>(null!);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<string | null>(getCurrentUser());
+  const [user, setUser] = useState<string | null>(() => {
+    const currentUser =
+      getBus().latestValue<{ username: string }>("authentication")?.username ??
+      null;
+    return currentUser;
+  });
 
   async function login(username: string) {
     await saveCurrentUser(username);
@@ -30,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await deleteCurrentUser();
+    getBus().dispatch("authentication", null);
     navigate("/login");
     setUser(null);
   }

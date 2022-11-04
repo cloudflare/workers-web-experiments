@@ -1,6 +1,12 @@
-import { piercingFragmentHostInlineScript } from "./index";
+import {
+  getMessageBusInlineScript,
+  piercingFragmentHostInlineScript,
+} from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
+// import qwikloader from "@builder.io/qwik/qwikloader.debug.js?raw";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
+import { MessageBusState } from "./message-bus/message-bus";
+import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
 /**
  * Configuration object for the registration of a fragment in the app's gateway worker.
@@ -59,6 +65,15 @@ export interface PiercingGatewayConfig<Env> {
    * the base url for the base/legacy application.
    */
   getBaseAppUrl: (env: Env) => string;
+  /**
+   * Generates the message bus context for the current request.
+   */
+  generateMessageBusState: (
+    requestMessageBusState: MessageBusState,
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext
+  ) => MessageBusState | Promise<MessageBusState>;
 }
 
 export class PiercingGateway<Env> {
@@ -99,6 +114,8 @@ export class PiercingGateway<Env> {
     ctx: ExecutionContext
   ): Promise<Response> => {
     this.validateFragmentConfigs(env);
+
+    request = await this.createSSRMessageBusAndUpdateRequest(request, env, ctx);
 
     const fragmentResponse = await this.handleFragmentFetch(request, env);
     if (fragmentResponse) return fragmentResponse;
@@ -145,6 +162,28 @@ export class PiercingGateway<Env> {
       );
     }
     return null;
+  }
+
+  private async createSSRMessageBusAndUpdateRequest(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext
+  ): Promise<Request> {
+    const requestMessageBusState = getMessageBusState(request);
+
+    const updatedMessageBusState = await this.config.generateMessageBusState(
+      requestMessageBusState,
+      request,
+      env,
+      ctx
+    );
+
+    const updatedRequest = new Request(request);
+    updatedRequest.headers.set(
+      "message-bus-state",
+      JSON.stringify(updatedMessageBusState)
+    );
+    return updatedRequest;
   }
 
   private async handleFragmentFetch(request: Request, env: Env) {
@@ -211,11 +250,8 @@ export class PiercingGateway<Env> {
     streamToInclude: ReadableStream
   ): Promise<Response> {
     const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
-    const newRequest = new Request(baseUrl, {
-      ...request,
-      headers: { Accept: "text/html" },
-    });
-    const indexHtmlResponse = await this.fetchBaseIndexHtml(newRequest);
+    const updatedRequest = new Request(baseUrl, request);
+    const indexHtmlResponse = await this.fetchBaseIndexHtml(updatedRequest);
 
     const indexBody = await indexHtmlResponse.text();
 
@@ -253,9 +289,12 @@ export class PiercingGateway<Env> {
       .get("Accept")
       ?.includes("text/html");
     if (requestIsForHtml) {
+      const stateHeaderStr = request.headers.get("message-bus-state");
       let indexBody = (await response.text()).replace(
         "</head>",
-        `${piercingFragmentHostInlineScript}\n</head>`
+        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
+          `${piercingFragmentHostInlineScript}\n` +
+          "</head>"
       );
 
       // We need to include the qwikLoader script here

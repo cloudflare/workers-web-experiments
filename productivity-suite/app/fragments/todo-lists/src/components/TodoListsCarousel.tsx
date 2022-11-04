@@ -20,14 +20,20 @@ export const TodoListsCarousel = component$(
   ({
     currentUser,
     initialTodoLists,
-    initialIdxOfSelectedList,
+    idxOfSelectedList,
+    selectedListName,
+    onUpdateSelectedListDetails$,
     onDispatchSelectedListUpdated$,
   }: {
     currentUser: string;
     initialTodoLists: { name: string; todos: Todo[] }[];
-    initialIdxOfSelectedList: number;
+    idxOfSelectedList: number;
+    selectedListName: string;
+    onUpdateSelectedListDetails$: PropFunction<
+      ({ idx, name }: { idx: number; name: string }) => void
+    >;
     onDispatchSelectedListUpdated$: PropFunction<
-      (listSelected: TodoList, which?: "previous" | "next") => void
+      (listSelected: TodoList) => void
     >;
   }) => {
     useStylesScoped$(styles);
@@ -35,13 +41,9 @@ export const TodoListsCarousel = component$(
 
     const state = useStore<{
       todoLists: TodoList[];
-      idxOfSelectedList: number;
-      selectedListName: string;
     }>(
       {
         todoLists: initialTodoLists,
-        idxOfSelectedList: initialIdxOfSelectedList,
-        selectedListName: initialTodoLists[initialIdxOfSelectedList].name,
       },
       { recursive: true }
     );
@@ -63,12 +65,11 @@ export const TodoListsCarousel = component$(
         const newTodoListIdx = state.todoLists.length - 1;
         setTimeout(() => {
           animationState.animating = false;
-          state.idxOfSelectedList = newTodoListIdx;
-          state.selectedListName = state.todoLists[newTodoListIdx].name;
-          onDispatchSelectedListUpdated$(
-            state.todoLists[newTodoListIdx],
-            "next"
-          );
+          onUpdateSelectedListDetails$({
+            idx: newTodoListIdx,
+            name: state.todoLists[newTodoListIdx].name,
+          });
+          onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx]);
         }, animationDuration);
       }
     });
@@ -77,13 +78,15 @@ export const TodoListsCarousel = component$(
       animationState.animating = true;
       animationState.currentAnimation = which;
       const newTodoListIdx =
-        state.idxOfSelectedList + (which === "previous" ? -1 : 1);
+        idxOfSelectedList + (which === "previous" ? -1 : 1);
       setTimeout(() => {
         animationState.animating = false;
-        state.idxOfSelectedList = newTodoListIdx;
-        state.selectedListName = state.todoLists[newTodoListIdx].name;
+        onUpdateSelectedListDetails$({
+          idx: newTodoListIdx,
+          name: state.todoLists[newTodoListIdx].name,
+        });
       }, animationDuration);
-      onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx], which);
+      onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx]);
     });
 
     return (
@@ -95,72 +98,73 @@ export const TodoListsCarousel = component$(
         }`}
       >
         <TodoListsCarouselPreviousSection
-          previousHidden={state.idxOfSelectedList === 0}
-          previousDisabled={
-            state.idxOfSelectedList === 0 || animationState.animating
-          }
+          previousHidden={idxOfSelectedList === 0}
+          previousDisabled={idxOfSelectedList === 0 || animationState.animating}
           onGoToPrevious$={() => goToList("previous")}
           previousListName={
-            state.idxOfSelectedList > 0
-              ? state.todoLists[state.idxOfSelectedList - 1].name
+            idxOfSelectedList > 0
+              ? state.todoLists[idxOfSelectedList - 1].name
               : null
           }
           previousPreviousListName={
-            state.idxOfSelectedList > 1
-              ? state.todoLists[state.idxOfSelectedList - 2].name
+            idxOfSelectedList > 1
+              ? state.todoLists[idxOfSelectedList - 2].name
               : null
           }
         />
         <SelectedListCard
-          listName={state.selectedListName}
+          listName={selectedListName}
           todoListsNames={state.todoLists.map(({ name }) => name)}
           onEditListName$={async (newListName: string) => {
             const success = await editTodoList(
               currentUser,
-              state.selectedListName,
+              selectedListName,
               newListName
             );
             if (success) {
-              state.selectedListName = newListName;
-              state.todoLists[state.idxOfSelectedList].name = newListName;
+              state.todoLists[idxOfSelectedList].name = newListName;
+              onUpdateSelectedListDetails$({
+                idx: idxOfSelectedList,
+                name: newListName,
+              });
               onDispatchSelectedListUpdated$(
-                state.todoLists[state.idxOfSelectedList]
+                state.todoLists[idxOfSelectedList]
               );
             }
             return success;
           }}
           onDeleteList$={async () => {
-            const success = await removeTodoList(
-              currentUser,
-              state.selectedListName
-            );
+            const success = await removeTodoList(currentUser, selectedListName);
             if (success) {
               state.todoLists = state.todoLists
-                .slice(0, state.idxOfSelectedList)
-                .concat(state.todoLists.slice(state.idxOfSelectedList + 1));
-              if (state.idxOfSelectedList > 0) {
-                state.idxOfSelectedList--;
+                .slice(0, idxOfSelectedList)
+                .concat(state.todoLists.slice(idxOfSelectedList + 1));
+              let newIdxOfSelectedList = idxOfSelectedList;
+              if (idxOfSelectedList > 0) {
+                newIdxOfSelectedList = idxOfSelectedList - 1;
+                onUpdateSelectedListDetails$({
+                  idx: newIdxOfSelectedList,
+                  name: state.todoLists[newIdxOfSelectedList].name,
+                });
               }
-              state.selectedListName =
-                state.todoLists[state.idxOfSelectedList].name;
               onDispatchSelectedListUpdated$(
-                state.todoLists[state.idxOfSelectedList]
+                state.todoLists[newIdxOfSelectedList]
               );
             }
           }}
         />
         <TodoListsCarouselNextSection
-          nextHidden={state.idxOfSelectedList === state.todoLists.length - 1}
+          nextHidden={idxOfSelectedList === state.todoLists.length - 1}
           nextDisabled={animationState.animating}
           onGoToNext$={() => goToList("next")}
           nextListName={
-            state.idxOfSelectedList < state.todoLists.length - 1
-              ? state.todoLists[state.idxOfSelectedList + 1].name
+            idxOfSelectedList < state.todoLists.length - 1
+              ? state.todoLists[idxOfSelectedList + 1].name
               : null
           }
           nextNextListName={
-            state.idxOfSelectedList <= state.todoLists.length - 3
-              ? state.todoLists[state.idxOfSelectedList + 2].name
+            idxOfSelectedList <= state.todoLists.length - 3
+              ? state.todoLists[idxOfSelectedList + 2].name
               : null
           }
           onAddNewList$={addNewList}

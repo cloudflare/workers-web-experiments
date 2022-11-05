@@ -12,7 +12,7 @@ import { getNewListName } from "../getNewListName";
 import { SelectedListCard } from "./SelectedListCard";
 
 import styles from "./TodoListsCarousel.css?inline";
-import listsAnimationStyles from "./ListsAnimation.css?inline";
+import listsCarouselAnimationStyles from "./ListsCarouselAnimations.css?inline";
 import { TodoListsCarouselPreviousSection } from "./TodoListsCarouselPreviousSection";
 import { TodoListsCarouselNextSection } from "./TodoListsCarouselNextSection";
 
@@ -37,7 +37,7 @@ export const TodoListsCarousel = component$(
     >;
   }) => {
     useStylesScoped$(styles);
-    useStyles$(listsAnimationStyles);
+    useStyles$(listsCarouselAnimationStyles);
 
     const state = useStore<{
       todoLists: TodoList[];

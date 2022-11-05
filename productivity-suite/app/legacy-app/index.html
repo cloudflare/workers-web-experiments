@@ -56,6 +56,7 @@
         background: #fff;
 
         --primary-color: #0051c3;
+        --primary-color-lightest: #aed0ff;
         --secondary-color: #120090;
         --secondary-color-lighter: #1900ce;
       }
@@ -234,6 +235,32 @@
         position: relative;
       }
 
+      #root {
+        position: relative;
+      }
+
+      #pre-bootstrap-loading-indicator {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 0.3rem;
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--primary-color-lightest) 50%,
+          var(--primary-color) 70%
+        );
+        background-repeat: repeat-x;
+        animation: pre-bootstrap-loading-animation .65s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes pre-bootstrap-loading-animation {
+        to {
+          background-position-x: 100vw;
+        }
+      }
     </style>
   </head>
   <body>
@@ -252,7 +279,9 @@
         Show Seams</label>
       </div>
     </div>
-    <div id="root"></div>
+    <div id="root">
+      <div id="pre-bootstrap-loading-indicator"></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
       const spaDelaySliderInput = document.getElementById('spa-delay-slider-input');

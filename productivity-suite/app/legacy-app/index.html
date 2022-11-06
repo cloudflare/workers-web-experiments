@@ -161,6 +161,7 @@
       }
 
       piercing-fragment-host {
+        display: block;
         max-width: 80vw;
         margin-inline: auto;
       }
@@ -187,7 +188,6 @@
       }
 
       body.show-seams piercing-fragment-host {
-        display: block;
         outline-offset: 10px;
       }
 
@@ -221,6 +221,10 @@
 
       body.show-seams piercing-fragment-host[fragment-id="login"]::before {
         content: 'login fragment';
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="news"]::before {
+        content: 'news fragment';
       }
 
       body.show-seams piercing-fragment-host::before {

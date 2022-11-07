@@ -96,24 +96,19 @@ gateway.registerFragment({
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
-      top: 14.6rem;
+      top: 14.7rem;
       left: 2rem;
       right: 2rem;
     }
 
-    @media (max-width: 52rem) {
-      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 14.62rem;
-      }
-    }
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 14.8rem;
+        top: 14.85rem;
       }
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 29.67rem;
+        top: 29.87rem;
       }
     }
     @media (max-width: 25rem) {
@@ -155,16 +150,11 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
-      top: 23.65rem;
+      top: 23.7rem;
       left: 2rem;
       right: 2rem;
     }
 
-    @media (max-width: 52rem) {
-      :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 23.75rem;
-      }
-    }
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
         top: 23.97rem;
@@ -172,7 +162,7 @@ gateway.registerFragment({
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 38.8rem;
+        top: 39.03rem;
       }
     }
     @media (max-width: 25rem) {
@@ -213,20 +203,20 @@ gateway.registerFragment({
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;
       margin: 0 auto;
-      top: 13.6rem;
+      top: 13.9rem;
       left: 0;
       right: 0;
     }
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 13.8rem;
+        top: 14.05rem;
       }
     }
 
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 28.68rem;
+        top: 29rem;
       }
     }
 

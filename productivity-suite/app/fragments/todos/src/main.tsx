@@ -18,11 +18,8 @@ import { EnvContext } from "./env";
       ?.username ?? null;
 
   const lists = currentUser ? await getTodoLists(currentUser) : [];
-  const todoList = lists.find(({ name }) => todoListName === name);
-
-  if (!todoList) {
-    throw new Error(`todoList "${todoListName}" not found`);
-  }
+  const todoList =
+    lists.find(({ name }) => todoListName === name) ?? lists[lists.length - 1];
 
   const application = (
     <React.StrictMode>

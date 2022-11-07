@@ -1,9 +1,15 @@
-export function News() {
-  // @ts-ignore
-  window.e = window._$HY = null;
+import { useEffect } from "react";
 
-  // @ts-ignore
-  window.t = function () {};
+export function News() {
+  useEffect(() => {
+    return () => {
+      // @ts-ignore
+      window.e = window._$HY = null;
+
+      // @ts-ignore
+      window.t = function () {};
+    };
+  });
 
   return (
     <div>

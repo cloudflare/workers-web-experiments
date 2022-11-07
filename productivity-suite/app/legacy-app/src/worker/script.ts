@@ -202,7 +202,7 @@ gateway.registerFragment({
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;
-      margin: 0 1rem;
+      margin: 0 auto;
       top: 13.9rem;
       left: 0;
       right: 0;

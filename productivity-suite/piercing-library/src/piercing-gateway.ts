@@ -3,7 +3,6 @@ import {
   piercingFragmentHostInlineScript,
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
-// import qwikloader from "@builder.io/qwik/qwikloader.debug.js?raw";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
@@ -95,14 +94,6 @@ export class PiercingGateway<Env> {
     this.fragmentConfigs.set(fragmentConfig.fragmentId, fragmentConfig);
   }
 
-  /*
-		We're assigning fetch to the object itself so that user can do:
-			`export default gateway;`
-		this shouldn't be necessary and we should be able to have fetch
-		as a normal method in the class, but that doesn't seem to
-		currently being recognized correctly:
-			https://chat.google.com/room/AAAADFUqSgo/njWMATzSHG4
-	*/
   fetch = async (
     request: Request,
     env: Env,

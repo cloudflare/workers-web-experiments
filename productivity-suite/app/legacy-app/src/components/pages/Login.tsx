@@ -1,7 +1,6 @@
 import { getBus } from "piercing-library";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getTodoLists } from "shared";
 import { useAuth } from "../../auth";
 
 export function Login() {
@@ -17,14 +16,10 @@ export function Login() {
       return (
         getBus(ref.current).listen<{ username: string }>(
           "authentication",
-          async (authDetails) => {
+          (authDetails) => {
             if (authDetails?.username) {
-              await auth.login(authDetails.username);
-              const todoLists = await getTodoLists(authDetails.username);
-              getBus(ref.current!).dispatch("todo-list-selected", {
-                name: todoLists[todoLists.length - 1].name,
-              });
-              setTimeout(() => navigate(from, { replace: true }));
+              auth.login(authDetails.username);
+              navigate(from, { replace: true });
             }
           }
         ) ?? undefined

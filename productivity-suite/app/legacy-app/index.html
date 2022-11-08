@@ -312,8 +312,9 @@
       const enablePiercingInput = document.getElementById('enable-piercing-input');
       enablePiercingInput.addEventListener('input', (event) => setPiercingEnablementCookie(event.target.checked));
 
-      const match = document.cookie.match(/piercingEnabled=(true|false)/);
-      const initialPiercingEnabledValue = !match ? null : match[1] === 'true' ? true : false;
+      const searchParams = new URLSearchParams(document.location.search)
+      const cookieMatch = document.cookie.match(/piercingEnabled=(true|false)/);
+      const initialPiercingEnabledValue = !cookieMatch ? searchParams.get("piercingEnabled") === 'true' : cookieMatch[1] === 'true' ? true : false;
       enablePiercingInput.checked = initialPiercingEnabledValue === null ? true : initialPiercingEnabledValue;
 
       function setPiercingEnablementCookie(enable) {

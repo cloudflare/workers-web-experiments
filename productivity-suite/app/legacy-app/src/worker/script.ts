@@ -45,9 +45,16 @@ async function isUserAuthenticated(request: Request) {
 }
 
 function isPiercingEnabled(request: Request) {
+  const url = new URL(request.url);
+
+  if (url.searchParams.get("piercingEnabled") !== null) {
+    return url.searchParams.get("piercingEnabled") === "true";
+  }
+
   const match = request.headers
     .get("Cookie")
     ?.match(/piercingEnabled=(true|false)/);
+
   const piercingEnabled = !match ? null : match[1] === "true" ? true : false;
   return piercingEnabled === null ? true : piercingEnabled;
 }

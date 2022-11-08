@@ -2,6 +2,7 @@ import { getBus } from "piercing-library";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth";
+import "./Login.css";
 
 export function Login() {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,7 +29,7 @@ export function Login() {
   }, [ref.current]);
 
   return (
-    <div ref={ref}>
+    <div className="login-page" ref={ref}>
       <piercing-fragment-outlet fragment-id="login" />
     </div>
   );

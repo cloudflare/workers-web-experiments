@@ -52,6 +52,7 @@ export const LoginForm = component$(() => {
     getBus(ref.value).dispatch("authentication", {
       username: state.username,
       password: state.password,
+      fromLoginForm: true,
     });
     state.loading = true;
   });

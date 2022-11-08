@@ -21,10 +21,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<string | null>(() => {
-    const currentUser =
-      getBus().latestValue<{ username: string }>("authentication")?.username ??
-      null;
-    return currentUser;
+    const authentication = getBus().latestValue<{
+      username: string;
+      fromLoginForm?: boolean;
+    }>("authentication");
+    if (authentication?.fromLoginForm) {
+      // the login comes from the pre-pierced login form and not the backend,
+      // so ignore it here since the Login page will perform the login asap
+      return null;
+    }
+    return authentication?.username ?? null;
   });
 
   async function login(username: string) {

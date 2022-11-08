@@ -8,6 +8,13 @@ export function getMessageBusState(request: Request) {
   return JSON.parse(stateHeaderStr ?? "{}");
 }
 
+/**
+ * Initializes a server side message bus for the current process based on the
+ * received request (so that server side rendering elements can access the
+ * message bus).
+ *
+ * @param request The received request.
+ */
 export function initializeServerSideMessageBus(request: Request) {
   const state = getMessageBusState(request);
   (globalThis as any as { [messageBusProp]?: ServerSideMessageBus })[

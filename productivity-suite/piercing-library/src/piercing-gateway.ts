@@ -66,7 +66,7 @@ export interface PiercingGatewayConfig<Env> {
    */
   getBaseAppUrl: (env: Env) => string;
   /**
-   * Generates the message bus context for the current request.
+   * Generates the message bus state for the current request.
    */
   generateMessageBusState: (
     requestMessageBusState: MessageBusState,

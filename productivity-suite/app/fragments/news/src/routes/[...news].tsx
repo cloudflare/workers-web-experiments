@@ -1,14 +1,35 @@
-import { createResource, createSignal, For, Show } from "solid-js";
+import {
+  Component,
+  createResource,
+  createSignal,
+  For,
+  Show,
+  Suspense,
+} from "solid-js";
 import Story from "~/components/story";
 import fetchAPI from "~/lib/api";
 import { IStory } from "~/types";
 
-export default function Counter() {
-  const [page, setPage] = createSignal<number>(1);
+const StoryList: Component<{ page: number }> = (props) => {
   const [stories] = createResource<IStory[], string>(
-    () => `news?page=${page()}`,
+    () => `news?page=${props.page}`,
     fetchAPI
   );
+  return (
+    <main class="news-list">
+      <Suspense>
+        <Show when={stories()}>
+          <ul>
+            <For each={stories()}>{(story) => <Story story={story} />}</For>
+          </ul>
+        </Show>
+      </Suspense>
+    </main>
+  );
+};
+
+export default function News() {
+  const [page, setPage] = createSignal<number>(1);
 
   return (
     <div class="news-view">
@@ -31,31 +52,16 @@ export default function Counter() {
           </button>
         </Show>
         <span>page {page()}</span>
-        <Show
-          when={stories() && stories().length >= 29}
-          fallback={
-            <span class="page-link disabled" aria-disabled="true">
-              more {">"}
-            </span>
-          }
+        <button
+          class="page-link"
+          onClick={() => {
+            setPage(page() + 1);
+          }}
         >
-          <button
-            class="page-link"
-            onClick={() => {
-              setPage(page() + 1);
-            }}
-          >
-            more {">"}
-          </button>
-        </Show>
+          more {">"}
+        </button>
       </div>
-      <main class="news-list">
-        <Show when={stories()}>
-          <ul>
-            <For each={stories()}>{(story) => <Story story={story} />}</For>
-          </ul>
-        </Show>
-      </main>
+      <StoryList page={page()}></StoryList>
     </div>
   );
 }

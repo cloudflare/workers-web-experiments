@@ -1,5 +1,4 @@
 // @refresh reload
-import { Suspense } from "solid-js";
 import { isServer, NoHydration } from "solid-js/web";
 import {
   ErrorBoundary,
@@ -39,13 +38,11 @@ export default function Root() {
         {isServer && <link rel="stylesheet" href={`${style.href}`} />}
       </NoHydration>
 
-      <Suspense fallback={<div class="news-list-nav">Loading...</div>}>
-        <ErrorBoundary>
-          <Routes>
-            <FileRoutes />
-          </Routes>
-        </ErrorBoundary>
-      </Suspense>
+      <ErrorBoundary>
+        <Routes>
+          <FileRoutes />
+        </Routes>
+      </ErrorBoundary>
       <Scripts />
     </div>
   );

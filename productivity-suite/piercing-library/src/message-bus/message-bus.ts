@@ -12,13 +12,40 @@ export type MessageBusState = Record<string, any>;
 
 export type MessageBusCallback<T extends JSONValue> = (value: T) => void;
 
+/**
+ * Interface representing a generic isomorphic message bus.
+ */
 export interface MessageBus {
+  /** The state of the message bus instance. */
   state: MessageBusState;
+  /**
+   * Dispatches a new event to the message bus.
+   *
+   * @param eventName The name of the event type to dispatch.
+   * @param value The value of the event to dispatch
+   *              (note: this needs to be a JSON value so
+   *               that it can be serialized into a string).
+   */
   dispatch(eventName: string, value: JSONValue): void;
+  /**
+   * Registers a listener to the message bus for a specific event type.
+   *
+   * @param eventName The name of the event type to listen to.
+   * @param callback The function to register (which will be invoked every time a
+   *                 new value for the event type is dispatched).
+   * @returns a remover function to call when the listener is no longer necessary
+   *          (needed to avoid memory leaks).
+   */
   listen<T extends JSONValue>(
     eventName: string,
     callback: (value: T) => void
   ): () => void;
+  /**
+   * Gets the latest value present in the message bus state for an event type.
+   *
+   * @param eventName The name of the event type.
+   * @returns The last value for the event, or `undefined` if such value is not present.
+   */
   latestValue<T extends JSONValue>(eventName: string): T | undefined;
 }
 

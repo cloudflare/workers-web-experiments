@@ -1,5 +1,5 @@
 .login-form {
-    max-width: min(40ch, 90vw);
+    max-width: min(25rem, 90vw);
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -90,7 +90,7 @@
 }
 
 .submit-btn {
-    margin-top: 3rem;
+    margin-block: 3rem 1rem;
     align-self: flex-end;
     color: #fff;
     background-color: var(--secondary-color);

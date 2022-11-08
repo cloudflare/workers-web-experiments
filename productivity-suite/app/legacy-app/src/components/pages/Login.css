@@ -1,0 +1,4 @@
+.login-page {
+    max-width: min(30rem, 93vw);
+    margin: auto;
+}

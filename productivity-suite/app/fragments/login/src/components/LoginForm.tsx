@@ -85,6 +85,7 @@ export const LoginForm = component$(() => {
           onFocus$={handleFocus}
           onInput$={handleInput}
           value={state.username}
+          autoFocus
           autoComplete="true"
           placeholder="What's your name?"
         />

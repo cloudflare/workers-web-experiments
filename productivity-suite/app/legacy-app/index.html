@@ -97,7 +97,7 @@
         }
       }
 
-      .spa-delay-slider-wrapper {
+      .legacy-app-delay-slider-wrapper {
         display: flex;
         align-items: center;
         justify-content: stretch;
@@ -111,7 +111,7 @@
         flex-shrink: 0;
       }
 
-      #spa-delay-slider-input {
+      #legacy-app-delay-slider-input {
         flex: 1;
         align-self: stretch;
         opacity: 0.5;
@@ -119,22 +119,22 @@
         max-width: calc(100vw - 9rem);
       }
 
-      label[for="spa-delay-slider-input"] {
+      label[for="legacy-app-delay-slider-input"] {
         min-width: max-content;
       }
 
-      #spa-delay-slider-output {
+      #legacy-app-delay-slider-output {
         display: inline-block;
         text-align: end;
         margin-left: 0;
       }
 
-      #spa-delay-slider-output {
+      #legacy-app-delay-slider-output {
         width: 9ch;
       }
 
       @media (max-width: 45rem) {
-        #spa-delay-slider-output {
+        #legacy-app-delay-slider-output {
           width: 4ch;
         }
       }
@@ -269,10 +269,10 @@
   </head>
   <body>
     <div class="piercing-options-wrapper">
-      <div class="spa-delay-slider-wrapper">
-        <label for="spa-delay-slider-input">Legacy app<span class="desktop-text"> bootstrap</span> delay: </label>
-        <input type="range" min="0" max="10" value="3" id="spa-delay-slider-input">
-        <span id="spa-delay-slider-output"></span>
+      <div class="legacy-app-delay-slider-wrapper">
+        <label for="legacy-app-delay-slider-input">Legacy app<span class="desktop-text"> bootstrap</span> delay: </label>
+        <input type="range" min="0" max="10" value="3" id="legacy-app-delay-slider-input">
+        <span id="legacy-app-delay-slider-output"></span>
       </div>
       <div class="piercing-checkboxes-wrapper">
         <label for="enable-piercing-input">
@@ -288,20 +288,20 @@
     </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      const spaDelaySliderInput = document.getElementById('spa-delay-slider-input');
-      const spaDelaySliderOutput = document.getElementById('spa-delay-slider-output');
-      spaDelaySliderInput.addEventListener('input', (event) => {
-        window.sessionStorage.setItem('spaDelay', event.target.value);
-        updateSpaDelaySliderOutput();
+      const legacyAppDelaySliderInput = document.getElementById('legacy-app-delay-slider-input');
+      const legacyAppDelaySliderOutput = document.getElementById('legacy-app-delay-slider-output');
+      legacyAppDelaySliderInput.addEventListener('input', (event) => {
+        window.sessionStorage.setItem('legacyAppDelay', event.target.value);
+        updateLegacyAppDelaySliderOutput();
       });
-      const initialSpaDelay = window.sessionStorage.getItem('spaDelay');
-      spaDelaySliderInput.value = initialSpaDelay ?? 0;
-      updateSpaDelaySliderOutput();
+      const initialLegacyAppDelay = window.sessionStorage.getItem('legacyAppDelay');
+      legacyAppDelaySliderInput.value = initialLegacyAppDelay ?? 2;
+      updateLegacyAppDelaySliderOutput();
 
-      function updateSpaDelaySliderOutput() {
-        const value = +spaDelaySliderInput.value;
+      function updateLegacyAppDelaySliderOutput() {
+        const value = +legacyAppDelaySliderInput.value;
 
-        spaDelaySliderOutput.innerHTML = `
+        legacyAppDelaySliderOutput.innerHTML = `
           ${value} <span class="desktop-text">second${
           value === 0 || value > 1 ? 's' : ''
         }</span><span class="mobile-text">s</span>

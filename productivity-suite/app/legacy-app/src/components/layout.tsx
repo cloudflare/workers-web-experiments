@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth";
 import "./layout.css";
 
@@ -98,7 +98,6 @@ function Footer() {
 }
 
 export function Layout() {
-  const location = useLocation();
   const auth = useAuth();
 
   const isAuthed = !!auth.user;

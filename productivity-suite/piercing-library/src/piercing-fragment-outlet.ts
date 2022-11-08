@@ -5,31 +5,10 @@ import { getBus } from "./message-bus/get-bus";
 import { PiercingFragmentHost } from "./piercing-fragment-host/piercing-fragment-host";
 
 /**
- * Some functions dispatching events need to be delayed so that consumers
- * of the web-component won't receive events immediately as soon as the component
- * is added to the DOM, such behavior can cause different type of issues in ui
- * frameworks.
- *
- * The initDelayForUi variable is used to provide such delay, and it can be set when
- * the outlet is registered via `registerPiercingFragmentOutlet` allowing different
- * delays for different frameworks if need be (via experimentation it seems like 1
- * millisecond is enough for React applications, that is why that is the default value)
- */
-const defaultInitDelayForUi = 1;
-let initDelayForUi = defaultInitDelayForUi;
-
-/**
  * Registers the "piercing-fragment-outlet" web component so that it can be used throughout
  * the application.
- *
- * @param Options Configuration object which can contain an optional initial delay for the
- *                interactivity of fragments. Needed in case the fragment outlets' consumer
- *                can't accept (queued) events as soon as fragments are added to the DOM.
  */
-export function registerPiercingFragmentOutlet({
-  initDelay,
-}: { initDelay?: number } = {}) {
-  initDelayForUi = initDelay ?? defaultInitDelayForUi;
+export function registerPiercingFragmentOutlet() {
   window.customElements.define(
     "piercing-fragment-outlet",
     PiercingFragmentOutlet
@@ -107,11 +86,6 @@ export class PiercingFragmentOutlet extends HTMLElement {
 
   private async fetchFragmentStream() {
     const url = this.getFragmentUrl();
-    setTimeout(
-      () => this.dispatchEvent(new CustomEvent("FetchingStarted")),
-      initDelayForUi
-    );
-
     const state = getBus().state;
 
     const req = new Request(url, {
@@ -120,7 +94,6 @@ export class PiercingFragmentOutlet extends HTMLElement {
       },
     });
     const response = await fetch(req);
-    this.dispatchEvent(new CustomEvent("FetchingCompleted"));
     if (!response.body) {
       throw new Error(
         "An empty response has been provided when fetching" +

@@ -34,6 +34,10 @@ a {
   width: 100%;
 }
 
+.news-list.pending * {
+  color: grey;
+}
+
 .news-list ul {
   list-style-type: none;
   padding: 0;

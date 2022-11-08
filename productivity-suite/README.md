@@ -18,7 +18,8 @@ productivity-suite
 |    |-- fragments
 |    |    |-- login
 |    |    |-- todo-lists
-|    |    +-- todos
+|    |    |-- todos
+|    |    +-- news
 |    |
 |    |-- legacy-app
 |    +-- shared
@@ -99,3 +100,7 @@ npm run deploy
 to deploy all the fragments and legacy application.
 
 After the deployment is completed you should be able to access the application at: `https://productivity-suite._YOUR_ACCOUNT_DOMAIN_.workers.dev`.
+
+## Extra
+
+We discuss what different limitations related to the current implementation are, and possible areas of improvements in the [Limitations and area of improvements document](./limitations-and-improvements.md).

@@ -94,6 +94,13 @@ export class PiercingGateway<Env> {
     this.fragmentConfigs.set(fragmentConfig.fragmentId, fragmentConfig);
   }
 
+  /*
+    We're assigning fetch to the object itself so that user can do:
+      `export default gateway;`
+    this shouldn't be necessary and we should be able to have fetch
+    as a normal method in the class, but that isn't currently being
+    recognized correctly by the workers runtime.
+  */
   fetch = async (
     request: Request,
     env: Env,

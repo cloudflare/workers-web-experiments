@@ -4,10 +4,10 @@ import { messageBusProp } from "./message-bus-prop";
 /**
  * Gets a message bus based on the provided element.
  *
- * @param element Element from there to start looking for a message bus (up the DOM tree)
+ * @param element Element from where to start looking for a message bus (up the DOM tree)
  *                if there is no intermediate message bus or the element is not provided
  *                the message bus in the global scope is returned.
- * @returns       The more relevant message bus.
+ * @returns       The most relevant message bus.
  */
 export function getBus(element?: Element): MessageBus {
   while (element) {

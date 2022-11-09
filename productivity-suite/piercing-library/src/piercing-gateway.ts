@@ -9,6 +9,14 @@ import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
 /**
+ * When making requests to workers set up with server bindings their base url
+ * isn't taken into consideration, so we don't need to specify a real one, however
+ * in order to create correctly Requests and URL objects we do need one, that is
+ * what this url is for
+ */
+const workerBaseUrl = "https://0.0.0.0";
+
+/**
  * Configuration object for the registration of a fragment in the app's gateway worker.
  */
 export interface FragmentConfig<Env> {
@@ -16,11 +24,6 @@ export interface FragmentConfig<Env> {
    * Unique Id for the fragment.
    */
   fragmentId: string;
-  /**
-   * Function which based on the current environment returns
-   * the base url for the fragment's requests.
-   */
-  getBaseUrl: (env: Env) => string;
   /**
    * Styles to apply to the fragment before it gets pierced, their purpose
    * is to style the fragment in such a way to make it look as close as possible
@@ -356,7 +359,7 @@ export class PiercingGateway<Env> {
 
   private proxyAssetRequestToFragmentWorker(
     env: Env,
-    { fragmentId, getBaseUrl }: FragmentConfig<Env>,
+    { fragmentId }: FragmentConfig<Env>,
     request: Request
   ) {
     const pathname = new URL(request.url).pathname;
@@ -366,12 +369,7 @@ export class PiercingGateway<Env> {
     const match = fragmentBasePathRegex.exec(pathname);
     const assetPath = match?.[1] ?? "";
     const service = this.getFragmentFetcher(env, fragmentId);
-    const baseUrl = getBaseUrl(env);
-    const divisor = baseUrl.endsWith("/") ? "" : "/";
-    const newRequest = new Request(
-      `${getBaseUrl(env)}${divisor}${assetPath}`,
-      request
-    );
+    const newRequest = new Request(`${workerBaseUrl}/${assetPath}`, request);
     return service.fetch(newRequest);
   }
 
@@ -389,16 +387,10 @@ export class PiercingGateway<Env> {
     }
   }
 
-  private defaultTransformRequest(
-    request: Request,
-    env: Env,
-    fragmentConfig: FragmentConfig<Env>
-  ) {
+  private defaultTransformRequest(request: Request) {
     const url = new URL(request.url);
     return new Request(
-      `${fragmentConfig.getBaseUrl(env).replace(/\/$/, "")}${url.pathname}?${
-        url.searchParams
-      }`,
+      `${workerBaseUrl}${url.pathname}?${url.searchParams}`,
       request
     );
   }

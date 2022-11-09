@@ -5,6 +5,14 @@ export interface Env {
   APP_BASE_URL: string;
 }
 
+/**
+ * When making requests to workers set up with server bindings their base url
+ * isn't taken into consideration, so we don't need to specify a real one, however
+ * in order to create correctly Requests and URL objects we do need one, that is
+ * what this url is for
+ */
+const workerBaseUrl = "https://0.0.0.0";
+
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
   generateMessageBusState: async (requestMessageBusState, request) => {
@@ -54,10 +62,6 @@ function isPiercingEnabled(request: Request) {
 
 gateway.registerFragment({
   fragmentId: "login",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-login-fragment.devdash.workers.dev`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
@@ -90,10 +94,6 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todo-lists",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-todo-lists-fragment.devdash.workers.dev`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -138,16 +138,12 @@ gateway.registerFragment({
       params.append("listName", listName);
     }
 
-    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+    return new Request(`${workerBaseUrl}?${params}`, request);
   },
 });
 
 gateway.registerFragment({
   fragmentId: "todos",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-todos-fragment.devdash.workers.dev`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
@@ -190,16 +186,12 @@ gateway.registerFragment({
     if (listName) {
       params.append("listName", listName);
     }
-    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+    return new Request(`${workerBaseUrl}?${params}`, request);
   },
 });
 
 gateway.registerFragment({
   fragmentId: "news",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-news-fragment.devdash.workers.dev`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;

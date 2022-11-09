@@ -129,9 +129,12 @@
 }
 
 @media (max-width: 52rem) {
-  .links-and-copyright {
+  .app-footer .links-and-copyright {
     flex-direction: column;
     gap: 0.1rem;
+  }
+  .app-footer .links-and-copyright a.cloudflare-link {
+    margin-right: 0;
   }
 }
 

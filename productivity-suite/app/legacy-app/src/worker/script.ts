@@ -1,4 +1,4 @@
-import { FragmentConfig, PiercingGateway } from "piercing-library";
+import { PiercingGateway } from "piercing-library";
 import { getCurrentUser, getTodoLists } from "shared";
 
 export interface Env {
@@ -54,10 +54,6 @@ function isPiercingEnabled(request: Request) {
 
 gateway.registerFragment({
   fragmentId: "login",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-login-fragment.devdash.workers.dev`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
@@ -90,10 +86,6 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todo-lists",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-todo-lists-fragment.devdash.workers.dev`,
   prePiercingStyles: `
 		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -122,32 +114,25 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
-  transformRequest: (
-    request: Request,
-    env: Env,
-    thisConfig: FragmentConfig<Env>
-  ) => {
-    const path = new URL(request.url).pathname;
+  transformRequest: (request: Request) => {
+    const url = new URL(request.url);
+    const path = url.pathname;
     const match = /^\/todos\/([^/]+)$/.exec(path);
 
     if (!match) return request;
 
     const listName = decodeURIComponent(match[1]);
-    const params = new URL(request.url).searchParams;
+    const params = url.searchParams;
     if (listName) {
       params.append("listName", listName);
     }
-
-    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+    url.pathname = "";
+    return new Request(url, request);
   },
 });
 
 gateway.registerFragment({
   fragmentId: "todos",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-todos-fragment.devdash.workers.dev/_fragment/todos`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
@@ -176,30 +161,22 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
-  transformRequest: (
-    request: Request,
-    env: Env,
-    thisConfig: FragmentConfig<Env>
-  ) => {
+  transformRequest: (request: Request) => {
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/todos\/([^/]+)$/.exec(path);
     const listName = match?.[1] && decodeURIComponent(match[1]);
-
     const params = url.searchParams;
     if (listName) {
       params.append("listName", listName);
     }
-    return new Request(`${thisConfig.getBaseUrl(env)}?${params}`, request);
+    url.pathname = "";
+    return new Request(url, request);
   },
 });
 
 gateway.registerFragment({
   fragmentId: "news",
-  // Note: deployment part of the url is fine also for local development since then
-  //       only the path part of the url is being used
-  getBaseUrl: () =>
-    `https://productivity-suite-news-fragment.devdash.workers.dev`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;
@@ -232,17 +209,6 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/news(\/[^/]+)?$/.test(new URL(request.url).pathname),
-  transformRequest: (
-    request: Request,
-    env: Env,
-    thisConfig: FragmentConfig<Env>
-  ) => {
-    const url = new URL(request.url);
-    const path = url.pathname;
-    const match = /\/news\/([^/]+)$/.exec(path);
-    // todo: add pagination and/or routing to request searchParams here
-    return request;
-  },
 });
 
 export default gateway;

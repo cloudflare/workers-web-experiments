@@ -17,11 +17,6 @@ export interface FragmentConfig<Env> {
    */
   fragmentId: string;
   /**
-   * Function which based on the current environment returns
-   * the base url for the fragment's requests.
-   */
-  getBaseUrl: (env: Env) => string;
-  /**
    * Styles to apply to the fragment before it gets pierced, their purpose
    * is to style the fragment in such a way to make it look as close as possible
    * to the final pierced view (so that the piercing operation can look seamless).
@@ -356,22 +351,19 @@ export class PiercingGateway<Env> {
 
   private proxyAssetRequestToFragmentWorker(
     env: Env,
-    { fragmentId, getBaseUrl }: FragmentConfig<Env>,
+    { fragmentId }: FragmentConfig<Env>,
     request: Request
   ) {
-    const pathname = new URL(request.url).pathname;
+    const url = new URL(request.url);
+    const pathname = url.pathname;
     const fragmentBasePathRegex = new RegExp(
       `^\\/_fragment\\/${fragmentId}(?:\\/?)(.*)$`
     );
     const match = fragmentBasePathRegex.exec(pathname);
     const assetPath = match?.[1] ?? "";
     const service = this.getFragmentFetcher(env, fragmentId);
-    const baseUrl = getBaseUrl(env);
-    const divisor = baseUrl.endsWith("/") ? "" : "/";
-    const newRequest = new Request(
-      `${getBaseUrl(env)}${divisor}${assetPath}`,
-      request
-    );
+    url.pathname = `/${assetPath}`;
+    const newRequest = new Request(url, request);
     return service.fetch(newRequest);
   }
 
@@ -389,18 +381,8 @@ export class PiercingGateway<Env> {
     }
   }
 
-  private defaultTransformRequest(
-    request: Request,
-    env: Env,
-    fragmentConfig: FragmentConfig<Env>
-  ) {
-    const url = new URL(request.url);
-    return new Request(
-      `${fragmentConfig.getBaseUrl(env).replace(/\/$/, "")}${url.pathname}?${
-        url.searchParams
-      }`,
-      request
-    );
+  private defaultTransformRequest(request: Request) {
+    return request;
   }
 }
 

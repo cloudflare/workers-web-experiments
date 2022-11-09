@@ -163,14 +163,9 @@ export class PiercingGateway<Env> {
                 ctx
               );
 
-              const shouldBeIncludedPromise =
-                shouldBeIncluded instanceof Promise
-                  ? shouldBeIncluded
-                  : new Promise<boolean>((resolve) =>
-                      resolve(shouldBeIncluded)
-                    );
-
-              return shouldBeIncludedPromise.then((shouldBeIncluded) =>
+              return new Promise(async (resolve) =>
+                resolve(await shouldBeIncluded)
+              ).then((shouldBeIncluded) =>
                 shouldBeIncluded
                   ? this.fetchSSRedFragment(env, fragmentConfig, request)
                   : null

@@ -340,7 +340,7 @@
       });
 
       const seamsEnabledMatch = document.cookie.match(/seamsEnabled=(true|false)/);
-      const initialSeamsEnabledValue = !seamsEnabledMatch ? null : seamsEnabledMatch[1] === 'true' ? true : false;
+      const initialSeamsEnabledValue = !seamsEnabledMatch || seamsEnabledMatch[1] === 'true';
       enableSeamsInput.checked = initialSeamsEnabledValue;
       toggleSeams(initialSeamsEnabledValue);
     </script>

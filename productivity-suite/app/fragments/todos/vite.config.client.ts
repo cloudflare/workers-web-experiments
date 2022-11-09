@@ -7,7 +7,7 @@ export default defineConfig({
   base: "/_fragment/todos/",
   plugins: [react(), addDefaultFnExportToBundle(/index\..*\.js$/)],
   build: {
-    outDir: "dist/client/_fragment/todos/",
+    outDir: "dist/client",
     rollupOptions: {
       input: "index.html",
     },

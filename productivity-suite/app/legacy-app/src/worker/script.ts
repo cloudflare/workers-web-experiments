@@ -147,7 +147,7 @@ gateway.registerFragment({
   // Note: deployment part of the url is fine also for local development since then
   //       only the path part of the url is being used
   getBaseUrl: () =>
-    `https://productivity-suite-todos-fragment.devdash.workers.dev/_fragment/todos`,
+    `https://productivity-suite-todos-fragment.devdash.workers.dev`,
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;

@@ -3,7 +3,6 @@ import {
   piercingFragmentHostInlineScript,
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
-// import qwikloader from "@builder.io/qwik/qwikloader.debug.js?raw";
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
@@ -96,13 +95,12 @@ export class PiercingGateway<Env> {
   }
 
   /*
-		We're assigning fetch to the object itself so that user can do:
-			`export default gateway;`
-		this shouldn't be necessary and we should be able to have fetch
-		as a normal method in the class, but that doesn't seem to
-		currently being recognized correctly:
-			https://chat.google.com/room/AAAADFUqSgo/njWMATzSHG4
-	*/
+    We're assigning fetch to the object itself so that user can do:
+      `export default gateway;`
+    this shouldn't be necessary and we should be able to have fetch
+    as a normal method in the class, but that isn't currently being
+    recognized correctly by the workers runtime.
+  */
   fetch = async (
     request: Request,
     env: Env,
@@ -137,26 +135,45 @@ export class PiercingGateway<Env> {
       ?.includes("text/html");
 
     if (requestIsForHtml) {
-      const fragmentStreamsToInclude: ReadableStream[] = [];
-      for (const fragmentConfig of this.fragmentConfigs.values()) {
-        const shouldBeIncluded = await fragmentConfig.shouldBeIncluded(
-          request,
-          env,
-          ctx
-        );
-        if (shouldBeIncluded) {
-          fragmentStreamsToInclude.push(
-            await this.fetchSSRedFragment(env, fragmentConfig, request)
+      const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
+      const indexBodyResponse = this.fetchBaseIndexHtml(
+        new Request(baseUrl, request)
+      ).then((response) => response.text());
+
+      const fragmentStreamOrNullPromises: Promise<ReadableStream | null>[] =
+        Array.from(this.fragmentConfigs.values()).map((fragmentConfig) => {
+          const shouldBeIncluded = fragmentConfig.shouldBeIncluded(
+            request,
+            env,
+            ctx
           );
-        }
-      }
-      return this.getIndexPage(
-        env,
-        request,
+
+          const shouldBeIncludedPromise =
+            shouldBeIncluded instanceof Promise
+              ? shouldBeIncluded
+              : new Promise<boolean>((resolve) => resolve(shouldBeIncluded));
+
+          return shouldBeIncludedPromise.then((shouldBeIncluded) =>
+            shouldBeIncluded
+              ? this.fetchSSRedFragment(env, fragmentConfig, request)
+              : null
+          );
+        });
+
+      const [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
+        indexBodyResponse,
+        ...fragmentStreamOrNullPromises,
+      ]);
+
+      const fragmentStreamsToInclude = fragmentStreamsOrNulls.filter(
+        (streamOrNull) => streamOrNull !== null
+      ) as ReadableStream<any>[];
+
+      return this.returnCombinedIndexPage(
+        indexBody,
         concatenateStreams(fragmentStreamsToInclude)
       );
     }
-    return null;
   }
 
   private async createSSRMessageBusAndUpdateRequest(
@@ -239,17 +256,10 @@ export class PiercingGateway<Env> {
     return fetch(newRequest, request);
   }
 
-  private async getIndexPage(
-    env: Env,
-    request: Request,
+  private async returnCombinedIndexPage(
+    indexBody: string,
     streamToInclude: ReadableStream
   ): Promise<Response> {
-    const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
-    const updatedRequest = new Request(baseUrl, request);
-    const indexHtmlResponse = await this.fetchBaseIndexHtml(updatedRequest);
-
-    const indexBody = await indexHtmlResponse.text();
-
     const indexOfEndBody = indexBody.indexOf("</body>");
     const preStream = indexBody.substring(0, indexOfEndBody);
     const postStream = indexBody.substring(indexOfEndBody);

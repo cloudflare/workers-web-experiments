@@ -1,6 +1,6 @@
-import { Children, ReactNode } from "react";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../auth";
+import { useAuth } from "../../auth";
 
 import "./UnimplementedDemoPage.css";
 

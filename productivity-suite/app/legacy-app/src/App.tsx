@@ -9,6 +9,7 @@ import "./App.css";
 import { AuthProvider, RequireAuth, RequireNotAuth } from "./auth";
 import { Layout } from "./components/layout";
 import { Login, TodoLists, Calendar, Contacts, News } from "./components/pages";
+import { PageNotFoundPage } from "./components/pages/PageNotFound";
 
 export default function App() {
   return (
@@ -49,5 +50,6 @@ const ProtectedRoutes = (
     <Route path="/calendar" element={<Calendar />} />
     <Route path="/contacts" element={<Contacts />} />
     <Route path="/news" element={<News />} />
+    <Route path="*" element={<PageNotFoundPage />} />
   </Route>
 );

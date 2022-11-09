@@ -288,18 +288,19 @@
     </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
+      const legacyAppDefaultDelay = 2;
       const legacyAppDelaySliderInput = document.getElementById('legacy-app-delay-slider-input');
       const legacyAppDelaySliderOutput = document.getElementById('legacy-app-delay-slider-output');
       legacyAppDelaySliderInput.addEventListener('input', (event) => {
-        window.sessionStorage.setItem('legacyAppDelay', event.target.value);
-        updateLegacyAppDelaySliderOutput();
+        updateLegacyAppDelay();
       });
       const initialLegacyAppDelay = window.sessionStorage.getItem('legacyAppDelay');
-      legacyAppDelaySliderInput.value = initialLegacyAppDelay ?? 2;
-      updateLegacyAppDelaySliderOutput();
+      legacyAppDelaySliderInput.value = initialLegacyAppDelay ?? legacyAppDefaultDelay;
+      updateLegacyAppDelay();
 
-      function updateLegacyAppDelaySliderOutput() {
+      function updateLegacyAppDelay() {
         const value = +legacyAppDelaySliderInput.value;
+        window.sessionStorage.setItem('legacyAppDelay', value);
 
         legacyAppDelaySliderOutput.innerHTML = `
           ${value} <span class="desktop-text">second${

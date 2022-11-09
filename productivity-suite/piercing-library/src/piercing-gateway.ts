@@ -3,6 +3,7 @@ import {
   piercingFragmentHostInlineScript,
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
+// for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";

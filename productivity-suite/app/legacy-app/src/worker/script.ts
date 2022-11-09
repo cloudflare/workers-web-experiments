@@ -60,7 +60,7 @@ gateway.registerFragment({
       top: 10.45rem;
       left: 1rem;
       right: 1rem;
-      max-width: min(30rem, 93vw);
+      max-width: min(30rem, 80vw);
     }
 
     @media (max-width: 45rem) {

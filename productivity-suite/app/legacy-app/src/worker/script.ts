@@ -7,6 +7,13 @@ export interface Env {
 
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
+  shouldPiercingBeEnabled(request: Request) {
+    const match = request.headers
+      .get("Cookie")
+      ?.match(/piercingEnabled=(true|false)/);
+    const piercingEnabled = !match ? null : match[1] === "true" ? true : false;
+    return piercingEnabled === null ? true : piercingEnabled;
+  },
   generateMessageBusState: async (requestMessageBusState, request) => {
     const requestCookie = request.headers.get("Cookie");
     const currentUser = requestCookie
@@ -44,14 +51,6 @@ async function isUserAuthenticated(request: Request) {
   return !!currentUser;
 }
 
-function isPiercingEnabled(request: Request) {
-  const match = request.headers
-    .get("Cookie")
-    ?.match(/piercingEnabled=(true|false)/);
-  const piercingEnabled = !match ? null : match[1] === "true" ? true : false;
-  return piercingEnabled === null ? true : piercingEnabled;
-}
-
 gateway.registerFragment({
   fragmentId: "login",
   prePiercingStyles: `
@@ -79,9 +78,9 @@ gateway.registerFragment({
       }
     }
     `,
-  shouldBeIncluded: async (request: Request) =>
-    isPiercingEnabled(request) &&
-    isUserAuthenticated(request).then((authenticated) => !authenticated),
+  async shouldBeIncluded(request: Request) {
+    return !(await isUserAuthenticated(request));
+  },
 });
 
 gateway.registerFragment({
@@ -110,10 +109,12 @@ gateway.registerFragment({
       }
     }
     `,
-  shouldBeIncluded: async (request: Request) =>
-    isPiercingEnabled(request) &&
-    (await isUserAuthenticated(request)) &&
-    /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
+  async shouldBeIncluded(request: Request) {
+    return (
+      (await isUserAuthenticated(request)) &&
+      /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname)
+    );
+  },
   transformRequest: (request: Request) => {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -157,10 +158,12 @@ gateway.registerFragment({
       }
     }
     `,
-  shouldBeIncluded: async (request: Request) =>
-    isPiercingEnabled(request) &&
-    (await isUserAuthenticated(request)) &&
-    /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
+  async shouldBeIncluded(request: Request) {
+    return (
+      (await isUserAuthenticated(request)) &&
+      /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname)
+    );
+  },
   transformRequest: (request: Request) => {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -204,10 +207,12 @@ gateway.registerFragment({
       }
     }
     `,
-  shouldBeIncluded: async (request: Request) =>
-    isPiercingEnabled(request) &&
-    (await isUserAuthenticated(request)) &&
-    /^\/news(\/[^/]+)?$/.test(new URL(request.url).pathname),
+  async shouldBeIncluded(request: Request) {
+    return (
+      (await isUserAuthenticated(request)) &&
+      /^\/news(\/[^/]+)?$/.test(new URL(request.url).pathname)
+    );
+  },
 });
 
 export default gateway;

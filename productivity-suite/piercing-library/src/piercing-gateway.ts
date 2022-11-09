@@ -69,6 +69,14 @@ export interface PiercingGatewayConfig<Env> {
     env: Env,
     ctx: ExecutionContext
   ) => MessageBusState | Promise<MessageBusState>;
+  /**
+   * Allows the disabling of the whole server-side piercing based on the current request.
+   */
+  shouldPiercingBeEnabled?: (
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext
+  ) => boolean | Promise<boolean>;
 }
 
 export class PiercingGateway<Env> {
@@ -141,25 +149,33 @@ export class PiercingGateway<Env> {
         new Request(baseUrl, request)
       ).then((response) => response.text());
 
+      const piercingEnabled =
+        !this.config.shouldPiercingBeEnabled ||
+        (await this.config.shouldPiercingBeEnabled(request, env, ctx));
+
       const fragmentStreamOrNullPromises: Promise<ReadableStream | null>[] =
-        Array.from(this.fragmentConfigs.values()).map((fragmentConfig) => {
-          const shouldBeIncluded = fragmentConfig.shouldBeIncluded(
-            request,
-            env,
-            ctx
-          );
+        !piercingEnabled
+          ? []
+          : Array.from(this.fragmentConfigs.values()).map((fragmentConfig) => {
+              const shouldBeIncluded = fragmentConfig.shouldBeIncluded(
+                request,
+                env,
+                ctx
+              );
 
-          const shouldBeIncludedPromise =
-            shouldBeIncluded instanceof Promise
-              ? shouldBeIncluded
-              : new Promise<boolean>((resolve) => resolve(shouldBeIncluded));
+              const shouldBeIncludedPromise =
+                shouldBeIncluded instanceof Promise
+                  ? shouldBeIncluded
+                  : new Promise<boolean>((resolve) =>
+                      resolve(shouldBeIncluded)
+                    );
 
-          return shouldBeIncludedPromise.then((shouldBeIncluded) =>
-            shouldBeIncluded
-              ? this.fetchSSRedFragment(env, fragmentConfig, request)
-              : null
-          );
-        });
+              return shouldBeIncludedPromise.then((shouldBeIncluded) =>
+                shouldBeIncluded
+                  ? this.fetchSSRedFragment(env, fragmentConfig, request)
+                  : null
+              );
+            });
 
       const [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
         indexBodyResponse,

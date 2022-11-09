@@ -138,6 +138,13 @@
   }
 }
 
+@media (max-width: 25rem) {
+  .app-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
 .link-icons {
   display: flex;
   justify-content: center;

@@ -1,17 +1,9 @@
-import { FragmentConfig, PiercingGateway } from "piercing-library";
+import { PiercingGateway } from "piercing-library";
 import { getCurrentUser, getTodoLists } from "shared";
 
 export interface Env {
   APP_BASE_URL: string;
 }
-
-/**
- * When making requests to workers set up with server bindings their base url
- * isn't taken into consideration, so we don't need to specify a real one, however
- * in order to create correctly Requests and URL objects we do need one, that is
- * what this url is for
- */
-const workerBaseUrl = "https://0.0.0.0";
 
 const gateway = new PiercingGateway<Env>({
   getBaseAppUrl: (env) => env.APP_BASE_URL,
@@ -122,23 +114,20 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
-  transformRequest: (
-    request: Request,
-    env: Env,
-    thisConfig: FragmentConfig<Env>
-  ) => {
-    const path = new URL(request.url).pathname;
+  transformRequest: (request: Request) => {
+    const url = new URL(request.url);
+    const path = url.pathname;
     const match = /^\/todos\/([^/]+)$/.exec(path);
 
     if (!match) return request;
 
     const listName = decodeURIComponent(match[1]);
-    const params = new URL(request.url).searchParams;
+    const params = url.searchParams;
     if (listName) {
       params.append("listName", listName);
     }
-
-    return new Request(`${workerBaseUrl}?${params}`, request);
+    url.pathname = "";
+    return new Request(url, request);
   },
 });
 
@@ -172,21 +161,17 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname),
-  transformRequest: (
-    request: Request,
-    env: Env,
-    thisConfig: FragmentConfig<Env>
-  ) => {
+  transformRequest: (request: Request) => {
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/todos\/([^/]+)$/.exec(path);
     const listName = match?.[1] && decodeURIComponent(match[1]);
-
     const params = url.searchParams;
     if (listName) {
       params.append("listName", listName);
     }
-    return new Request(`${workerBaseUrl}?${params}`, request);
+    url.pathname = "";
+    return new Request(url, request);
   },
 });
 
@@ -224,17 +209,6 @@ gateway.registerFragment({
     isPiercingEnabled(request) &&
     (await isUserAuthenticated(request)) &&
     /^\/news(\/[^/]+)?$/.test(new URL(request.url).pathname),
-  transformRequest: (
-    request: Request,
-    env: Env,
-    thisConfig: FragmentConfig<Env>
-  ) => {
-    const url = new URL(request.url);
-    const path = url.pathname;
-    const match = /\/news\/([^/]+)$/.exec(path);
-    // todo: add pagination and/or routing to request searchParams here
-    return request;
-  },
 });
 
 export default gateway;

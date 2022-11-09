@@ -9,14 +9,6 @@ import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
 /**
- * When making requests to workers set up with server bindings their base url
- * isn't taken into consideration, so we don't need to specify a real one, however
- * in order to create correctly Requests and URL objects we do need one, that is
- * what this url is for
- */
-const workerBaseUrl = "https://0.0.0.0";
-
-/**
  * Configuration object for the registration of a fragment in the app's gateway worker.
  */
 export interface FragmentConfig<Env> {
@@ -362,14 +354,16 @@ export class PiercingGateway<Env> {
     { fragmentId }: FragmentConfig<Env>,
     request: Request
   ) {
-    const pathname = new URL(request.url).pathname;
+    const url = new URL(request.url);
+    const pathname = url.pathname;
     const fragmentBasePathRegex = new RegExp(
       `^\\/_fragment\\/${fragmentId}(?:\\/?)(.*)$`
     );
     const match = fragmentBasePathRegex.exec(pathname);
     const assetPath = match?.[1] ?? "";
     const service = this.getFragmentFetcher(env, fragmentId);
-    const newRequest = new Request(`${workerBaseUrl}/${assetPath}`, request);
+    url.pathname = `/${assetPath}`;
+    const newRequest = new Request(url, request);
     return service.fetch(newRequest);
   }
 
@@ -388,11 +382,7 @@ export class PiercingGateway<Env> {
   }
 
   private defaultTransformRequest(request: Request) {
-    const url = new URL(request.url);
-    return new Request(
-      `${workerBaseUrl}${url.pathname}?${url.searchParams}`,
-      request
-    );
+    return request;
   }
 }
 

@@ -59,7 +59,7 @@ export interface PiercingGatewayConfig<Env> {
    * Function which based on the current environment returns
    * the base url for the base/legacy application.
    */
-  getBaseAppUrl: (env: Env) => string;
+  getLegacyAppBaseUrl: (env: Env) => string;
   /**
    * Generates the message bus state for the current request.
    */
@@ -144,7 +144,7 @@ export class PiercingGateway<Env> {
       ?.includes("text/html");
 
     if (requestIsForHtml) {
-      const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
+      const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
       const indexBodyResponse = this.fetchBaseIndexHtml(
         new Request(baseUrl, request)
       ).then((response) => response.text());
@@ -268,7 +268,7 @@ export class PiercingGateway<Env> {
 
   private forwardFetchToBaseApp(request: Request, env: Env) {
     const url = new URL(request.url);
-    const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
+    const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
     const newRequest = new Request(`${baseUrl}${url.pathname}`);
     return fetch(newRequest, request);
   }

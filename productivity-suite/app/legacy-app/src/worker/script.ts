@@ -6,7 +6,7 @@ export interface Env {
 }
 
 const gateway = new PiercingGateway<Env>({
-  getBaseAppUrl: (env) => env.APP_BASE_URL,
+  getLegacyAppBaseUrl: (env) => env.APP_BASE_URL,
   shouldPiercingBeEnabled(request: Request) {
     const match = request.headers
       .get("Cookie")

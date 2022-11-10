@@ -37,31 +37,26 @@ async function runAllProcesses() {
 
     await sleep(5000);
 
-    log('Serving the legacy application...');
-    runNpmScript(path.join(appDir, 'legacy-app'), 'dev.react');
-    runNpmScript(path.join(appDir, 'legacy-app'), 'dev.worker');
-
-    await sleep(2000);
-
     const fragmentsDirPath = path.join(rootDir, 'app', 'fragments');
-
     const fragments = fs.readdirSync(fragmentsDirPath, { withFileTypes: true })
         .filter(file => file.isDirectory())
-        .map(file => ({
-            name: file.name,
-            path: path.join(fragmentsDirPath, file.name)
-        }));
 
     for(const fragment of fragments) {
         log(`Serving the ${fragment.name} fragment...`);
-		runNpmScript(fragment.path);
-		await sleep(3000);
+		runNpmScript(path.join(fragmentsDirPath, fragment.name));
+		await sleep(2000);
 	}
 
-    await sleep(3000);
+    log('Serving the legacy application...');
+    runNpmScript(path.join(appDir, 'legacy-app'), 'dev.react');
+
+    await sleep(2000);
+
+    log(`Serving the Gateway worker...`);
+    runNpmScript(path.join(appDir, 'legacy-app'), 'dev.worker');
+    await sleep(2000);
 
     log("Ready to go! 🚀");
-    await sleep(1000);
 
     open("http://localhost:8987/");
 };

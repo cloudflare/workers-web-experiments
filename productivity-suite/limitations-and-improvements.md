@@ -21,13 +21,25 @@ An alternative solution we considered is to add some scaffolding/placeholder HTM
 Such a method could provide a more robust positioning solution but it would also introduce new challenges which would need to be addressed, such as dx related concerns (e.g. how can the html be added in a simple way which doesn’t promote code duplication?) and issues related to dynamic content present in the legacy application (e.g. how can the scaffolding elements reflect the side of elements in the legacy application which sizes derive from dynamic content).
 Although not foolproof, this is definitely be worth exploring, and which could provide a nicer and more robust solution to the positioning issue. It could also provide a way to show static placeholder content for the legacy app while it is loading.
 
-## Side-Effectful Module Type Scripts
+## JavaScript module scripts with side-effects
 
-We’ve noticed that many frameworks produce scripts that are included in the final document as `type="module"`. Such scripts are only ever evaluated once, including any side-effects.
+We’ve noticed that many frameworks produce scripts that are included in the final document as Javascript module script. Such scripts (as for the specs) are only ever executed once, including any side-effects.
 
 This is not normally an issue, but when we want to reload a fragment, that was previously unloaded, the side-effects are never re-executed. This can be a problem if the framework relies upon the side-effect to initialize the state of the fragment.
 
-The way in which we’ve moved around this issue in our demo application is to tweak the fragment’s building behaviors in such a way that side-effectful code present in such type module scripts would be wrapped into a function and exposed through the script itself as a default export (see for example the `addDefaultFnExportToBundle` Vite plugin in the `productivity-suite/app/fragments/todos/vite.config.client.ts` file). The outlet component (`productivity-suite/piercing-library/src/piercing-fragment-outlet.ts`) upon fetching a fragment would then try calling such default exported function so that all the necessary code would be run as needed.
+Our current workaround for this is to modify the build of the fragment's client-side code to wrap the side-effects in a function which is both called and exported:
+
+```ts
+function moduleFn() {
+  // side-effectful code...
+}
+moduleFn();
+export default moduleFn;
+```
+
+See the `addDefaultFnExportToBundle` Vite plugin in the `productivity-suite/app/fragments/todos/vite.config.client.ts` file.
+
+When fetching a fragment, the fragment-outlet custom element (`productivity-suite/piercing-library/src/piercing-fragment-outlet.ts`) tries to call such a default exported function so that the side-effect code is re-executed.
 
 This method requires the fragments’ authors to be in control and tweak the build application in order for its type module scripts to follow the required convention, this not only can be difficult and different for different technologies but can even sometimes be unfeasible in situations where complex and non configurable bundling solutions are in place.
 

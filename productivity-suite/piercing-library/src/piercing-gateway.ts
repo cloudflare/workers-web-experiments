@@ -3,6 +3,7 @@ import {
   piercingFragmentHostInlineScript,
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
+// for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
@@ -58,7 +59,7 @@ export interface PiercingGatewayConfig<Env> {
    * Function which based on the current environment returns
    * the base url for the base/legacy application.
    */
-  getBaseAppUrl: (env: Env) => string;
+  getLegacyAppBaseUrl: (env: Env) => string;
   /**
    * Generates the message bus state for the current request.
    */
@@ -68,6 +69,14 @@ export interface PiercingGatewayConfig<Env> {
     env: Env,
     ctx: ExecutionContext
   ) => MessageBusState | Promise<MessageBusState>;
+  /**
+   * Allows the disabling of the whole server-side piercing based on the current request.
+   */
+  shouldPiercingBeEnabled?: (
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext
+  ) => boolean | Promise<boolean>;
 }
 
 export class PiercingGateway<Env> {
@@ -135,30 +144,31 @@ export class PiercingGateway<Env> {
       ?.includes("text/html");
 
     if (requestIsForHtml) {
-      const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
+      const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
       const indexBodyResponse = this.fetchBaseIndexHtml(
         new Request(baseUrl, request)
       ).then((response) => response.text());
 
+      const piercingEnabled =
+        !this.config.shouldPiercingBeEnabled ||
+        (await this.config.shouldPiercingBeEnabled(request, env, ctx));
+
       const fragmentStreamOrNullPromises: Promise<ReadableStream | null>[] =
-        Array.from(this.fragmentConfigs.values()).map((fragmentConfig) => {
-          const shouldBeIncluded = fragmentConfig.shouldBeIncluded(
-            request,
-            env,
-            ctx
-          );
+        !piercingEnabled
+          ? []
+          : Array.from(this.fragmentConfigs.values()).map(
+              async (fragmentConfig) => {
+                const shouldBeIncluded = await fragmentConfig.shouldBeIncluded(
+                  request,
+                  env,
+                  ctx
+                );
 
-          const shouldBeIncludedPromise =
-            shouldBeIncluded instanceof Promise
-              ? shouldBeIncluded
-              : new Promise<boolean>((resolve) => resolve(shouldBeIncluded));
-
-          return shouldBeIncludedPromise.then((shouldBeIncluded) =>
-            shouldBeIncluded
-              ? this.fetchSSRedFragment(env, fragmentConfig, request)
-              : null
-          );
-        });
+                return shouldBeIncluded
+                  ? this.fetchSSRedFragment(env, fragmentConfig, request)
+                  : null;
+              }
+            );
 
       const [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
         indexBodyResponse,
@@ -251,7 +261,7 @@ export class PiercingGateway<Env> {
 
   private forwardFetchToBaseApp(request: Request, env: Env) {
     const url = new URL(request.url);
-    const baseUrl = this.config.getBaseAppUrl(env).replace(/\/$/, "");
+    const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
     const newRequest = new Request(`${baseUrl}${url.pathname}`);
     return fetch(newRequest, request);
   }

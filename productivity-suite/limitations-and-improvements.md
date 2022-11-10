@@ -55,15 +55,13 @@ This is problematic for our strategy since asset requests are proxied through th
 
 Our current solution for generated JS is to modify the build (or render-time) configuration so the fragment generates HTML that prefixes the paths with an appropriate fragment base path. This approach has the downside of the fragment no longer working standalone, since in that case the assets are not actually hosted at the prefixed path.
 
-There is a further issue, which we have not needed to address in this demo. Other assets such as images and stylesheets that are not controlled by the build process need to have their asset paths manually adjusted.
+There is a further issue, which we have not needed to address in this demo. A fragment can contain other type of assets such as images and stylesheets that are not controlled by the build process. These need to have their asset paths manually adjusted.
 
 We’ve thought of different solutions for this issues, which include:
 
 - Always providing assets via external absolute paths (e.g. using CDNs)
 - Modifying the HTML, JS and CSS imports at the fragment build time
 - Using appropriate conventions so that the gateway worker can discern which asset belongs to which fragment and forwarding the requests to the proper workers
-
-We haven’t had the need to use such assets in our demo’s fragments, so we haven’t yet specifically decided on a solution to this problem.
 
 This problem is not specific to our demo or even specific to fragment piercing. It will be a common problem for any micro-frontend architecture to address.
 

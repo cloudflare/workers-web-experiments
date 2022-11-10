@@ -6,7 +6,9 @@ export interface Env {
 }
 
 const gateway = new PiercingGateway<Env>({
-  getLegacyAppBaseUrl: (env) => env.APP_BASE_URL,
+  getLegacyAppBaseUrl(env) {
+    return env.APP_BASE_URL;
+  },
   shouldPiercingBeEnabled(request: Request) {
     const match = request.headers
       .get("Cookie")
@@ -14,7 +16,7 @@ const gateway = new PiercingGateway<Env>({
     const piercingEnabled = !match ? null : match[1] === "true" ? true : false;
     return piercingEnabled === null ? true : piercingEnabled;
   },
-  generateMessageBusState: async (requestMessageBusState, request) => {
+  async generateMessageBusState(requestMessageBusState, request) {
     const requestCookie = request.headers.get("Cookie");
     const currentUser = requestCookie
       ? await getCurrentUser(requestCookie)
@@ -115,7 +117,7 @@ gateway.registerFragment({
       /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname)
     );
   },
-  transformRequest: (request: Request) => {
+  transformRequest(request: Request) {
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /^\/todos\/([^/]+)$/.exec(path);
@@ -164,7 +166,7 @@ gateway.registerFragment({
       /^\/(todos(\/[^/]+)?)?$/.test(new URL(request.url).pathname)
     );
   },
-  transformRequest: (request: Request) => {
+  transformRequest(request: Request) {
     const url = new URL(request.url);
     const path = url.pathname;
     const match = /\/todos\/([^/]+)$/.exec(path);

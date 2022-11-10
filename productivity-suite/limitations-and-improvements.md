@@ -69,9 +69,15 @@ This problem is not specific to our demo or even specific to fragment piercing. 
 
 During our experimentations we discovered that most modern frameworks, although compatible with fragments, can make different assumptions about the state and scope of ownership of the HTML document.
 
-They can assume that all the rest of the document is populated solely by fragments implemented by the framework, that it is valid to manipulate the document itself and add variables to the global scope or that they will always be present in the page (not being dynamically added and removed).
+Such assumptions can include:
+
+- all the rest of the document is populated solely by fragments implemented by the framework (no other JavaScript code, unrelated to the framework runs on on the page)
+- it is valid to manipulate the document itself and add/edit variables in the global scope
+- the fragments will always be present in the page (not being dynamically added and removed)
 
 Those assumptions are problematic when the fragments need to be very dynamic and self contained and can cause different types of unexpected behaviors and breakages.
+
+For example the last assumption listed is a very common and problematic one, causing issues with cleanly up/unloading fragments from the page and also initializing (or re-initializing) dynamically loaded fragments.
 
 Such dynamic use of fragments is not typical in modern application which is one of the leading causes as to why such wrong assumptions can be found in the wild.
 

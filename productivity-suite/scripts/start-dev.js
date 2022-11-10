@@ -52,7 +52,7 @@ async function runAllProcesses() {
 
     await sleep(2000);
 
-    log(`Serving the Gateway worker...`);
+    log(`Serving the gateway worker...`);
     runNpmScript(path.join(appDir, 'legacy-app'), 'dev.worker');
     await sleep(2000);
 

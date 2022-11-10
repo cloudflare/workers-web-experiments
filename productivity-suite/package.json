@@ -5,11 +5,11 @@
 	"workspaces": [
 		"piercing-library",
 		"app/shared",
-		"app/legacy-app",
 		"app/fragments/login",
 		"app/fragments/todo-lists",
 		"app/fragments/todos",
-		"app/fragments/news"
+		"app/fragments/news",
+		"app/legacy-app"
 	],
 	"scripts": {
 		"start": "node ./scripts/start-dev.js",

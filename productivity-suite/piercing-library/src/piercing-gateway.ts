@@ -156,21 +156,19 @@ export class PiercingGateway<Env> {
       const fragmentStreamOrNullPromises: Promise<ReadableStream | null>[] =
         !piercingEnabled
           ? []
-          : Array.from(this.fragmentConfigs.values()).map((fragmentConfig) => {
-              const shouldBeIncluded = fragmentConfig.shouldBeIncluded(
-                request,
-                env,
-                ctx
-              );
+          : Array.from(this.fragmentConfigs.values()).map(
+              async (fragmentConfig) => {
+                const shouldBeIncluded = await fragmentConfig.shouldBeIncluded(
+                  request,
+                  env,
+                  ctx
+                );
 
-              return new Promise(async (resolve) =>
-                resolve(await shouldBeIncluded)
-              ).then((shouldBeIncluded) =>
-                shouldBeIncluded
+                return shouldBeIncluded
                   ? this.fetchSSRedFragment(env, fragmentConfig, request)
-                  : null
-              );
-            });
+                  : null;
+              }
+            );
 
       const [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
         indexBodyResponse,

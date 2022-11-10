@@ -103,4 +103,4 @@ After the deployment is completed you should be able to access the application a
 
 ## Extra
 
-We discuss what different limitations related to the current implementation are, and possible areas of improvements in the [Limitations and area of improvements document](./limitations-and-improvements.md).
+We discuss different limitations related to the current implementation, and possible areas of improvements in the [Limitations and area of improvements document](./limitations-and-improvements.md).

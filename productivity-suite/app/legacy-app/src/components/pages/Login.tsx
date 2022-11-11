@@ -10,8 +10,6 @@ export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  let from = (location.state as { from: Location })?.from?.pathname ?? "/";
-
   useEffect(() => {
     if (ref.current) {
       return (
@@ -19,8 +17,7 @@ export function Login() {
           "authentication",
           (authDetails) => {
             if (authDetails?.username) {
-              auth.login(authDetails.username);
-              navigate(from, { replace: true });
+              getBus().dispatch("login", authDetails);
             }
           }
         ) ?? undefined

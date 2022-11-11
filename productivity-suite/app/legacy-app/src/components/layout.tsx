@@ -1,3 +1,4 @@
+import { getBus } from "piercing-library";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth";
 import "./layout.css";
@@ -10,13 +11,16 @@ function Header() {
       <NavLink to="/">
         <h1 className="app-title">Productivity Suite</h1>
       </NavLink>
-      {auth.user && (
+      {auth?.user && (
         <div className="user-section">
           <div className="user-info">
             <div className="account-icon">{accountIcon}</div>
             <span className="user-name">{auth.user}</span>
           </div>
-          <button className="btn" onClick={auth.logout}>
+          <button
+            className="btn"
+            onClick={() => getBus().dispatch("logout", null)}
+          >
             Logout
           </button>
         </div>
@@ -100,12 +104,12 @@ function Footer() {
 export function Layout() {
   const auth = useAuth();
 
-  const isAuthed = !!auth.user;
+  const isAuthenticated = !!auth?.user;
 
   return (
     <div className="layout">
       <Header />
-      {isAuthed && <NavBar />}
+      {isAuthenticated && <NavBar />}
       <main className="app-main">
         <Outlet />
       </main>

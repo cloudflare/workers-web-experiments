@@ -154,7 +154,7 @@
         --seams-color: transparent;
       }
 
-      body.show-seams #root,
+      body.show-seams #root > .layout,
       body.show-seams piercing-fragment-host {
         outline: 2px dashed var(--seams-color);
         border-radius: 1px;
@@ -166,7 +166,7 @@
         margin-inline: auto;
       }
 
-      body.show-seams #root {
+      body.show-seams #root > .layout {
         --seams-color: #fc9003;
         outline-offset: -3px;
       }
@@ -195,7 +195,7 @@
         position: relative;
       }
 
-      body.show-seams #root::after,
+      body.show-seams #root > .layout::after,
       body.show-seams piercing-fragment-host::before {
         content: 'fragment';
         position: absolute;
@@ -232,14 +232,14 @@
         left: 0;
       }
 
-      body.show-seams #root::after {
+      body.show-seams #root > .layout::after {
         content: 'Legacy app';
       }
-      body.show-seams #root {
+      body.show-seams #root > .layout {
         position: relative;
       }
 
-      #root {
+      #root > .layout {
         position: relative;
       }
 

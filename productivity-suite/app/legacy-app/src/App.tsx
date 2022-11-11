@@ -38,13 +38,14 @@ export default function App() {
 
 const ProtectedRoutes = (
   <Route
+    path="/"
     element={
       <RequireAuth>
         <Outlet />
       </RequireAuth>
     }
   >
-    <Route path="/" element={<Navigate to="/todos" />} />
+    <Route index element={<Navigate to="/todos" />} />
     <Route path="/todos" element={<TodoLists />} />
     <Route path="/todos/:listName" element={<TodoLists />} />
     <Route path="/calendar" element={<Calendar />} />

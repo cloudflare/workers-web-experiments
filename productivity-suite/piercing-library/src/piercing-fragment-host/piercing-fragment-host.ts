@@ -3,12 +3,12 @@ import { messageBusProp } from "../message-bus/message-bus-prop";
 import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
 
 export class PiercingFragmentHost extends HTMLElement {
-  private [messageBusProp] = new FragmentMessageBus(this);
   private cleanup = true;
+  private stylesEmbeddingObserver?: MutationObserver;
+  private cleanUpHandlers: (() => void)[] = [];
 
+  [messageBusProp] = new FragmentMessageBus(this);
   fragmentId!: string;
-  queueEventListener?: (event: Event) => void;
-  stylesEmbeddingObserver?: MutationObserver;
 
   connectedCallback() {
     const fragmentId = this.getAttribute("fragment-id");
@@ -29,8 +29,13 @@ export class PiercingFragmentHost extends HTMLElement {
 
   disconnectedCallback() {
     if (this.cleanup) {
-      // Only remove handlers if we are actually in cleanup mode.
+      // Only clean up the message bus if we are actually in cleanup mode
+      // and not just piercing this fragment.
       this[messageBusProp].clearAllHandlers();
+      for (const handler of this.cleanUpHandlers) {
+        handler();
+      }
+      this.cleanUpHandlers = [];
     }
   }
 
@@ -46,6 +51,10 @@ export class PiercingFragmentHost extends HTMLElement {
     this.cleanup = true;
 
     activeElement?.focus();
+  }
+
+  onCleanup(handler: () => void): void {
+    this.cleanUpHandlers.push(handler);
   }
 
   onPiercingComplete() {

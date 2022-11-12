@@ -20,7 +20,8 @@
   "dependencies": {
     "@solidjs/meta": "^0.28.0",
     "solid-start": "^0.2.2",
-    "undici": "^5.11.0"
+    "undici": "^5.11.0",
+    "piercing-library": "file:../../../piercing-library"
   },
   "engines": {
     "node": ">=16"

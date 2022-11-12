@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { getBus } from "piercing-library";
+import { useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export function News() {
   useEffect(() => {
@@ -8,9 +10,33 @@ export function News() {
     };
   });
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const page = getPageNumber(searchParams);
+    getBus().dispatch("news-page", { page });
+  }, [searchParams]);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    return getBus().listen<{ page: number }>("change-news-page", ({ page }) => {
+      if (page) {
+        setSearchParams({
+          page: `${page}`,
+        });
+      }
+    });
+  }, [ref.current]);
+
   return (
     <div>
       <piercing-fragment-outlet fragment-id="news" />
     </div>
   );
+}
+
+function getPageNumber(searchParams: URLSearchParams) {
+  const n = parseInt(searchParams.get("page") ?? "");
+  return n > 0 ? n : 1;
 }

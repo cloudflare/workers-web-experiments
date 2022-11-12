@@ -2,6 +2,8 @@ export { wrapStreamInText } from "./stream-utilities";
 
 export { registerPiercingFragmentOutlet } from "./piercing-fragment-outlet";
 
+export { PiercingFragmentHost } from "./piercing-fragment-host/piercing-fragment-host";
+export { getFragmentHost } from "./piercing-fragment-host/get-fragment-host";
 import piercingFragmentHostInlineScriptRaw from "../dist/piercing-fragment-host-inline-script.js?raw";
 export const piercingFragmentHostInlineScript = `<script>(() => {${piercingFragmentHostInlineScriptRaw}})();</script>`;
 

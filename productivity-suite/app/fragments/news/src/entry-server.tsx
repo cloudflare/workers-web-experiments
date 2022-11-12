@@ -1,3 +1,4 @@
+import { initializeServerSideMessageBus } from "piercing-library";
 import {
   createHandler,
   renderAsync,
@@ -5,5 +6,8 @@ import {
 } from "solid-start/entry-server";
 
 export default createHandler(
-  renderAsync((event) => <StartServer event={event} />)
+  renderAsync((event) => {
+    initializeServerSideMessageBus(event.request);
+    return <StartServer event={event} />;
+  })
 );

@@ -50,6 +50,22 @@ const gateway = new PiercingGateway<Env>({
 
       requestMessageBusState["todo-list-selected"] = { name: listName };
     }
+
+    if (!("update-news-page-view" in requestMessageBusState)) {
+      const url = new URL(request.url);
+      const match = url.pathname === "/news";
+
+      if (match) {
+        const searchParamPage = url.searchParams.get("page");
+        const searchParamPageNum = searchParamPage ? +searchParamPage : 1;
+        const newsPageNum =
+          isFinite(searchParamPageNum) && searchParamPageNum > 0
+            ? searchParamPageNum
+            : 1;
+        requestMessageBusState["update-news-page-view"] = { page: newsPageNum };
+      }
+    }
+
     return requestMessageBusState;
   },
 });

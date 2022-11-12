@@ -11,11 +11,11 @@ function Header() {
       <NavLink to="/">
         <h1 className="app-title">Productivity Suite</h1>
       </NavLink>
-      {auth?.user && (
+      {auth?.username && (
         <div className="user-section">
           <div className="user-info">
             <div className="account-icon">{accountIcon}</div>
-            <span className="user-name">{auth.user}</span>
+            <span className="user-name">{auth.username}</span>
           </div>
           <button
             className="btn"
@@ -104,7 +104,7 @@ function Footer() {
 export function Layout() {
   const auth = useAuth();
 
-  const isAuthenticated = !!auth?.user;
+  const isAuthenticated = !!auth?.username;
 
   return (
     <div className="layout">

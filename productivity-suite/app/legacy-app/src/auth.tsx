@@ -1,6 +1,6 @@
 import { getBus } from "piercing-library";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   deleteCurrentUser,
   getCurrentUser,
@@ -10,46 +10,43 @@ import {
 } from "shared";
 import { initialPlaceholderTodoList } from "./initialPlaceholderTodoList";
 
-export const AUTH_LOADING = Symbol("Auth Loading");
-export type AuthContextType = { user: string | null } | undefined;
+export type LoginMessage = { username: string };
+export type AuthenticationMessage = { username: string | null };
+export type AuthenticationState = AuthenticationMessage | undefined;
 
-let AuthContext = createContext<AuthContextType>(null!);
+const AuthContext = createContext<AuthenticationState>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [user, setUser] = useState<string | null | typeof AUTH_LOADING>(
-    AUTH_LOADING
-  );
+  const [user, setUser] = useState<AuthenticationState>(undefined);
 
   useEffect(() => {
-    getCurrentUser().then((username) => setUser(username));
+    getCurrentUser().then((username) => setUser({ username }));
   }, []);
 
   useEffect(() => {
-    return getBus().listen<{ username: string }>("login", ({ username }) => {
-      setUser(username);
-      addUserDataIfMissing(username);
-      getBus().dispatch("authentication", { username });
-      saveCurrentUser(username);
-      navigate((location.state as { from: Location })?.from?.pathname ?? "/", {
+    return getBus().listen<LoginMessage>("login", async (user) => {
+      setUser(user);
+      await addUserDataIfMissing(user.username);
+      await saveCurrentUser(user.username);
+      getBus().dispatch("authentication", user);
+      navigate("/", {
         replace: true,
       });
     });
   }, []);
 
   useEffect(() => {
-    return getBus().listen<{ username: string }>("logout", () => {
-      setUser(null);
-      getBus().dispatch("authentication", null);
+    return getBus().listen("logout", () => {
+      setUser({ username: null });
+      getBus().dispatch("authentication", { username: null });
       navigate("/login");
       deleteCurrentUser();
     });
   }, []);
 
-  const value = user !== AUTH_LOADING ? { user } : undefined;
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
@@ -58,11 +55,11 @@ export function useAuth() {
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
-  const location = useLocation();
 
-  // Don't redirect if the auth has not yet been initialized.
-  if (auth && !auth.user) {
-    return <Navigate to={"/login"} state={{ from: location }} replace />;
+  // If `auth` is undefined then it has not yet been initialized
+  // so we should avoid making any premature redirect navigation.
+  if (auth && !auth.username) {
+    return <Navigate to={"/login"} replace />;
   }
 
   return <>{children}</>;
@@ -71,8 +68,9 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
 export function RequireNotAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
 
-  // Don't redirect if the auth has not yet been initialized.
-  if (auth && auth.user) {
+  // If `auth` is undefined then it has not yet been initialized
+  // so we should avoid making any premature redirect navigation.
+  if (auth && auth.username) {
     return <Navigate to={"/"} replace />;
   }
 

@@ -7,7 +7,6 @@ import "./Login.css";
 export function Login() {
   const ref = useRef<HTMLDivElement>(null);
   const auth = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {

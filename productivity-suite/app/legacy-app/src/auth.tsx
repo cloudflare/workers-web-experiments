@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import {
   deleteCurrentUser,
-  getCurrentUser,
   getUserData,
   saveCurrentUser,
   setUserData,
@@ -19,11 +18,9 @@ const AuthContext = createContext<AuthenticationState>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<AuthenticationState>(undefined);
-
-  useEffect(() => {
-    getCurrentUser().then((username) => setUser({ username }));
-  }, []);
+  const [user, setUser] = useState<AuthenticationState>(
+    getBus().latestValue<AuthenticationMessage>("authentication")
+  );
 
   useEffect(() => {
     return getBus().listen<LoginMessage>("login", async (user) => {

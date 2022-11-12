@@ -11,14 +11,13 @@ import { initialPlaceholderTodoList } from "./initialPlaceholderTodoList";
 
 export type LoginMessage = { username: string };
 export type AuthenticationMessage = { username: string | null };
-export type AuthenticationState = AuthenticationMessage | undefined;
 
-const AuthContext = createContext<AuthenticationState>(undefined);
+const AuthContext = createContext<AuthenticationMessage | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<AuthenticationState>(
+  const [user, setUser] = useState(
     getBus().latestValue<AuthenticationMessage>("authentication")
   );
 
@@ -37,9 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     return getBus().listen("logout", () => {
       setUser({ username: null });
+      deleteCurrentUser();
       getBus().dispatch("authentication", { username: null });
       navigate("/login");
-      deleteCurrentUser();
     });
   }, []);
 
@@ -53,25 +52,15 @@ export function useAuth() {
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
 
-  // If `auth` is undefined then it has not yet been initialized
-  // so we should avoid making any premature redirect navigation.
-  if (auth && !auth.username) {
-    return <Navigate to={"/login"} replace />;
-  }
-
-  return <>{children}</>;
+  assertDefined(auth);
+  return !auth.username ? <Navigate to={"/login"} replace /> : <>{children}</>;
 }
 
 export function RequireNotAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
 
-  // If `auth` is undefined then it has not yet been initialized
-  // so we should avoid making any premature redirect navigation.
-  if (auth && auth.username) {
-    return <Navigate to={"/"} replace />;
-  }
-
-  return <>{children}</>;
+  assertDefined(auth);
+  return auth.username ? <Navigate to={"/"} replace /> : <>{children}</>;
 }
 
 async function addUserDataIfMissing(user: string) {
@@ -81,5 +70,11 @@ async function addUserDataIfMissing(user: string) {
       todoLists: [initialPlaceholderTodoList],
     });
     setUserData(user, newDataStr);
+  }
+}
+
+function assertDefined<T>(value: T | undefined): asserts value is T {
+  if (value === undefined) {
+    throw new Error("Programming error: Value should not be undefined");
   }
 }

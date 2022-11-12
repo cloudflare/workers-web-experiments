@@ -82,6 +82,9 @@ export class PiercingFragmentOutlet extends HTMLElement {
   private pierceFragmentIntoDOM(fragmentHost: PiercingFragmentHost) {
     this.innerHTML == "";
     fragmentHost.pierceInto(this);
+    const fragmentsToPierce =
+      getBus().latestValue<number>("fragmentsToPierce")!;
+    getBus().dispatch("fragmentsToPierce", fragmentsToPierce - 1);
   }
 
   private async fetchFragmentStream() {

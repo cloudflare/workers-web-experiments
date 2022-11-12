@@ -58,6 +58,10 @@
   flex: 1;
 }
 
+.layout.hidden {
+  visibility: hidden;
+}
+
 .app-main {
   flex: 1;
   padding: 3rem 1rem;

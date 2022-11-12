@@ -1,3 +1,4 @@
+import { getBus } from "piercing-library";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth";
 import "./layout.css";
@@ -102,8 +103,10 @@ export function Layout() {
 
   const isAuthed = !!auth.user;
 
+  const fragmentsToPierce = getBus().latestValue("fragmentsToPierce")!;
+
   return (
-    <div className="layout">
+    <div className={`layout ${fragmentsToPierce > 0 ? "hidden" : ""}`}>
       <Header />
       {isAuthed && <NavBar />}
       <main className="app-main">

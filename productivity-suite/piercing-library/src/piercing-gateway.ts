@@ -145,9 +145,9 @@ export class PiercingGateway<Env> {
 
     if (requestIsForHtml) {
       const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
-      const indexBodyResponse = this.fetchBaseIndexHtml(
-        new Request(baseUrl, request)
-      ).then((response) => response.text());
+      const indexBodyPromise = fetch(new Request(baseUrl, request)).then(
+        (response) => response.text()
+      );
 
       const piercingEnabled =
         !this.config.shouldPiercingBeEnabled ||
@@ -170,14 +170,37 @@ export class PiercingGateway<Env> {
               }
             );
 
-      const [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
-        indexBodyResponse,
+      let [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
+        indexBodyPromise,
         ...fragmentStreamOrNullPromises,
       ]);
 
       const fragmentStreamsToInclude = fragmentStreamsOrNulls.filter(
         (streamOrNull) => streamOrNull !== null
       ) as ReadableStream<any>[];
+
+      const messageSubState = JSON.parse(
+        request.headers.get("message-bus-state")!
+      );
+      request.headers.set(
+        "message-bus-state",
+        JSON.stringify({
+          ...messageSubState,
+          fragmentsToPierce: fragmentStreamsToInclude.length,
+        })
+      );
+
+      const stateHeaderStr = request.headers.get("message-bus-state");
+      indexBody = indexBody.replace(
+        "</head>",
+        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
+          `${piercingFragmentHostInlineScript}\n` +
+          "</head>"
+      );
+
+      // We need to include the qwikLoader script here this is a temporary bugfix
+      // hopefully it won't be necessary in a future version of Qwik
+      indexBody = indexBody.replace("</head>", `\n${qwikloaderScript}</head>`);
 
       return this.returnCombinedIndexPage(
         indexBody,
@@ -281,44 +304,6 @@ export class PiercingGateway<Env> {
         "content-type": "text/html;charset=UTF-8",
       },
     });
-  }
-
-  private async fetchBaseIndexHtml(request: Request) {
-    // Note: we make sure to handle/proxy Upgrade requests, so
-    //       that Vite's HMR can work for local development
-    const upgradeHeader = request.headers.get("Upgrade");
-    if (upgradeHeader) {
-      const { webSocket } = (await fetch(request)) as unknown as {
-        webSocket: WebSocket;
-      };
-
-      return new Response(null, {
-        status: 101,
-        webSocket,
-      });
-    }
-
-    const response = await fetch(request);
-
-    const requestIsForHtml = request.headers
-      .get("Accept")
-      ?.includes("text/html");
-    if (requestIsForHtml) {
-      const stateHeaderStr = request.headers.get("message-bus-state");
-      let indexBody = (await response.text()).replace(
-        "</head>",
-        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
-          `${piercingFragmentHostInlineScript}\n` +
-          "</head>"
-      );
-
-      // We need to include the qwikLoader script here
-      // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
-      indexBody = indexBody.replace("</head>", `\n${qwikloaderScript}</head>`);
-      return new Response(indexBody, response);
-    }
-
-    return response;
   }
 
   private async fetchSSRedFragment(

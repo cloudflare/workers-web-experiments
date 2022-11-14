@@ -366,7 +366,8 @@ export class PiercingGateway<Env> {
   }
 
   private getFragmentFetcher(env: Env, fragmentId: string): Fetcher {
-    return (env as any)[`${fragmentId}-fragment`];
+    // @ts-expect-error
+    return env[`${fragmentId}-fragment`];
   }
 
   private proxyAssetRequestToFragmentWorker(

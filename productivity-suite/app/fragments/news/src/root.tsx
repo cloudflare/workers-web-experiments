@@ -7,11 +7,7 @@ import {
   Routes,
   Scripts,
 } from "solid-start";
-import { PageEvent } from "solid-start/server";
-import { createContext, useContext } from "solid-js";
 import "./root.css";
-
-export const ServerContext = createContext<PageEvent>({} as any);
 
 type ManifestEntry = {
   type: "script" | "style";

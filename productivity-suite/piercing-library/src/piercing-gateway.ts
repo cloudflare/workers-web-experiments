@@ -333,7 +333,7 @@ export class PiercingGateway<Env> {
     const fragmentStream = response.body!;
 
     let preFragment = `<piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>`;
-    let postFragment = "</piercing-fragment-host>";
+    const postFragment = "</piercing-fragment-host>";
 
     if (prePiercing) {
       preFragment = `
@@ -366,7 +366,8 @@ export class PiercingGateway<Env> {
   }
 
   private getFragmentFetcher(env: Env, fragmentId: string): Fetcher {
-    return (env as any)[`${fragmentId}-fragment`];
+    // @ts-expect-error
+    return env[`${fragmentId}-fragment`];
   }
 
   private proxyAssetRequestToFragmentWorker(

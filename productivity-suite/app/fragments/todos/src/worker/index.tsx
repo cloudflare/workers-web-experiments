@@ -14,7 +14,7 @@ import { getTodoList, getTodoLists, TodoList } from "shared";
 const assetManifest = JSON.parse(manifestJSON);
 
 export interface Env {
-  __STATIC_CONTENT: any;
+  __STATIC_CONTENT: unknown;
 }
 
 export default {

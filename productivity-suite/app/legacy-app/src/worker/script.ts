@@ -42,7 +42,13 @@ const gateway = new PiercingGateway<Env>({
         }
       }
 
-      requestMessageBusState["todo-list-selected"] = { name: listName } ?? null;
+      if (!listName) {
+        throw new Error(
+          "Programming error: There should always be at least one list present for any user"
+        );
+      }
+
+      requestMessageBusState["todo-list-selected"] = { name: listName };
     }
     return requestMessageBusState;
   },
@@ -88,7 +94,7 @@ gateway.registerFragment({
 gateway.registerFragment({
   fragmentId: "todo-lists",
   prePiercingStyles: `
-		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
+    :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
       top: 14.7rem;
       left: 2rem;

@@ -13,7 +13,7 @@ export class FragmentMessageBus implements MessageBus {
     return this.parentBus.state;
   }
 
-  dispatch(eventName: string, value: any) {
+  dispatch(eventName: string, value: JSONValue) {
     return this.parentBus.dispatch(eventName, value);
   }
 

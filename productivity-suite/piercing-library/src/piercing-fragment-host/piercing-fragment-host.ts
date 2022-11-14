@@ -29,7 +29,7 @@ export class PiercingFragmentHost extends HTMLElement {
 
     if (!this.fragmentIsPierced) {
       this.setStylesEmbeddingObserver();
-      updateFragmentsToPierce("++");
+      increaseFragmentsToPierceCount();
     }
   }
 
@@ -52,7 +52,7 @@ export class PiercingFragmentHost extends HTMLElement {
     this.cleanup = true;
 
     activeElement?.focus();
-    updateFragmentsToPierce("--");
+    decreaseFragmentsToPierceCount();
   }
 
   onPiercingComplete() {
@@ -106,12 +106,14 @@ export class PiercingFragmentHost extends HTMLElement {
   }
 }
 
-function updateFragmentsToPierce(operation: "++" | "--") {
+function increaseFragmentsToPierceCount() {
   const fragmentsToPierce =
     getBus().latestValue<number>("fragmentsToPierce") ?? 0;
-  const newValue = Math.max(
-    0,
-    fragmentsToPierce + (operation === "++" ? 1 : -1)
-  );
-  getBus().dispatch("fragmentsToPierce", newValue);
+  getBus().dispatch("fragmentsToPierce", fragmentsToPierce + 1);
+}
+
+function decreaseFragmentsToPierceCount() {
+  const fragmentsToPierce =
+    getBus().latestValue<number>("fragmentsToPierce") ?? 0;
+  getBus().dispatch("fragmentsToPierce", Math.max(0, fragmentsToPierce - 1));
 }

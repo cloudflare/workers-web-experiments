@@ -144,10 +144,7 @@ export class PiercingGateway<Env> {
       ?.includes("text/html");
 
     if (requestIsForHtml) {
-      const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
-      const indexBodyPromise = fetch(new Request(baseUrl, request)).then(
-        (response) => response.text()
-      );
+      const indexBodyPromise = this.fetchBaseIndexBody(request, env);
 
       const piercingEnabled =
         !this.config.shouldPiercingBeEnabled ||
@@ -170,7 +167,7 @@ export class PiercingGateway<Env> {
               }
             );
 
-      let [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
+      const [indexBody, ...fragmentStreamsOrNulls] = await Promise.all([
         indexBodyPromise,
         ...fragmentStreamOrNullPromises,
       ]);
@@ -178,18 +175,6 @@ export class PiercingGateway<Env> {
       const fragmentStreamsToInclude = fragmentStreamsOrNulls.filter(
         (streamOrNull) => streamOrNull !== null
       ) as ReadableStream<any>[];
-
-      const stateHeaderStr = request.headers.get("message-bus-state");
-      indexBody = indexBody.replace(
-        "</head>",
-        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
-          `${piercingFragmentHostInlineScript}\n` +
-          "</head>"
-      );
-
-      // We need to include the qwikLoader script here this is a temporary bugfix
-      // hopefully it won't be necessary in a future version of Qwik
-      indexBody = indexBody.replace("</head>", `\n${qwikloaderScript}</head>`);
 
       return this.returnCombinedIndexPage(
         indexBody,
@@ -293,6 +278,28 @@ export class PiercingGateway<Env> {
         "content-type": "text/html;charset=UTF-8",
       },
     });
+  }
+
+  private async fetchBaseIndexBody(
+    request: Request,
+    env: Env
+  ): Promise<string> {
+    const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
+    const response = await fetch(new Request(baseUrl, request));
+
+    const stateHeaderStr = request.headers.get("message-bus-state");
+    let indexBody = (await response.text()).replace(
+      "</head>",
+      `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
+        `${piercingFragmentHostInlineScript}\n` +
+        "</head>"
+    );
+
+    // We need to include the qwikLoader script here this is a temporary bugfix
+    // hopefully it won't be necessary in a future version of Qwik
+    indexBody = indexBody.replace("</head>", `\n${qwikloaderScript}</head>`);
+
+    return indexBody;
   }
 
   private async fetchSSRedFragment(

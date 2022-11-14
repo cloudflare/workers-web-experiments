@@ -8,7 +8,7 @@ export type JSONValue =
     }
   | Array<JSONValue>;
 
-export type MessageBusState = Record<string, any>;
+export type MessageBusState = Record<string, JSONValue>;
 
 export type MessageBusCallback<T extends JSONValue> = (value: T) => void;
 
@@ -91,7 +91,7 @@ export class GenericMessageBus implements MessageBus {
     };
   }
 
-  latestValue<T extends JSONValue>(eventName: string): T | undefined {
-    return this._state[eventName];
+  latestValue<T extends JSONValue>(eventName: string) {
+    return this._state[eventName] as T | undefined;
   }
 }

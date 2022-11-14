@@ -88,7 +88,7 @@ gateway.registerFragment({
 gateway.registerFragment({
   fragmentId: "todo-lists",
   prePiercingStyles: `
-		:not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
+    :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
       top: 14.7rem;
       left: 2rem;

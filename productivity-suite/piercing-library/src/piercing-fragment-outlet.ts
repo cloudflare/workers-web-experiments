@@ -97,7 +97,7 @@ export class PiercingFragmentOutlet extends HTMLElement {
     if (!response.body) {
       throw new Error(
         "An empty response has been provided when fetching" +
-          `the fragment with id ${this.fragmentId}`
+          ` the fragment with id ${this.fragmentId}`
       );
     }
     return response.body;

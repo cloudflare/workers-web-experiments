@@ -7,10 +7,7 @@ import "./Login.css";
 export function Login() {
   const ref = useRef<HTMLDivElement>(null);
   const auth = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
-
-  let from = (location.state as { from: Location })?.from?.pathname ?? "/";
 
   useEffect(() => {
     if (ref.current) {
@@ -19,8 +16,7 @@ export function Login() {
           "authentication",
           (authDetails) => {
             if (authDetails?.username) {
-              auth.login(authDetails.username);
-              navigate(from, { replace: true });
+              getBus().dispatch("login", authDetails);
             }
           }
         ) ?? undefined

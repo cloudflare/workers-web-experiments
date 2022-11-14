@@ -23,7 +23,7 @@ const gateway = new PiercingGateway<Env>({
       : null;
 
     if (!("authentication" in requestMessageBusState)) {
-      requestMessageBusState["authentication"] = currentUser && {
+      requestMessageBusState["authentication"] = {
         username: currentUser,
       };
     }

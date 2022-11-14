@@ -17,7 +17,7 @@ export function getMessageBusState(request: Request) {
  */
 export function initializeServerSideMessageBus(request: Request) {
   const state = getMessageBusState(request);
-  (globalThis as any as { [messageBusProp]?: ServerSideMessageBus })[
+  (globalThis as unknown as { [messageBusProp]?: ServerSideMessageBus })[
     messageBusProp
   ] = new ServerSideMessageBus(state);
 }

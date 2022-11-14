@@ -5,6 +5,7 @@ import type { PiercingFragmentOutlet } from "../piercing-fragment-outlet";
 // The following two files are to be kept lean as well to keep the inline script small
 import { messageBusProp } from "../message-bus/message-bus-prop";
 import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
+import { getBus } from "../message-bus/get-bus";
 
 export class PiercingFragmentHost extends HTMLElement {
   private [messageBusProp] = new FragmentMessageBus(this);
@@ -28,6 +29,7 @@ export class PiercingFragmentHost extends HTMLElement {
 
     if (!this.fragmentIsPierced) {
       this.setStylesEmbeddingObserver();
+      updateFragmentsToPierce("++");
     }
   }
 
@@ -50,6 +52,7 @@ export class PiercingFragmentHost extends HTMLElement {
     this.cleanup = true;
 
     activeElement?.focus();
+    updateFragmentsToPierce("--");
   }
 
   onPiercingComplete() {
@@ -101,4 +104,14 @@ export class PiercingFragmentHost extends HTMLElement {
       }
     });
   }
+}
+
+function updateFragmentsToPierce(operation: "++" | "--") {
+  const fragmentsToPierce =
+    getBus().latestValue<number>("fragmentsToPierce") ?? 0;
+  const newValue = Math.max(
+    0,
+    fragmentsToPierce + (operation === "++" ? 1 : -1)
+  );
+  getBus().dispatch("fragmentsToPierce", newValue);
 }

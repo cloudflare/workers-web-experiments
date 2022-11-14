@@ -179,17 +179,6 @@ export class PiercingGateway<Env> {
         (streamOrNull) => streamOrNull !== null
       ) as ReadableStream<any>[];
 
-      const messageSubState = JSON.parse(
-        request.headers.get("message-bus-state")!
-      );
-      request.headers.set(
-        "message-bus-state",
-        JSON.stringify({
-          ...messageSubState,
-          fragmentsToPierce: fragmentStreamsToInclude.length,
-        })
-      );
-
       const stateHeaderStr = request.headers.get("message-bus-state");
       indexBody = indexBody.replace(
         "</head>",

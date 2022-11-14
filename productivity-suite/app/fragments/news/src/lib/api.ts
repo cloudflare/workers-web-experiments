@@ -7,8 +7,8 @@ export default async function fetchAPI(path: string) {
   const headers = isServer ? { "User-Agent": "chrome" } : {};
 
   try {
-    let response = await fetch(url, { headers });
-    let text = await response.text();
+    const response = await fetch(url, { headers });
+    const text = await response.text();
     try {
       if (text === null) {
         return { error: "Not found" };

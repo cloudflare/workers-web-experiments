@@ -1,7 +1,3 @@
-// Important: we only need to import the type, do not import the class itself
-//            as it would bloat the script (which needs to be very light)
-import type { PiercingFragmentOutlet } from "../piercing-fragment-outlet";
-
 // The following two files are to be kept lean as well to keep the inline script small
 import { messageBusProp } from "../message-bus/message-bus-prop";
 import { FragmentMessageBus } from "../message-bus/fragment-message-bus";
@@ -88,8 +84,9 @@ export class PiercingFragmentHost extends HTMLElement {
   }
 
   private embedStyles() {
-    this.querySelectorAll('link[href][rel="stylesheet"]').forEach((el) => {
-      const styleLink = el as HTMLStyleElement;
+    this.querySelectorAll<HTMLStyleElement>(
+      'link[href][rel="stylesheet"]'
+    ).forEach((styleLink) => {
       if (styleLink.sheet) {
         let rulesText = "";
         for (const { cssText } of styleLink.sheet.cssRules) {

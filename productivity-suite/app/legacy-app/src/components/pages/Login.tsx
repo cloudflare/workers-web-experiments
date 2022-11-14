@@ -1,13 +1,9 @@
 import { getBus } from "piercing-library";
 import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth";
 import "./Login.css";
 
 export function Login() {
   const ref = useRef<HTMLDivElement>(null);
-  const auth = useAuth();
-  const location = useLocation();
 
   useEffect(() => {
     if (ref.current) {

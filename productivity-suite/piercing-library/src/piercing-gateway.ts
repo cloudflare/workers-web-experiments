@@ -333,7 +333,7 @@ export class PiercingGateway<Env> {
     const fragmentStream = response.body!;
 
     let preFragment = `<piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>`;
-    let postFragment = "</piercing-fragment-host>";
+    const postFragment = "</piercing-fragment-host>";
 
     if (prePiercing) {
       preFragment = `

@@ -3,7 +3,7 @@ import { manifest } from "@qwik-client-manifest";
 import { Root } from "./root";
 
 export default {
-  async fetch(request: Request): Promise<Response> {
+  async fetch(): Promise<Response> {
     const { writable, readable } = new TransformStream();
     const writer = writable.getWriter();
 

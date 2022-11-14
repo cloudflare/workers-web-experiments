@@ -1,6 +1,6 @@
 import { getBus } from "piercing-library";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   deleteCurrentUser,
   getUserData,
@@ -9,39 +9,40 @@ import {
 } from "shared";
 import { initialPlaceholderTodoList } from "./initialPlaceholderTodoList";
 
-interface AuthContextType {
-  user: string | null;
-  login: (userName: string) => void;
-  logout: () => void;
-}
+export type LoginMessage = { username: string };
+export type AuthenticationMessage = { username: string | null };
 
-let AuthContext = createContext<AuthContextType>(null!);
+const AuthContext = createContext<AuthenticationMessage | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState(
+    getBus().latestValue<AuthenticationMessage>("authentication")
+  );
+
   useEffect(() => {
-    return getBus().listen<{ username: string }>("authentication", (auth) => {
-      setUser(auth?.username);
+    return getBus().listen<LoginMessage>("login", async (user) => {
+      setUser(user);
+      await addUserDataIfMissing(user.username);
+      await saveCurrentUser(user.username);
+      getBus().dispatch("authentication", user);
+      navigate("/", {
+        replace: true,
+      });
     });
-  });
+  }, []);
 
-  async function login(username: string) {
-    await saveCurrentUser(username);
-    addUserDataIfMissing(username);
-    setUser(username);
-  }
+  useEffect(() => {
+    return getBus().listen("logout", () => {
+      setUser({ username: null });
+      deleteCurrentUser();
+      getBus().dispatch("authentication", { username: null });
+      navigate("/login");
+    });
+  }, []);
 
-  async function logout() {
-    await deleteCurrentUser();
-    getBus().dispatch("authentication", null);
-    navigate("/login");
-    setUser(null);
-  }
-
-  const value = { user, login, logout };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
@@ -50,23 +51,16 @@ export function useAuth() {
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
-  const location = useLocation();
 
-  if (!auth.user) {
-    return <Navigate to={"/login"} state={{ from: location }} replace />;
-  }
-
-  return <>{children}</>;
+  assertDefined(auth);
+  return !auth.username ? <Navigate to={"/login"} replace /> : <>{children}</>;
 }
 
 export function RequireNotAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
 
-  if (auth.user) {
-    return <Navigate to={"/"} replace />;
-  }
-
-  return <>{children}</>;
+  assertDefined(auth);
+  return auth.username ? <Navigate to={"/"} replace /> : <>{children}</>;
 }
 
 async function addUserDataIfMissing(user: string) {
@@ -76,5 +70,11 @@ async function addUserDataIfMissing(user: string) {
       todoLists: [initialPlaceholderTodoList],
     });
     setUserData(user, newDataStr);
+  }
+}
+
+function assertDefined<T>(value: T | undefined): asserts value is T {
+  if (value === undefined) {
+    throw new Error("Programming error: Value should not be undefined");
   }
 }

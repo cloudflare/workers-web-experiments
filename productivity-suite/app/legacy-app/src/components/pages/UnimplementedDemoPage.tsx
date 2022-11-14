@@ -1,3 +1,4 @@
+import { getBus } from "piercing-library";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth";
@@ -18,8 +19,10 @@ export function UnimplementedDemoPage({
         <p>This page is not implemented as it is out of scope for this demo.</p>
         <p>
           To Interact with SSR fragments view the login form by{" "}
-          <button onClick={auth.logout}>logging out</button> or visit the{" "}
-          <Link to="/todos">todos page</Link>.
+          <button onClick={() => getBus().dispatch("logout", null)}>
+            logging out
+          </button>{" "}
+          or visit the <Link to="/todos">todos page</Link>.
         </p>
       </div>
     </div>

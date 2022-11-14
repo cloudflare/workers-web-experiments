@@ -84,8 +84,9 @@ export class PiercingFragmentHost extends HTMLElement {
   }
 
   private embedStyles() {
-    this.querySelectorAll('link[href][rel="stylesheet"]').forEach((el) => {
-      const styleLink = el as HTMLStyleElement;
+    this.querySelectorAll<HTMLStyleElement>(
+      'link[href][rel="stylesheet"]'
+    ).forEach((styleLink) => {
       if (styleLink.sheet) {
         let rulesText = "";
         for (const { cssText } of styleLink.sheet.cssRules) {

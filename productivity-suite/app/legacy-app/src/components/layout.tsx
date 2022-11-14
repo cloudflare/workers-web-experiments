@@ -1,6 +1,7 @@
-import { getBus } from "piercing-library";
-import { NavLink, Outlet } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
+import { getBus } from "piercing-library";
 import "./layout.css";
 
 function Header() {
@@ -30,28 +31,93 @@ function Header() {
 }
 
 function NavBar() {
-  const navBarLinks = [
-    { path: "/todos", text: "Todo Lists" },
-    { path: "/news", text: "News" },
-    { path: "/calendar", text: "Calendar" },
-    { path: "/contacts", text: "Contacts" },
-  ];
-
   return (
     <nav className="app-nav">
-      <ul>
-        {navBarLinks.map(({ path, text }) => (
-          <li key={path}>
-            <NavLink
-              to={path}
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              {text}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+      <NavBarList />
+      <NavBarSelect />
     </nav>
+  );
+}
+
+const navBarPaths = [
+  { path: "/todos", text: "Todo Lists" },
+  { path: "/news", text: "News" },
+  { path: "/calendar", text: "Calendar" },
+  { path: "/contacts", text: "Contacts" },
+];
+
+function NavBarList() {
+  return (
+    <ul className="app-nav-list">
+      {navBarPaths.map(({ path, text }) => (
+        <li key={path}>
+          <NavLink
+            to={path}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            {text}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const expandMoreSvg = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <path
+      xmlns="http://www.w3.org/2000/svg"
+      d="m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z"
+    />
+  </svg>
+);
+
+function NavBarSelect() {
+  const { pathname: currentPathname } = useLocation();
+  const navigate = useNavigate();
+
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const toggleOptions = () => setOptionsOpen(!optionsOpen);
+
+  const activeText = navBarPaths.find(({ path }) =>
+    currentPathname.startsWith(path)
+  )?.text;
+
+  if (!activeText) return <></>;
+
+  const selectOption = (path: string) => {
+    navigate(path);
+    setOptionsOpen(!optionsOpen);
+  };
+
+  const handleBlur: React.FocusEventHandler<HTMLDivElement> = (event) => {
+    const focusedElement = event.relatedTarget as Element;
+    const focusIsContained = event.currentTarget.contains(focusedElement);
+    if (!focusIsContained) {
+      setOptionsOpen(false);
+    }
+  };
+
+  return (
+    <div onBlur={handleBlur} className="app-nav-select">
+      <button className="selected" onClick={toggleOptions}>
+        <span className="text">{activeText}</span>
+        <span className={`icon ${optionsOpen ? "flipped" : ""}`}>
+          {expandMoreSvg}
+        </span>
+      </button>
+      {optionsOpen && (
+        <div className="options">
+          {navBarPaths
+            .filter(({ text }) => text !== activeText)
+            .map(({ path, text }) => (
+              <button key={path} onClick={() => selectOption(path)}>
+                {text}
+              </button>
+            ))}
+        </div>
+      )}
+    </div>
   );
 }
 

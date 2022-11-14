@@ -102,12 +102,12 @@ gateway.registerFragment({
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 29.87rem;
+        top: 21.135rem;
       }
     }
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
-        top: 30.55rem;
+        top: 21.4rem;
       }
     }
     `,
@@ -151,12 +151,12 @@ gateway.registerFragment({
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 39.03rem;
+        top: 30.295rem;
       }
     }
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
-        top: 42.7rem;
+        top: 33.565rem;
       }
     }
     `,
@@ -199,13 +199,13 @@ gateway.registerFragment({
 
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 29rem;
+        top: 20.13rem;
       }
     }
 
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 29.65rem;
+        top: 20.41rem;
       }
     }
     `,

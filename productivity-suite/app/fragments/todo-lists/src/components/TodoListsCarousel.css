@@ -57,6 +57,7 @@
     align-self: center;
     font-family: inherit;
     font-weight: 300;
+    padding: 0.1rem;
 }
 
 .todo-lists-carousel :global(.btn:hover) {

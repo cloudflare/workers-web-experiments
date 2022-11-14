@@ -14,7 +14,7 @@
   margin-left: 0.5rem;
 }
 
-.app-nav > ul {
+.app-nav-list {
   margin: 0;
   padding: 0.5rem 1rem;
   background-color: #fff;
@@ -25,30 +25,94 @@
   align-items: center;
 }
 
-.app-nav > ul > li {
+.app-nav-list > li {
   margin: 0.5rem;
   height: min-content;
   flex: 1;
   text-align: center;
 }
 
-.app-nav > ul a {
+.app-nav-list a {
   color: inherit;
   text-decoration: none;
 }
 
-.app-nav > ul a:hover {
+.app-nav-list a:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 35rem) {
-  .app-nav > ul {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.app-nav-select {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
 
-  .app-nav > ul > li > a {
-    padding: 0.5rem;
+.app-nav-select button {
+  padding: 0.5rem;
+  border: none;
+  color: var(--primary-color);
+  border-bottom: 1px solid currentColor;
+  background: white;
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 1.2rem;
+}
+
+.app-nav-select .options {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  animation: slide-in .1s ease-in-out forwards;
+}
+
+@keyframes slide-in {
+	0% {
+    transform: translateY(-1rem);
+    opacity: 0;
+	}
+	100% {
+    transform: translateY(0);
+    opacity: 1;
+	}
+}
+
+.app-nav-select .active {
+  position: relative;
+}
+
+.app-nav-select .active .text {
+  flex: 1;
+}
+
+.app-nav-select .selected .icon {
+  position: absolute;
+  top: 0;
+  height: 2.3rem;
+  right: 0.5rem;
+  width: 2.5rem;
+  fill: currentColor;
+  transition: transform 0.2s ease-in-out;
+}
+
+.app-nav-select .selected .icon.flipped {
+  transform: translateY(0.1rem) scaleY(-1);
+}
+
+.app-nav-select .options button {
+  border-bottom: 1px solid gray;
+}
+
+@media (max-width: 35rem) {
+  .app-nav-list {
+    display: none;
+  }
+}
+@media (min-width: 35rem) {
+  .app-nav-select {
+    display: none;
   }
 }
 
@@ -193,8 +257,8 @@
   background-color: var(--secondary-color-lighter);
 }
 
-.app-nav .active {
-  font-weight: bolder;
+.app-nav .active, .app-nav .selected {
+  font-weight: bold;
   transition: font-weight 0.1s;
 }
 

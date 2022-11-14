@@ -62,7 +62,15 @@ function TodoItem({
     }
   }
 
-  function handleTodoTextClick(): void {
+  const [selectedTodoText, setSelectedTodoText] = useState<string | null>(null);
+
+  function handleTodoTextClick(todoText: string): void {
+    if (!selectedTodoText) {
+      setSelectedTodoText(todoText);
+      return;
+    }
+    setSelectedTodoText(null);
+
     setTimeout(() =>
       setEditingTodoDetails({
         oldTodo: todo,
@@ -148,7 +156,11 @@ function TodoItem({
           checked={todo.completed}
           onChange={handleCheckboxChange}
         />
-        <button className="todo-text" onClick={handleTodoTextClick}>
+        <button
+          className="todo-text"
+          onClick={() => handleTodoTextClick(todo.text)}
+          onBlur={() => setSelectedTodoText(null)}
+        >
           {todo.text}
         </button>
         <button

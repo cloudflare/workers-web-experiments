@@ -50,7 +50,8 @@ export interface MessageBus {
 }
 
 export class GenericMessageBus implements MessageBus {
-  protected _callbacksMap: Map<string, MessageBusCallback<any>[]> = new Map();
+  protected _callbacksMap: Map<string, MessageBusCallback<JSONValue>[]> =
+    new Map();
 
   constructor(protected _state: MessageBusState = {}) {}
 
@@ -78,7 +79,9 @@ export class GenericMessageBus implements MessageBus {
     if (!this._callbacksMap.has(eventName)) {
       this._callbacksMap.set(eventName, []);
     }
-    this._callbacksMap.get(eventName)!.push(callback);
+    this._callbacksMap
+      .get(eventName)!
+      .push(callback as MessageBusCallback<JSONValue>);
     return () => {
       const callbacks = (this._callbacksMap.get(eventName) ?? []).filter(
         (h) => h !== callback

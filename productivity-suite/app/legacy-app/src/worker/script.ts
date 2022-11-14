@@ -42,7 +42,13 @@ const gateway = new PiercingGateway<Env>({
         }
       }
 
-      requestMessageBusState["todo-list-selected"] = { name: listName } ?? null;
+      if (!listName) {
+        throw new Error(
+          "Programming error: There should always be at least one list present for any user"
+        );
+      }
+
+      requestMessageBusState["todo-list-selected"] = { name: listName };
     }
     return requestMessageBusState;
   },

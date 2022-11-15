@@ -151,7 +151,7 @@
       }
 
       body.show-seams {
-        --seams-color: #fc9003;
+        --seams-color: transparent;
       }
 
       body.show-seams #root > .layout,
@@ -178,14 +178,15 @@
         max-width: min(calc(55rem + 2rem), calc(90vw));
       }
 
-    :not(piercing-fragment-outlet) > piercing-fragment-host:last-of-type::after {
-      content: '';
-      position: absolute;
-      height: 2rem;
-      width: 0.1rem;
-    };
+      :not(piercing-fragment-outlet) > piercing-fragment-host:last-of-type::after {
+        content: '';
+        position: absolute;
+        height: 2rem;
+        width: 0.1rem;
+      }
 
       body.show-seams #root > .layout {
+        --seams-color: #fc9003;
         outline-offset: -3px;
       }
 

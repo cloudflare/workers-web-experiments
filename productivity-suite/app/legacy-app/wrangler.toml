@@ -9,7 +9,7 @@ account_id = "8ed4d03ac99f77561d0e8c9cbcc76cb6"
 port = 8987
 
 [vars]
-APP_BASE_URL = "https://productivity-suite.pages.dev"
+APP_BASE_URL = "https://productivity-suite-prod.pages.dev"
 
 [env.local.vars]
 APP_BASE_URL = "http://localhost:8585"

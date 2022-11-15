@@ -151,7 +151,7 @@
       }
 
       body.show-seams {
-        --seams-color: transparent;
+        --seams-color: #fc9003;
       }
 
       body.show-seams #root > .layout,
@@ -173,7 +173,7 @@
 
       piercing-fragment-host[fragment-id="todo-lists"],
       piercing-fragment-host[fragment-id="todos"],
-        body.show-seams piercing-fragment-host[fragment-id="news"] {
+      piercing-fragment-host[fragment-id="news"] {
         width: 100vw;
         max-width: min(calc(55rem + 2rem), calc(90vw));
       }
@@ -186,7 +186,6 @@
     };
 
       body.show-seams #root > .layout {
-        --seams-color: #fc9003;
         outline-offset: -3px;
       }
 

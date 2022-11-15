@@ -46,12 +46,18 @@
 }
 
 .delete-btn {
-    font-family: inherit;
-    font-size: 1.1rem;
+    cursor: pointer;
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: -0.3em;
+    right: -0.3em;
+    padding: 1em;
     z-index: inherit;
+    font-size: 1.5rem;
+    line-height: 1ex;
+    border-color: transparent;
+    color: #4d4d4d;
+    background-color: transparent;
+    font-weight: 300;
 }
 
 .delete-btn:disabled {

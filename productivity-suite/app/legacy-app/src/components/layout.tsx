@@ -124,17 +124,9 @@ function NavBarSelect() {
 function Footer() {
   return (
     <footer className="app-footer">
-      <div>
-        Demo application for the piercing migration strategy implemented using{" "}
+      <div className="content">
+        Piercing strategy migration demo. See the{" "}
         {/* href to update when the blog-post url is known */}
-        <a
-          target="_blank"
-          className="external-link"
-          href="https://workers.cloudflare.com/"
-        >
-          Cloudflare Workers {openInNewIcon}
-        </a>
-        . For more see the accompanying{" "}
         <a
           target="_blank"
           className="external-link"
@@ -156,9 +148,9 @@ function Footer() {
           <a
             className="cloudflare-link"
             target="_blank"
-            href="https://www.cloudflare.com/"
+            href="https://workers.cloudflare.com/"
           >
-            {cloudflareIcon}
+            {workersLogo}
           </a>
         </div>
         <span>&copy; 2022 Cloudflare.com</span>
@@ -195,30 +187,127 @@ const accountIcon = (
   </svg>
 );
 
-const cloudflareIcon = (
-  <svg
-    viewBox="0 0 256 116"
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    preserveAspectRatio="xMidYMid"
-  >
-    <title>Cloudflare Logo</title>
-    <g>
-      <g transform="translate(0.000000, -1.000000)">
-        <path
-          d="M202.3569,50.394 L197.0459,48.27 C172.0849,104.434 72.7859,70.289 66.8109,86.997 C65.8149,98.283 121.0379,89.143 160.5169,91.056 C172.5559,91.639 178.5929,100.727 173.4809,115.54 L183.5499,115.571 C195.1649,79.362 232.2329,97.841 233.7819,85.891 C231.2369,78.034 191.1809,85.891 202.3569,50.394 Z"
-          fill="#FFFFFF"
-        ></path>
-        <path
-          d="M176.332,109.3483 C177.925,104.0373 177.394,98.7263 174.739,95.5393 C172.083,92.3523 168.365,90.2283 163.585,89.6973 L71.17,88.6343 C70.639,88.6343 70.108,88.1033 69.577,88.1033 C69.046,87.5723 69.046,87.0413 69.577,86.5103 C70.108,85.4483 70.639,84.9163 71.701,84.9163 L164.647,83.8543 C175.801,83.3233 187.486,74.2943 191.734,63.6723 L197.046,49.8633 C197.046,49.3313 197.577,48.8003 197.046,48.2693 C191.203,21.1823 166.772,0.9993 138.091,0.9993 C111.535,0.9993 88.697,17.9953 80.73,41.8963 C75.419,38.1783 69.046,36.0533 61.61,36.5853 C48.863,37.6473 38.772,48.2693 37.178,61.0163 C36.647,64.2033 37.178,67.3903 37.71,70.5763 C16.996,71.1073 0,88.1033 0,109.3483 C0,111.4723 0,113.0663 0.531,115.1903 C0.531,116.2533 1.593,116.7843 2.125,116.7843 L172.614,116.7843 C173.676,116.7843 174.739,116.2533 174.739,115.1903 L176.332,109.3483 Z"
-          fill="#F4811F"
-        ></path>
-        <path
-          d="M205.5436,49.8628 L202.8876,49.8628 C202.3566,49.8628 201.8256,50.3938 201.2946,50.9248 L197.5766,63.6718 C195.9836,68.9828 196.5146,74.2948 199.1706,77.4808 C201.8256,80.6678 205.5436,82.7918 210.3236,83.3238 L229.9756,84.3858 C230.5066,84.3858 231.0376,84.9168 231.5686,84.9168 C232.0996,85.4478 232.0996,85.9788 231.5686,86.5098 C231.0376,87.5728 230.5066,88.1038 229.4436,88.1038 L209.2616,89.1658 C198.1076,89.6968 186.4236,98.7258 182.1746,109.3478 L181.1116,114.1288 C180.5806,114.6598 181.1116,115.7218 182.1746,115.7218 L252.2826,115.7218 C253.3446,115.7218 253.8756,115.1908 253.8756,114.1288 C254.9376,109.8798 255.9996,105.0998 255.9996,100.3188 C255.9996,72.7008 233.1616,49.8628 205.5436,49.8628"
-          fill="#FAAD3F"
-        ></path>
-      </g>
-    </g>
+const workersLogo = (
+  <svg viewBox="0 0 450 375">
+    <title>Cloudflare Workers Logo</title>
+    <defs>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-a"
+        x1="50%"
+        x2="25.7%"
+        y1="100%"
+        y2="8.7%"
+      >
+        <stop offset="0%" stopColor="#eb6f07"></stop>
+        <stop offset="100%" stopColor="#fab743"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-b"
+        x1="81%"
+        x2="40.5%"
+        y1="83.7%"
+        y2="29.5%"
+      >
+        <stop offset="0%" stopColor="#d96504"></stop>
+        <stop offset="100%" stopColor="#d96504" stopOpacity="0"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-c"
+        x1="42%"
+        x2="84%"
+        y1="8.7%"
+        y2="79.9%"
+      >
+        <stop offset="0%" stopColor="#eb6f07"></stop>
+        <stop offset="100%" stopColor="#eb720a" stopOpacity="0"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-d"
+        x1="50%"
+        x2="25.7%"
+        y1="100%"
+        y2="8.7%"
+      >
+        <stop offset="0%" stopColor="#ee6f05"></stop>
+        <stop offset="100%" stopColor="#fab743"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-e"
+        x1="-33.2%"
+        x2="91.7%"
+        y1="100%"
+        y2="0%"
+      >
+        <stop offset="0%" stopColor="#d96504" stopOpacity=".8"></stop>
+        <stop offset="49.8%" stopColor="#d96504" stopOpacity=".2"></stop>
+        <stop offset="100%" stopColor="#d96504" stopOpacity="0"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-f"
+        x1="50%"
+        x2="25.7%"
+        y1="100%"
+        y2="8.7%"
+      >
+        <stop offset="0%" stopColor="#ffa95f"></stop>
+        <stop offset="100%" stopColor="#ffebc8"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-g"
+        x1="8.1%"
+        x2="96.5%"
+        y1="1.1%"
+        y2="48.8%"
+      >
+        <stop offset="0%" stopColor="#fff" stopOpacity=".5"></stop>
+        <stop offset="100%" stopColor="#fff" stopOpacity=".1"></stop>
+      </linearGradient>
+      <linearGradient
+        id="CloudflareWorkersLogoCombinationMarkHorizontal--gradient-h"
+        x1="-13.7%"
+        y1="104.2%"
+        y2="46.2%"
+      >
+        <stop offset="0%" stopColor="#fff" stopOpacity=".5"></stop>
+        <stop offset="100%" stopColor="#fff" stopOpacity=".1"></stop>
+      </linearGradient>
+    </defs>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-a)"
+      d="M107 5.4l49 88.4-45 81a26 26 0 0 0 0 25.3l45 81.2-49 88.4A52 52 0 0 1 85 349L7 213.5a52.2 52.2 0 0 1 0-52L85 26a52 52 0 0 1 22-20.6z"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-b)"
+      d="M111 174.9a26 26 0 0 0 0 25.2l45 81.2-49 88.4A52 52 0 0 1 85 349L7 213.5C.8 202.8 35.5 190 111 175z"
+      opacity=".7"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-c)"
+      d="M112 14.3l44 79.5-7.3 12.7-38.8-65.7C98.7 22.5 81.6 32 60.2 69l3.2-5.5L85 26a52 52 0 0 1 21.8-20.6l5.1 8.9z"
+      opacity=".5"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-d)"
+      d="M331 26l78 135.5c9.3 16 9.3 36 0 52L331 349a52 52 0 0 1-45 26h-78l97-174.9a26 26 0 0 0 0-25.2L208 0h78a52 52 0 0 1 45 26z"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-e)"
+      d="M282 374.4l-77 .7 93.2-175.8a27 27 0 0 0 0-25.4L205 0h17.6l97.8 173.1a27 27 0 0 1-.1 26.8 15624 15624 0 0 0-62.7 110c-19 33.4-10.8 54.9 24.4 64.5z"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-f)"
+      d="M130 375c-8 0-16-1.9-23-5.3l96.2-173.5c3-5.4 3-12 0-17.4L107 5.4A52 52 0 0 1 130 0h78l97 174.9a26 26 0 0 1 0 25.2L208 375h-78z"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-g)"
+      d="M298.2 178.8L199 0h9l97 174.9a26 26 0 0 1 0 25.2L208 375h-9l99.2-178.8c3-5.4 3-12 0-17.4z"
+      opacity=".6"
+    ></path>
+    <path
+      fill="url(#CloudflareWorkersLogoCombinationMarkHorizontal--gradient-h)"
+      d="M203.2 178.8L107 5.4c3-1.6 6.6-2.8 10-3.8 21.2 38.1 52.5 95.9 94 173.3a26 26 0 0 1 0 25.2L115.5 373c-3.4-1-5.2-1.7-8.4-3.2l96-173.5c3-5.4 3-12 0-17.4z"
+      opacity=".6"
+    ></path>
   </svg>
 );
 

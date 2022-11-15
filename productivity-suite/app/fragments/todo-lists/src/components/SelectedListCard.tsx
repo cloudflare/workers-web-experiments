@@ -124,7 +124,7 @@ export const SelectedListCard = component$(
           onClick$={onDeleteList$}
           aria-label="delete list"
         >
-          x
+          X
         </button>
       </div>
     );

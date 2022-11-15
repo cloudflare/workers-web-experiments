@@ -71,17 +71,17 @@ gateway.registerFragment({
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host {
-        top: 10.57rem;
+        top: 10.58rem;
       }
     }
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host {
-        top: 13.05rem;
+        top: 13.06rem;
       }
     }
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host {
-        top: 13.4rem;
+        top: 13.24rem;
       }
     }
     `,

@@ -203,7 +203,7 @@ gateway.registerFragment({
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 14.81rem;
+        top: 13.835rem;
       }
     }
 

@@ -124,7 +124,7 @@
 
 .app-main {
   flex: 1;
-  padding: 3rem 1rem;
+  padding: 3rem 0.5rem;
 }
 
 @media (max-width: 25rem) {

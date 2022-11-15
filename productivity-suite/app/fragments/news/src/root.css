@@ -89,3 +89,7 @@ a {
 .news-item .meta a:hover {
   color: #335d92;
 }
+
+.news-view {
+  padding: 0.1rem 1rem;
+}

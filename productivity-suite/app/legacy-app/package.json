@@ -11,7 +11,8 @@
     "build": "npm run build.react",
     "build.react": "tsc && vite build",
     "deploy": "npm run deploy.react; npm run deploy.worker",
-    "deploy.react": "npm run build.react && CLOUDFLARE_ACCOUNT_ID=377c4d8c370d3a28e89f25ec1887fa71 npx wrangler pages publish ./dist --branch main",
+    "predeploy.react": "npm run build.react",
+    "deploy.react": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish ./dist --branch main --project-name productivity-suite-prod",
     "deploy.worker": "wrangler publish"
   },
   "dependencies": {

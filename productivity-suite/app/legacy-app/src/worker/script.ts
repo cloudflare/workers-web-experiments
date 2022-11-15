@@ -196,26 +196,26 @@ gateway.registerFragment({
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;
       margin: 0 auto;
-      top: 13.9rem;
+      top: 13.65rem;
       left: 0;
       right: 0;
     }
 
     @media (max-width: 45rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 14.05rem;
+        top: 14.81rem;
       }
     }
 
     @media (max-width: 35rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 20.13rem;
+        top: 19.99rem;
       }
     }
 
     @media (max-width: 25rem) {
       :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
-        top: 20.41rem;
+        top: 20.15rem;
       }
     }
     `,

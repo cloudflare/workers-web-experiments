@@ -47,22 +47,18 @@
 
 .delete-btn {
     position: absolute;
-    top: -1.5rem;
-    right: -1.5rem;
-    padding: 1.5rem;
+    top: -1em;
+    right: -1em;
+    padding: 1em;
     z-index: inherit;
-    font-size: 2rem;
-    line-height: 1.1rem;
+    font-size: 1.5rem;
+    line-height: 1ex;
     box-shadow: -3px 3px 5px #4d4d4d47, 0 0 20px #4d4d4d0d;
     border-color: transparent;
-    border-radius: 2.4rem;
+    border-radius: 2em;
     color: #4d4d4d;
     background-color: #fff;
     font-weight: 300;
-}
-
-.delete-btn:hover {
-    outline: solid 1px red;
 }
 
 .delete-btn:disabled {

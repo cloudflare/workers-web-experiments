@@ -46,6 +46,7 @@
 }
 
 .delete-btn {
+    cursor: pointer;
     position: absolute;
     top: -0.3em;
     right: -0.3em;

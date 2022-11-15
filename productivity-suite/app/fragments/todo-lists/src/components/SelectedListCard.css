@@ -47,17 +47,15 @@
 
 .delete-btn {
     position: absolute;
-    top: -1em;
-    right: -1em;
+    top: -0.3em;
+    right: -0.3em;
     padding: 1em;
     z-index: inherit;
     font-size: 1.5rem;
     line-height: 1ex;
-    box-shadow: -3px 3px 5px #4d4d4d47, 0 0 20px #4d4d4d0d;
     border-color: transparent;
-    border-radius: 2em;
     color: #4d4d4d;
-    background-color: #fff;
+    background-color: transparent;
     font-weight: 300;
 }
 

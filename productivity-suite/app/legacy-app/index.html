@@ -162,8 +162,27 @@
 
       piercing-fragment-host {
         display: block;
-        max-width: 80vw;
+        width: max-content;
         margin-inline: auto;
+      }
+
+      piercing-fragment-host[fragment-id="login"] {
+        width: calc(30rem + 2rem);
+        max-width: calc(80vw + 2rem);
+      }
+
+      piercing-fragment-host[fragment-id="todo-lists"],
+      piercing-fragment-host[fragment-id="todos"],
+      piercing-fragment-host[fragment-id="news"] {
+        width: 100vw;
+        max-width: min(calc(55rem + 2rem), calc(90vw));
+      }
+
+      :not(piercing-fragment-outlet) > piercing-fragment-host:last-of-type::after {
+        content: '';
+        position: absolute;
+        height: 2rem;
+        width: 0.1rem;
       }
 
       body.show-seams #root > .layout {
@@ -175,12 +194,12 @@
         --seams-color: #409f20;
       }
 
-      body.show-seams piercing-fragment-host[fragment-id="todos"] {
-        --seams-color: #31909b;
-      }
-
       body.show-seams piercing-fragment-host[fragment-id="todo-lists"] {
         --seams-color: #4f2574;
+      }
+
+      body.show-seams piercing-fragment-host[fragment-id="todos"] {
+        --seams-color: #31909b;
       }
 
       body.show-seams piercing-fragment-host[fragment-id="news"] {

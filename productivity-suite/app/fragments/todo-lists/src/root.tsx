@@ -86,28 +86,30 @@ export const Root = component$(() => {
   );
 
   return (
-    <div class="todo-lists-section" ref={ref}>
-      {state.currentUser && state.todoLists.length && (
-        <TodoListsCarousel
-          currentUser={state.currentUser!}
-          initialTodoLists={state.todoLists}
-          idxOfSelectedList={state.idxOfSelectedList}
-          selectedListName={state.selectedListName}
-          onUpdateSelectedListDetails$={({
-            idx,
-            name,
-          }: {
-            idx: number;
-            name: string;
-          }) => {
-            state.idxOfSelectedList = idx;
-            state.selectedListName = name;
-          }}
-          onDispatchSelectedListUpdated$={(listSelected: TodoList) =>
-            dispatchSelectedListUpdated(ref.value!, listSelected.name)
-          }
-        />
-      )}
+    <div class="todo-lists-section-wrapper">
+      <div class="todo-lists-section" ref={ref}>
+        {state.currentUser && state.todoLists.length && (
+          <TodoListsCarousel
+            currentUser={state.currentUser!}
+            initialTodoLists={state.todoLists}
+            idxOfSelectedList={state.idxOfSelectedList}
+            selectedListName={state.selectedListName}
+            onUpdateSelectedListDetails$={({
+              idx,
+              name,
+            }: {
+              idx: number;
+              name: string;
+            }) => {
+              state.idxOfSelectedList = idx;
+              state.selectedListName = name;
+            }}
+            onDispatchSelectedListUpdated$={(listSelected: TodoList) =>
+              dispatchSelectedListUpdated(ref.value!, listSelected.name)
+            }
+          />
+        )}
+      </div>
     </div>
   );
 });

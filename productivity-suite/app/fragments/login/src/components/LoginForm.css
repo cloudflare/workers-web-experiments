@@ -1,9 +1,11 @@
 .login-form {
-    max-width: min(30rem, 93vw);
+    width: 30rem;
+    max-width: 80vw;
     margin: auto;
     display: flex;
     flex-direction: column;
     font-size: 1.1rem;
+    padding: 1rem;
 }
 
 .form-control {

@@ -1,6 +1,5 @@
 import { getBus } from "piercing-library";
 import { useEffect, useRef } from "react";
-import "./Login.css";
 
 export function Login() {
   const ref = useRef<HTMLDivElement>(null);

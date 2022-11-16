@@ -5,5 +5,5 @@
 .todo-lists-section {
     width: max-content;
     margin: auto;
-    max-width: calc(90vw - 2rem);
+    max-width: calc(85vw - 2rem);
 }

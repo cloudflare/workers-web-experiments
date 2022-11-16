@@ -17,7 +17,7 @@ export function PageNotFoundPage() {
     <div className="page-not-found-page">
       <figure>{alertSvg}</figure>
       <div className="text-wrapper">
-        <h2>404 - Page Not found!</h2>
+        <h2>404 - Page Not Found!</h2>
         <p>The page you're looking for could not be found.</p>
         <p>
           <Link to="/">Back to Home</Link>

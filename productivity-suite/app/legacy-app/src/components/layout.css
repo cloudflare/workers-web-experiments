@@ -166,14 +166,12 @@
 }
 
 .app-footer .links-and-copyright a {
-  margin-right: 0.7rem;
   padding: 0.2rem;
 }
 
 .app-footer .links-and-copyright svg {
   height: auto;
   width: 1.5rem;
-  margin-right: 0.7rem;
 }
 
 .app-footer .links-and-copyright .gh-link svg {
@@ -219,6 +217,7 @@
 .link-icons {
   display: flex;
   justify-content: center;
+  gap: 1rem;
 }
 
 .app-header .btn {

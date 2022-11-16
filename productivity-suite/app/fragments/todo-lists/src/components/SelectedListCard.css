@@ -15,7 +15,7 @@
     }
 
     .selected-list > span {
-        padding: 2.5rem .5rem;
+        padding: .5rem .5rem;
     }
 }
 
@@ -48,16 +48,20 @@
 .delete-btn {
     cursor: pointer;
     position: absolute;
-    top: -0.3em;
-    right: -0.3em;
-    padding: 1em;
+    top: 0.5em;
+    right: 0.6em;
+    padding: 0.1em;
     z-index: inherit;
-    font-size: 1.5rem;
-    line-height: 1ex;
+    font-size: 1.3rem;
+    line-height: 1;
     border-color: transparent;
     color: #4d4d4d;
     background-color: transparent;
     font-weight: 300;
+}
+
+.delete-btn:hover {
+    opacity: 0.7;
 }
 
 .delete-btn:disabled {

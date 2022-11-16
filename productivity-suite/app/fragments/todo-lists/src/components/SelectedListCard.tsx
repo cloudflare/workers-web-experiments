@@ -24,7 +24,7 @@ export const SelectedListCard = component$(
   }) => {
     useStylesScoped$(styles);
 
-    const newTodoInputState = useStore<{
+    const todoListInputState = useStore<{
       editing: boolean;
       value: string | null;
       valid: boolean;
@@ -41,16 +41,16 @@ export const SelectedListCard = component$(
 
     useWatch$(({ track }) => {
       track(() => listName);
-      newTodoInputState.editing = false;
+      todoListInputState.editing = false;
     });
 
     const handleInputChange = $((event: Event) => {
       const value = (event.target as HTMLInputElement).value;
-      newTodoInputState.value = value;
-      newTodoInputState.dirty = true;
+      todoListInputState.value = value;
+      todoListInputState.dirty = true;
       const trimmedValue = value.trim();
       if (trimmedValue === listName) {
-        newTodoInputState.valid = true;
+        todoListInputState.valid = true;
         return;
       }
       if (
@@ -58,29 +58,29 @@ export const SelectedListCard = component$(
         trimmedValue.length > 20 ||
         !!todoListsNames.includes(trimmedValue)
       ) {
-        newTodoInputState.valid = false;
+        todoListInputState.valid = false;
         return;
       }
-      newTodoInputState.valid = true;
+      todoListInputState.valid = true;
     });
 
     const editListNameIfValid = $(async () => {
-      const newListName = newTodoInputState.value!.trim();
+      const newListName = todoListInputState.value!.trim();
       if (
         listName !== newListName &&
-        newTodoInputState.dirty &&
-        newTodoInputState.valid
+        todoListInputState.dirty &&
+        todoListInputState.valid
       ) {
         const success = await onEditListName$(newListName);
         if (success) {
-          newTodoInputState.editing = false;
+          todoListInputState.editing = false;
         }
       }
     });
 
     const handleInputBlur = $(() => {
       editListNameIfValid();
-      newTodoInputState.editing = false;
+      todoListInputState.editing = false;
     });
 
     const handleInputKeyUp = $((event: KeyboardEvent) => {
@@ -89,38 +89,42 @@ export const SelectedListCard = component$(
       }
     });
 
+    const startEditing = $(() => {
+      if (!todoListInputState.editing) {
+        todoListInputState.editing = true;
+        todoListInputState.value = listName;
+        todoListInputState.valid = true;
+        todoListInputState.dirty = false;
+      }
+    });
+
     return (
       <div class="todo-list-card selected-list-wrapper">
-        <button
+        <div
+          tabIndex={0}
           class="todo-list-card selected-list"
-          onClick$={() => {
-            if (!newTodoInputState.editing) {
-              newTodoInputState.editing = true;
-              newTodoInputState.value = listName;
-              newTodoInputState.valid = true;
-              newTodoInputState.dirty = false;
-            }
-          }}
+          onClick$={startEditing}
+          onKeyDown$={(event) => event.code === "Enter" && startEditing()}
         >
-          {!newTodoInputState.editing && <span>{listName}</span>}
-          {newTodoInputState.editing && (
+          {!todoListInputState.editing && <span>{listName}</span>}
+          {todoListInputState.editing && (
             <input
               enterKeyHint="done"
               ref={editRef}
               type="text"
               class={`selected-list-edit ${
-                newTodoInputState.valid ? "" : "invalid"
+                todoListInputState.valid ? "" : "invalid"
               }`}
-              value={newTodoInputState.value ?? undefined}
+              value={todoListInputState.value ?? undefined}
               onInput$={handleInputChange}
               onBlur$={handleInputBlur}
               onKeyUp$={handleInputKeyUp}
             />
           )}
-        </button>
+        </div>
         <button
           class="btn delete-btn"
-          disabled={newTodoInputState.editing || todoListsNames.length <= 1}
+          disabled={todoListInputState.editing || todoListsNames.length <= 1}
           onClick$={onDeleteList$}
           aria-label="delete list"
         >

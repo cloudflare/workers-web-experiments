@@ -7,7 +7,7 @@
 }
 
 .todo-list-card {
-    animation-duration: 0.15s;
+    animation-duration: 0.13s;
     animation-timing-function: cubic-bezier(.55,.51,.47,.99);;
 }
 

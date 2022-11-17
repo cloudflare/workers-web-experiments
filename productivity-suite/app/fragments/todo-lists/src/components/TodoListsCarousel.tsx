@@ -22,6 +22,7 @@ export const TodoListsCarousel = component$(
     initialTodoLists,
     idxOfSelectedList,
     selectedListName,
+    onUpdateTodoLists$,
     onUpdateSelectedListDetails$,
     onDispatchSelectedListUpdated$,
   }: {
@@ -29,6 +30,7 @@ export const TodoListsCarousel = component$(
     initialTodoLists: { name: string; todos: Todo[] }[];
     idxOfSelectedList: number;
     selectedListName: string;
+    onUpdateTodoLists$: PropFunction<(lists: TodoList[]) => void>;
     onUpdateSelectedListDetails$: PropFunction<
       ({ idx, name }: { idx: number; name: string }) => void
     >;
@@ -53,7 +55,7 @@ export const TodoListsCarousel = component$(
       currentAnimation: "previous" | "next" | null;
     }>({ animating: false, currentAnimation: null });
 
-    const animationDuration = 150;
+    const animationDuration = 130;
 
     const addNewList = $(async () => {
       const newListName = getNewListName(state.todoLists);
@@ -61,9 +63,10 @@ export const TodoListsCarousel = component$(
       if (success) {
         animationState.animating = true;
         state.todoLists.push({ name: newListName, todos: [] });
-        animationState.currentAnimation = "next";
-        const newTodoListIdx = state.todoLists.length - 1;
         setTimeout(() => {
+          onUpdateTodoLists$(state.todoLists);
+          animationState.currentAnimation = "next";
+          const newTodoListIdx = state.todoLists.length - 1;
           animationState.animating = false;
           onUpdateSelectedListDetails$({
             idx: newTodoListIdx,
@@ -86,7 +89,10 @@ export const TodoListsCarousel = component$(
           name: state.todoLists[newTodoListIdx].name,
         });
       }, animationDuration);
-      onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx]);
+      setTimeout(
+        () => onDispatchSelectedListUpdated$(state.todoLists[newTodoListIdx]),
+        which === "next" ? animationDuration : 0
+      );
     });
 
     return (
@@ -123,6 +129,7 @@ export const TodoListsCarousel = component$(
             );
             if (success) {
               state.todoLists[idxOfSelectedList].name = newListName;
+              onUpdateTodoLists$(state.todoLists);
               onUpdateSelectedListDetails$({
                 idx: idxOfSelectedList,
                 name: newListName,
@@ -139,14 +146,15 @@ export const TodoListsCarousel = component$(
               state.todoLists = state.todoLists
                 .slice(0, idxOfSelectedList)
                 .concat(state.todoLists.slice(idxOfSelectedList + 1));
+              onUpdateTodoLists$(state.todoLists);
               let newIdxOfSelectedList = idxOfSelectedList;
               if (idxOfSelectedList > 0) {
                 newIdxOfSelectedList = idxOfSelectedList - 1;
-                onUpdateSelectedListDetails$({
-                  idx: newIdxOfSelectedList,
-                  name: state.todoLists[newIdxOfSelectedList].name,
-                });
               }
+              onUpdateSelectedListDetails$({
+                idx: newIdxOfSelectedList,
+                name: state.todoLists[newIdxOfSelectedList].name,
+              });
               onDispatchSelectedListUpdated$(
                 state.todoLists[newIdxOfSelectedList]
               );

@@ -94,6 +94,9 @@ export const Root = component$(() => {
             initialTodoLists={state.todoLists}
             idxOfSelectedList={state.idxOfSelectedList}
             selectedListName={state.selectedListName}
+            onUpdateTodoLists$={(lists) => {
+              state.todoLists = lists;
+            }}
             onUpdateSelectedListDetails$={({
               idx,
               name,

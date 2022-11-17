@@ -51,7 +51,7 @@ export const Root = component$(() => {
     );
 
     state.idxOfSelectedList = idx !== -1 ? idx : state.todoLists.length - 1;
-    state.selectedListName = state.todoLists[idx].name;
+    state.selectedListName = state.todoLists[state.idxOfSelectedList].name;
   });
 
   const ref = useSignal<Element>();

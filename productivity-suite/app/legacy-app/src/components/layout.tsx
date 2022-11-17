@@ -130,7 +130,7 @@ function Footer() {
         <a
           target="_blank"
           className="external-link"
-          href="https://blog.cloudflare.com/404/"
+          href="https://blog.cloudflare.com/fragment-piercing/"
         >
           blog post {openInNewIcon}
         </a>

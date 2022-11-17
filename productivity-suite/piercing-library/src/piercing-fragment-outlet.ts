@@ -18,23 +18,25 @@ export function registerPiercingFragmentOutlet() {
 /**
  * Set of ids of fragments that have been previously unmounted.
  *
- * We keep track of this for a single purpose, preventing the
- * extra running of type module scripts for newly fetched fragments.
+ * We keep track of this to know whether to manually run side-effects in modules
+ * that are referenced as part of the fragment.
  *
- * (Meaning that when we fetch a fragment, we check if its id is in the
- * set, if it is then we need to run its type module scripts manually,
- * otherwise the scripts get normally evaluated by the browser).
- *
+ * When we fetch a fragment for the first time any side-effects in module-type scripts
+ * that are referenced will be executed.
+ * Later, if we fetch the fragment again, its side-effects will not run automatically.
+ * To workaround this we ensure that all such modules also expose their side-effects
+ * via a default export function.
+ * We then manually call that default export to re-execute the side-effects.
  */
 const unmountedFragmentIds: Set<string> = new Set();
 
 export class PiercingFragmentOutlet extends HTMLElement {
   // this field can be read from the outside to check if this element
   // is a PiercingFragmentOutlet (without relying on `instanceof`)
-  // @ts-ignore - the following field is not only being used by the `isPiercingFragmentOutlet` guard
+  // @ts-ignore - the following field is accessed by `fragmentIsPierced.isFragmentPierced`.
   private readonly piercingFragmentOutlet = true;
 
-  private fragmentId!: string;
+  private fragmentHost: PiercingFragmentHost | null = null;
 
   constructor() {
     super();
@@ -50,21 +52,22 @@ export class PiercingFragmentOutlet extends HTMLElement {
       );
     }
 
-    this.fragmentId = fragmentId;
+    this.fragmentHost = this.getFragmentHost(fragmentId);
 
-    let fragmentHost = this.getFragmentHost();
-
-    if (fragmentHost) {
-      this.pierceFragmentIntoDOM(fragmentHost);
+    if (this.fragmentHost) {
+      // There is already a fragment host in the DOM that we can pierce into this outlet
+      this.innerHTML == "";
+      this.fragmentHost.pierceInto(this);
     } else {
-      const fragmentStream = await this.fetchFragmentStream();
-      await this.streamFragmentIntoOutlet(fragmentStream);
-      fragmentHost = this.getFragmentHost(true);
+      // We need to fetch and create the fragment host
+      const fragmentStream = await this.fetchFragmentStream(fragmentId);
+      await this.streamFragmentIntoOutlet(fragmentId, fragmentStream);
+      this.fragmentHost = this.getFragmentHost(fragmentId, true);
     }
 
-    if (!fragmentHost) {
+    if (!this.fragmentHost) {
       throw new Error(
-        `The fragment with id "${this.fragmentId}" is not present and` +
+        `The fragment with id "${fragmentId}" is not present and` +
           " it could not be fetched"
       );
     }
@@ -76,16 +79,14 @@ export class PiercingFragmentOutlet extends HTMLElement {
   }
 
   disconnectedCallback() {
-    unmountedFragmentIds.add(this.fragmentId);
+    if (this.fragmentHost) {
+      unmountedFragmentIds.add(this.fragmentHost.fragmentId);
+      this.fragmentHost = null;
+    }
   }
 
-  private pierceFragmentIntoDOM(fragmentHost: PiercingFragmentHost) {
-    this.innerHTML == "";
-    fragmentHost.pierceInto(this);
-  }
-
-  private async fetchFragmentStream() {
-    const url = this.getFragmentUrl();
+  private async fetchFragmentStream(fragmentId: string) {
+    const url = this.getFragmentUrl(fragmentId);
     const state = getBus().state;
 
     const req = new Request(url, {
@@ -97,30 +98,29 @@ export class PiercingFragmentOutlet extends HTMLElement {
     if (!response.body) {
       throw new Error(
         "An empty response has been provided when fetching" +
-          ` the fragment with id ${this.fragmentId}`
+          ` the fragment with id ${fragmentId}`
       );
     }
     return response.body;
   }
 
-  private getFragmentUrl(): string {
-    return `/piercing-fragment/${this.fragmentId}`;
+  private getFragmentUrl(fragmentId: string): string {
+    return `/piercing-fragment/${fragmentId}`;
   }
 
-  private async streamFragmentIntoOutlet(fragmentStream: ReadableStream) {
+  private async streamFragmentIntoOutlet(
+    fragmentId: string,
+    fragmentStream: ReadableStream
+  ) {
     await fragmentStream
       .pipeThrough(new TextDecoderStream())
       .pipeTo(new WritableDOMStream(this as ParentNode));
 
-    this.reapplyFragmentModuleScripts();
+    this.reapplyFragmentModuleScripts(fragmentId);
   }
 
-  private reapplyFragmentModuleScripts() {
-    const fragmentHasPreviouslyBeenUnmounted = unmountedFragmentIds.has(
-      this.fragmentId
-    );
-
-    if (fragmentHasPreviouslyBeenUnmounted) {
+  private reapplyFragmentModuleScripts(fragmentId: string) {
+    if (unmountedFragmentIds.has(fragmentId)) {
       this.querySelectorAll("script").forEach((script) => {
         if (script.src && script.type === "module") {
           import(/* @vite-ignore */ script.src).then((scriptModule) =>
@@ -131,9 +131,12 @@ export class PiercingFragmentOutlet extends HTMLElement {
     }
   }
 
-  private getFragmentHost(insideOutlet = false): PiercingFragmentHost | null {
+  private getFragmentHost(
+    fragmentId: string,
+    insideOutlet = false
+  ): PiercingFragmentHost | null {
     return (insideOutlet ? this : document).querySelector(
-      `piercing-fragment-host[fragment-id="${this.fragmentId}"]`
+      `piercing-fragment-host[fragment-id="${fragmentId}"]`
     );
   }
 }

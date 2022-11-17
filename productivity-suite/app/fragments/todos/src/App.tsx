@@ -68,7 +68,7 @@ const App: React.FC<{
 
   useEffect(() => {
     if (ref.current) {
-      const remover = getBus(ref.current).listen<{ name: string }>(
+      return getBus(ref.current).listen<{ name: string }>(
         "todo-list-selected",
         async (listDetails) => {
           if (listDetails) {
@@ -80,7 +80,6 @@ const App: React.FC<{
           }
         }
       );
-      return remover ?? undefined;
     }
   }, [ref.current]);
 

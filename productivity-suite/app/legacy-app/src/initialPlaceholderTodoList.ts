@@ -1,7 +1,7 @@
 import { TodoList } from "shared";
 
 export const initialPlaceholderTodoList: TodoList = {
-  name: "Important Tasks",
+  name: "Your Important Tasks",
   todos: [
     {
       text: "Create Cloudflare account",

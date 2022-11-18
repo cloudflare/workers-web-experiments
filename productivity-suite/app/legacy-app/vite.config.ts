@@ -25,7 +25,8 @@ export function addCloudflareAnalyticsScript(): PluginOption {
           attrs: {
             defer: true,
             src: "https://static.cloudflareinsights.com/beacon.min.js",
-            "data-cf-beacon": "{'token': '43a08321febf43fe9103890be2f3bb5f'}",
+            "data-cf-beacon":
+              "{&quot;token&quot;: &quot;43a08321febf43fe9103890be2f3bb5f&quot;}",
           },
         },
       ];

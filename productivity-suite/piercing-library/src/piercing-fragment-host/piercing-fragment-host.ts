@@ -51,14 +51,11 @@ export class PiercingFragmentHost extends HTMLElement {
     this.cleanup = true;
 
     activeElement?.focus();
+    this.removeStylesEmbeddingObserver();
   }
 
   onCleanup(handler: () => void): void {
     this.cleanUpHandlers.push(handler);
-  }
-
-  onPiercingComplete() {
-    this.removeStylesEmbeddingObserver();
   }
 
   private get fragmentIsPierced() {

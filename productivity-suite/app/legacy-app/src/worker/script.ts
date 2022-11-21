@@ -50,6 +50,18 @@ const gateway = new PiercingGateway<Env>({
 
       requestMessageBusState["todo-list-selected"] = { name: listName };
     }
+
+    if (!("news-page" in requestMessageBusState)) {
+      const url = new URL(request.url);
+      const match = url.pathname === "/news";
+
+      if (match) {
+        requestMessageBusState["news-page"] = {
+          page: getPageNumber(url.searchParams),
+        };
+      }
+    }
+
     return requestMessageBusState;
   },
 });
@@ -57,6 +69,11 @@ const gateway = new PiercingGateway<Env>({
 async function isUserAuthenticated(request: Request) {
   const currentUser = await getCurrentUser(request.headers.get("Cookie") || "");
   return !!currentUser;
+}
+
+function getPageNumber(searchParams: URLSearchParams) {
+  const n = parseInt(searchParams.get("page") ?? "");
+  return n > 0 ? n : 1;
 }
 
 gateway.registerFragment({

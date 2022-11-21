@@ -1,3 +1,4 @@
+import { getFragmentHost } from "../piercing-fragment-host/get-fragment-host";
 import type { MessageBus } from "./message-bus";
 import { messageBusProp } from "./message-bus-prop";
 
@@ -10,18 +11,16 @@ import { messageBusProp } from "./message-bus-prop";
  * @returns       The most relevant message bus.
  */
 export function getBus(element?: Element): MessageBus {
-  while (element) {
-    if (hasMessageBus(element)) {
-      return element[messageBusProp];
+  if (element) {
+    const fragmentHost = getFragmentHost(element);
+    if (fragmentHost) {
+      return fragmentHost[messageBusProp];
     }
-    element = element.parentElement ?? undefined;
   }
   const root = globalThis;
-
   if (hasMessageBus(root)) {
     return root[messageBusProp];
   }
-
   throw new Error("No global message bus defined!");
 }
 

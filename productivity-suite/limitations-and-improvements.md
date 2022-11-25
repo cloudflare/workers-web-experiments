@@ -65,6 +65,8 @@ We’ve thought of different solutions for this issues, which include:
 
 This problem is not specific to our demo or even specific to fragment piercing. It will be a common problem for any micro-frontend architecture to address.
 
+This issue is discussed more generally [here](../discussions/micro-frontends/base-paths.md).
+
 ## Current frameworks’ assumptions
 
 During our experimentations we discovered that most modern frameworks, although compatible with fragments, can make different assumptions about the state and scope of ownership of the HTML document.

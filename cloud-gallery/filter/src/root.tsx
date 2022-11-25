@@ -88,7 +88,6 @@ export const Filter = component$(() => {
 							}
 
 							if (currentValue === "") {
-								//     state.searchResults = [];
 								if (isBrowser()) {
 									window.location.assign("/");
 								}

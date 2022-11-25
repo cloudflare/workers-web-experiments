@@ -4,7 +4,7 @@
 
 This project demonstrates what we've called the "Migration Piercing Strategy", which consists in a strategy aimed to the incremental migration of a legacy application to a server side rendering model implemented at the edge via Cloudflare Workers.
 
-To read more about it see the [_TITLE TBD_ blog post](https://blog.cloudflare.com/better-micro-frontends).
+To read more about it see [Incremental adoption of micro-frontends with Cloudflare Workers](https://blog.cloudflare.com/fragment-piercing/).
 
 To view the application visit: https://productivity-suite.web-experiments.workers.dev.
 

@@ -3,7 +3,7 @@ import { GenericMessageBus, type MessageBus } from "./message-bus";
 import { messageBusProp } from "./message-bus-prop";
 
 /**
- * Get a `MessageBus` based on the provided element.
+ * Gets a `MessageBus` based on the provided element.
  *
  * Search up the ancestors of the given `element` looking for a `FragmentHost`.
  * If there is one then return the `MessageBus` attached to that.
@@ -34,6 +34,8 @@ export function getBus(element?: Element): MessageBus {
 
 /**
  * Is the given `obj` a `MessageBus` container?
+ *
+ * Use this guard to narrow the type of `obj` to access the message bus property.
  */
 function hasMessageBus<T>(obj: T): obj is T & { [messageBusProp]: MessageBus } {
   return !!obj && messageBusProp in obj;

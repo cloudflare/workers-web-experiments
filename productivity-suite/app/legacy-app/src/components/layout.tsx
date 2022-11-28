@@ -12,7 +12,7 @@ function Header() {
       <NavLink to="/">
         <h1 className="app-title">Productivity Suite</h1>
       </NavLink>
-      {auth?.username && (
+      {auth && (
         <div className="user-section">
           <div className="user-info">
             <div className="account-icon">{accountIcon}</div>

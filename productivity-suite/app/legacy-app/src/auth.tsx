@@ -9,16 +9,24 @@ import {
 } from "shared";
 import { initialPlaceholderTodoList } from "./initialPlaceholderTodoList";
 
+/** Message sent to indicate that a user has just logged in. */
 export type LoginMessage = { username: string };
-export type AuthenticationMessage = { username: string | null };
+/** Message sent to indicate that a user has just logged out. */
+export type LogoutMessage = {};
+/**
+ * Message indiciating the authentication state of the current user.
+ *
+ * `null` means not logged in.
+ */
+export type AuthenticationMessage = { username: string } | null;
 
-const AuthContext = createContext<AuthenticationMessage | undefined>(undefined);
+const AuthContext = createContext<AuthenticationMessage>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(
-    getBus().latestValue<AuthenticationMessage>("authentication")
+  const [user, setUser] = useState<AuthenticationMessage>(
+    getBus().latestValue<AuthenticationMessage>("authentication") ?? null
   );
 
   useEffect(() => {
@@ -34,10 +42,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    return getBus().listen("logout", () => {
-      setUser({ username: null });
+    return getBus().listen<LogoutMessage>("logout", () => {
+      setUser(null);
       deleteCurrentUser();
-      getBus().dispatch("authentication", { username: null });
+      getBus().dispatch("authentication", null);
       navigate("/login");
     });
   }, []);
@@ -51,16 +59,12 @@ export function useAuth() {
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
-
-  assertDefined(auth);
-  return !auth.username ? <Navigate to={"/login"} replace /> : <>{children}</>;
+  return !auth ? <Navigate to={"/login"} replace /> : <>{children}</>;
 }
 
 export function RequireNotAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
-
-  assertDefined(auth);
-  return auth.username ? <Navigate to={"/"} replace /> : <>{children}</>;
+  return auth ? <Navigate to={"/"} replace /> : <>{children}</>;
 }
 
 async function addUserDataIfMissing(user: string) {
@@ -70,11 +74,5 @@ async function addUserDataIfMissing(user: string) {
       todoLists: [initialPlaceholderTodoList],
     });
     setUserData(user, newDataStr);
-  }
-}
-
-function assertDefined<T>(value: T | undefined): asserts value is T {
-  if (value === undefined) {
-    throw new Error("Programming error: Value should not be undefined");
   }
 }

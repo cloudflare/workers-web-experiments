@@ -1,7 +1,6 @@
 import { getBus } from "piercing-library";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../auth";
 
 import "./UnimplementedDemoPage.css";
 
@@ -10,8 +9,6 @@ export function UnimplementedDemoPage({
 }: {
   children: ReactNode;
 }) {
-  const auth = useAuth();
-
   return (
     <div className="unimplemented-demo-page">
       <figure>{svg}</figure>

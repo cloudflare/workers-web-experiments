@@ -1,0 +1,28 @@
+{
+  "name": "solid-start",
+  "scripts": {
+    "setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);' --persist-to ./.mf",
+    "dev": "solid-start dev --port 8710",
+    "build": "solid-start build",
+    "start": "solid-start start",
+    "predeploy": "npm run build",
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish ./dist/public --branch main --project-name d1-todos-solid-start"
+  },
+  "type": "module",
+  "devDependencies": {
+    "solid-start-cloudflare-pages": "^0.2.7",
+    "solid-start-node": "^0.2.0",
+    "typescript": "^4.8.4",
+    "vite": "^3.1.8"
+  },
+  "dependencies": {
+    "@solidjs/meta": "^0.28.0",
+    "@solidjs/router": "^0.5.0",
+    "solid-js": "^1.6.2",
+    "solid-start": "^0.2.0",
+    "undici": "^5.11.0"
+  },
+  "engines": {
+    "node": ">=16.8"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "d1-todos",
+  "version": "0.0.0",
+  "description": "workspace for the piercing migration strategy demo",
+  "workspaces": [
+    "shared",
+    "apps/remix",
+    "apps/qwik-city",
+    "apps/svelte-kit",
+    "apps/solid-start"
+  ],
+  "scripts": {
+    "dev": "node ./scripts/dev.mjs",
+    "deploy": "node ./scripts/deploy.mjs",
+    "postinstall": "patch-package"
+  },
+  "author": "",
+  "license": "Apache 2",
+  "devDependencies": {
+    "@databases/split-sql-query": "^1.0.3",
+    "@databases/sql": "^3.2.0",
+    "@sveltejs/adapter-cloudflare": "^1.0.0-next.42",
+    "inquirer": "^9.1.4",
+    "npm-run-all": "^4.1.5",
+    "open": "^8.4.0",
+    "patch-package": "^6.5.0",
+    "wrangler": "^2.6.2"
+  },
+  "dependencies": {
+    "cookie": "^0.5.0"
+  }
+}

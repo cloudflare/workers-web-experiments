@@ -1,0 +1,7 @@
+# Note: this toml file shouldn't be needed since we're using pages, but it is
+#       needed to make the predev (database initialization) script run successfully
+[[ d1_databases ]]
+  binding = "D1_TODOS_DB"
+  database_name = "D1_TODOS_DB"
+  database_id = "bf3079c9-55af-46fe-bd58-63b816073b24"
+  preview_database_id = "bf3079c9-55af-46fe-bd58-63b816073b24"

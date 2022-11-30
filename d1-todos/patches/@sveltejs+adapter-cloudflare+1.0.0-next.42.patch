@@ -1,0 +1,24 @@
+diff --git a/node_modules/@sveltejs/adapter-cloudflare/index.js b/node_modules/@sveltejs/adapter-cloudflare/index.js
+index bcb5bab..2f8c815 100644
+--- a/node_modules/@sveltejs/adapter-cloudflare/index.js
++++ b/node_modules/@sveltejs/adapter-cloudflare/index.js
+@@ -46,7 +46,7 @@ export default function () {
+ 
+ 			writeFileSync(`${dest}/_headers`, generate_headers(builder.config.kit.appDir));
+ 
+-			builder.copy(`${files}/worker.js`, `${tmp}/_worker.js`, {
++			builder.copy(`${files}/worker.js`, `${tmp}/__worker.js`, {
+ 				replace: {
+ 					SERVER: `${relativePath}/index.js`,
+ 					MANIFEST: './manifest.js'
+@@ -59,8 +59,8 @@ export default function () {
+ 				conditions: ['worker'],
+ 				sourcemap: 'linked',
+ 				target: 'es2020',
+-				entryPoints: [`${tmp}/_worker.js`],
+-				outfile: `${dest}/_worker.js`,
++				entryPoints: [`${tmp}/__worker.js`],
++				outfile: `${dest}/__worker.js`,
+ 				allowOverwrite: true,
+ 				bundle: true
+ 			});

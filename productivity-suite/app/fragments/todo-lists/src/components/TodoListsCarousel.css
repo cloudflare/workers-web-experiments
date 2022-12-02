@@ -8,6 +8,7 @@
 
 .todo-lists-carousel :global(.todo-list-card) {
     font-size: 2rem;
+    text-align: center;
     display: grid;
     place-items: center;
     color: #4d4d4d;

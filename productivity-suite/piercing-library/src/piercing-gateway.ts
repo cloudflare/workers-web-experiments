@@ -5,6 +5,7 @@ import {
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
 // for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
+import reframedClient from "./reframed-client?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
@@ -224,14 +225,46 @@ export class PiercingGateway<Env> {
       );
     }
 
-    const fragmentStream = await this.fetchSSRedFragment(
+    let fragmentStream = await this.fetchSSRedFragment(
       env,
       fragmentConfig,
       request,
       false
     );
 
-    return new Response(fragmentStream, {
+    const fragmentHtmlId = `reframedContainer_${fragmentId}`;
+
+    let preFragment = `
+      <body >
+        <style>
+          #${fragmentHtmlId} {
+            display: none;
+          }
+        </style>
+        <div class="reframedWrapper">
+    `;
+
+    let postFragment = `
+        </div>
+        <script>
+          ${reframedClient.replace("__FRAGMENT_ID__", fragmentHtmlId)}
+        </script>
+        ${qwikloaderScript}
+        <style>
+          #${fragmentHtmlId} {
+            display: block;
+          }
+        </style>
+      </body>
+    `;
+
+    const responseStream = wrapStreamInText(
+      preFragment,
+      postFragment,
+      fragmentStream
+    );
+
+    return new Response(responseStream, {
       headers: {
         "content-type": "text/html;charset=UTF-8",
       },
@@ -279,6 +312,8 @@ export class PiercingGateway<Env> {
     return new Response(stream, {
       headers: {
         "content-type": "text/html;charset=UTF-8",
+        "Content-Security-Policy": "frame-src *; script-src 'unsafe-inline' *;",
+        "Access-Control-Allow-Origin": "*",
       },
     });
   }
@@ -330,20 +365,7 @@ export class PiercingGateway<Env> {
     const service = this.getFragmentFetcher(env, fragmentConfig.fragmentId);
     const newRequest = this.getRequestForFragment(request, fragmentConfig, env);
     const response = await service.fetch(newRequest);
-    const fragmentStream = response.body!;
-
-    let preFragment = `<piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>`;
-    const postFragment = "</piercing-fragment-host>";
-
-    if (prePiercing) {
-      preFragment = `
-                ${preFragment}
-                <style>
-                    ${fragmentConfig.prePiercingStyles}
-                </style>`;
-    }
-
-    return wrapStreamInText(preFragment, postFragment, fragmentStream);
+    return response.body!;
   }
 
   private getRequestForFragment(

@@ -1,6 +1,7 @@
 import { getBus } from "piercing-library";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import { ReframedOutlet } from "../ReframedOutlet";
 
 export function News() {
   useEffect(() => {
@@ -31,7 +32,7 @@ export function News() {
 
   return (
     <div>
-      <piercing-fragment-outlet fragment-id="news" />
+      <ReframedOutlet fragmentId="news" />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { getBus } from "piercing-library";
 import { MessageBus } from "piercing-library/dist/message-bus/message-bus";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ReframedOutlet } from "../ReframedOutlet";
 import "./TodoLists.css";
 
 type TodoListSelectedEvent = {
@@ -68,8 +69,8 @@ export function TodoLists() {
 
   return (
     <div className="todo-lists-page" ref={elementRef}>
-      <piercing-fragment-outlet fragment-id="todo-lists" />
-      <piercing-fragment-outlet fragment-id="todos" />
+      <ReframedOutlet fragmentId="todo-lists" />
+      <ReframedOutlet fragmentId="todos" />
     </div>
   );
 }

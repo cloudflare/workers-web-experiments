@@ -20,7 +20,7 @@
 		"format": "npm run format --workspaces --if-present"
 	},
 	"author": "",
-	"license": "ISC",
+	"license": "Apache-2.0",
 	"devDependencies": {
 		"concurrently": "^7.4.0",
 		"prettier": "^2.7.1",

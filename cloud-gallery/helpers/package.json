@@ -50,7 +50,7 @@
 	"engines": {
 		"node": ">=14"
 	},
-	"license": "",
+	"license": "Apache-2.0",
 	"__qwik__": {
 		"priority": -1
 	}

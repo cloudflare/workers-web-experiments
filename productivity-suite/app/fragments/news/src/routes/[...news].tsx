@@ -26,6 +26,19 @@ export default function News() {
     });
   });
 
+  onMount(() => {
+    const host = getFragmentHost(ref);
+    if (host === null) {
+      throw new Error(
+        "Missing <piercing-fragment-host> container for this fragment."
+      );
+    }
+    // When the fragment gets removed we send a message to clear the current page
+    // from the message bus to ensure that if we return to this fragment, its page
+    // is not initialized incorrectly.
+    host.onCleanup(() => getBus(ref).dispatch("change-news-page", {}));
+  });
+
   const updatePage = (newPage: number) => {
     setPage(newPage);
     getBus(ref).dispatch("change-news-page", { page: newPage });

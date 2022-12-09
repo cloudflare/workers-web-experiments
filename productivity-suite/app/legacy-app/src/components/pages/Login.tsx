@@ -1,6 +1,5 @@
 import { getBus } from "piercing-library";
 import { useEffect, useRef } from "react";
-import { ReframedOutlet } from "../ReframedOutlet";
 
 export function Login() {
   const ref = useRef<HTMLDivElement>(null);
@@ -22,7 +21,7 @@ export function Login() {
 
   return (
     <div className="login-page" ref={ref}>
-      <ReframedOutlet fragmentId="login" />
+      <piercing-fragment-outlet fragment-id="login" />
     </div>
   );
 }

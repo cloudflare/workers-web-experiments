@@ -39,7 +39,6 @@ export default function Root() {
           <FileRoutes />
         </Routes>
       </ErrorBoundary>
-
       <Scripts />
     </div>
   );

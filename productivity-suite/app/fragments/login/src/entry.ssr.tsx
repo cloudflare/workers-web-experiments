@@ -29,7 +29,6 @@ export default {
     return new Response(readable, {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
-        "access-control-allow-origin": "*",
       },
     });
   },

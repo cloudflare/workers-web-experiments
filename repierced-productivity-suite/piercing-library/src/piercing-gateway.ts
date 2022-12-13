@@ -4,7 +4,8 @@ import {
 } from "./index";
 import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
 // for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
-import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
+import qwikloader from "@builder.io/qwik/qwikloader.debug.js?raw";
+import reframedClient from "./reframed-client?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
@@ -331,19 +332,36 @@ export class PiercingGateway<Env> {
     const newRequest = this.getRequestForFragment(request, fragmentConfig, env);
     const response = await service.fetch(newRequest);
     const fragmentStream = response.body!;
+    const fragmentId = fragmentConfig.fragmentId;
+    const fragmentHost = `<piercing-fragment-host fragment-id=${fragmentId}></piercing-fragment-host>`;
+    const prePiercingStyles = prePiercing
+      ? `<style>${fragmentConfig.prePiercingStyles}</style>`
+      : ``;
+    const escapedReframedCode = getEscapedReframedClientCode(fragmentId);
+    const srcDocPre = `<body><script>console.log('3');\n${escapedReframedCode}</script>`;
+    const srcDocPost = `</body>`;
+    const preFragment = `${fragmentHost}${prePiercingStyles} <iframe id="iframe_${fragmentId}" style="display: none" srcdoc="${srcDocPre}`;
+    const postFragment = `${srcDocPost}" > </iframe>`;
 
-    let preFragment = `<piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>`;
-    const postFragment = "</piercing-fragment-host>";
+    const encoder = new TextEncoder();
+    const { writable, readable } = new TransformStream();
+    const writer = writable.getWriter();
 
-    if (prePiercing) {
-      preFragment = `
-                ${preFragment}
-                <style>
-                    ${fragmentConfig.prePiercingStyles}
-                </style>`;
+    const reader = fragmentStream.getReader();
+    let chunk = await reader.read();
+    while (!chunk.done) {
+      const decoder = new TextDecoder();
+      let chunkStr = decoder.decode(chunk.value);
+      chunkStr = chunkStr.replaceAll('"', "&quot;");
+      let transformedChunk = encoder.encode(chunkStr);
+
+      writer.write(transformedChunk);
+      chunk = await reader.read();
     }
+    reader.releaseLock();
+    writer.close();
 
-    return wrapStreamInText(preFragment, postFragment, fragmentStream);
+    return wrapStreamInText(preFragment, postFragment, readable);
   }
 
   private getRequestForFragment(
@@ -408,3 +426,12 @@ export class PiercingGateway<Env> {
 }
 
 const qwikloaderScript = `<script id="qwikloader">${qwikloader}</script>`;
+
+function getEscapedReframedClientCode(fragmentId: string) {
+  return reframedClient
+    .replace(
+      "__FRAGMENT_SELECTOR__",
+      `"piercing-fragment-host[fragment-id='${fragmentId}']"`
+    )
+    .replaceAll('"', `&quot;`);
+}

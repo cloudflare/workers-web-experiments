@@ -25,6 +25,7 @@ export default {
       manifest,
       containerTagName: "todo-lists",
       qwikLoader: { include: "never" },
+      // qwikLoader: { include: "always" },
       base: "/_fragment/todo-lists/build",
       stream,
       envData: {

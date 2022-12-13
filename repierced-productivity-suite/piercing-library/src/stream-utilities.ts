@@ -21,6 +21,40 @@ export function wrapStreamInText(
   return readable;
 }
 
+export function transformStream(
+  stream: ReadableStream<Uint8Array>,
+  transformerFn: (str: string) => string
+) {
+  const { writable, readable } = new TransformStream();
+  const writer = writable.getWriter();
+
+  const transform = async () => {
+    try {
+      const encoder = new TextEncoder();
+      const reader = stream.getReader();
+
+      let chunk = await reader.read();
+      while (!chunk.done) {
+        const decoder = new TextDecoder();
+        let chunkStr = decoder.decode(chunk.value);
+        chunkStr = transformerFn(chunkStr);
+        let transformedChunk = encoder.encode(chunkStr);
+
+        writer.write(transformedChunk);
+        chunk = await reader.read();
+      }
+
+      reader.releaseLock();
+      writer.close();
+    } catch (error: any) {
+      writer.abort();
+    }
+  };
+
+  transform();
+  return readable;
+}
+
 async function writeIntoEmbeddedStream(
   preStream: string,
   postStream: string,

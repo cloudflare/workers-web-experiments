@@ -126,7 +126,6 @@ function Footer() {
     <footer className="app-footer">
       <div className="content">
         Piercing strategy migration demo. See the{" "}
-        {/* href to update when the blog-post url is known */}
         <a
           target="_blank"
           className="external-link"

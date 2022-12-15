@@ -3,11 +3,15 @@ import { getCurrentUser, getTodoLists } from "shared";
 
 export interface Env {
   APP_BASE_URL: string;
+  ISOLATE_FRAGMENTS: boolean;
 }
 
 const gateway = new PiercingGateway<Env>({
   getLegacyAppBaseUrl(env) {
     return env.APP_BASE_URL;
+  },
+  isolateFragments(env) {
+    return env.ISOLATE_FRAGMENTS || false;
   },
   shouldPiercingBeEnabled(request: Request) {
     const match = request.headers

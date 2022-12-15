@@ -38,7 +38,7 @@
 	"engines": {
 		"node": ">=14"
 	},
-	"license": "",
+	"license": "Apache-2.0",
 	"private": true,
 	"type": "module"
 }

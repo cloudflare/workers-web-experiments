@@ -18,19 +18,21 @@ const gateway = new PiercingGateway<Env>({
   },
   async generateMessageBusState(requestMessageBusState, request) {
     const requestCookie = request.headers.get("Cookie");
-    const username = requestCookie ? await getCurrentUser(requestCookie) : null;
+    const currentUser = requestCookie
+      ? await getCurrentUser(requestCookie)
+      : null;
 
     if (!("authentication" in requestMessageBusState)) {
-      requestMessageBusState["authentication"] = username && {
-        username,
+      requestMessageBusState["authentication"] = {
+        username: currentUser,
       };
     }
 
-    if (!("todo-list-selected" in requestMessageBusState) && username) {
+    if (!("todo-list-selected" in requestMessageBusState) && currentUser) {
       const match = /\/todos\/([^/]+)$/.exec(request.url);
       let listName = match?.[1] && decodeURIComponent(match[1]);
 
-      const lists = await getTodoLists(username, requestCookie!);
+      const lists = await getTodoLists(currentUser, requestCookie!);
       // make sure that the provided listName is the name of an existing list
       listName = lists.find(({ name }) => name === listName)?.name;
 
@@ -76,6 +78,7 @@ function getPageNumber(searchParams: URLSearchParams) {
 
 gateway.registerFragment({
   fragmentId: "login",
+  framework: "qwik",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
@@ -107,6 +110,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todo-lists",
+  framework: "qwik",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -156,6 +160,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todos",
+  framework: "react",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
@@ -207,6 +212,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "news",
+  framework: "solidjs",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;

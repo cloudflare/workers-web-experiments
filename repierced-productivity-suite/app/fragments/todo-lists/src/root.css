@@ -1,9 +1,0 @@
-.todo-lists-section-wrapper {
-    padding: 1rem;
-}
-
-.todo-lists-section {
-    width: max-content;
-    margin: auto;
-    max-width: calc(85vw - 2rem);
-}

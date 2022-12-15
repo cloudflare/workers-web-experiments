@@ -17,7 +17,7 @@
 		"build": "npm run build --workspaces"
 	},
 	"author": "",
-	"license": "Apache-2.0",
+	"license": "ISC",
 	"devDependencies": {
 		"open": "^8.4.0",
 		"yargs": "^17.6.0"

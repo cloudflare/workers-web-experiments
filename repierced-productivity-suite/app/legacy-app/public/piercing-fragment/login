@@ -1,9 +1,0 @@
-<piercing-fragment-host fragment-id="login">
-  <p>Login placeholder...</p>
-  <button id="login-button">Login</button>
-</piercing-fragment-host>
-<script>
-  // We are simulating a very simple login to allow access to authorized routes.
-  // Note that it is just a case of dispatching a message to the message bus.
-  document.getElementById("login-button").onclick = () => globalThis[Symbol.for("fragment-message-bus")].dispatch("login", {username: "test"})
-</script>

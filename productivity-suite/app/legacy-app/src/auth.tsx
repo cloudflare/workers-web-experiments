@@ -59,11 +59,13 @@ export function useAuth() {
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
+
   return !auth ? <Navigate to={"/login"} replace /> : <>{children}</>;
 }
 
 export function RequireNotAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
+
   return auth ? <Navigate to={"/"} replace /> : <>{children}</>;
 }
 

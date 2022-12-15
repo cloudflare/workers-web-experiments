@@ -69,8 +69,8 @@ const domCreateProperties = [
   "createTreeWalker",
 ];
 for (const createProperty of domCreateProperties) {
-  document[createProperty] = function reframedCreateFn() {
-    return reframedDocument[createProperty].apply(reframedDocument, arguments);
+  document[createProperty] = function reframedCreateFn(...args) {
+    return reframedDocument[createProperty].apply(reframedDocument, args);
   };
 }
 
@@ -83,8 +83,8 @@ const domQueryProperties = [
   "getElementsByTagNameNS",
 ];
 for (const queryProperty of domQueryProperties) {
-  document[queryProperty] = function reframedQueryFn() {
-    return reframedContainer[queryProperty].apply(reframedContainer, arguments);
+  document[queryProperty] = function reframedQueryFn(...args) {
+    return reframedContainer[queryProperty].apply(reframedContainer, args);
   };
 }
 
@@ -111,13 +111,8 @@ for (const listenerProperty of domListenerProperties) {
     );
   };
 
-  //const originalWindowFn = window[listenerProperty];
-  window[listenerProperty] = function reframedListenerFn(eventName) {
-    if (eventName === "popstate") {
-      // the popstate event fires only in the iframe
-      //Reflect.apply(originalWindowFn, window, arguments);
-    }
-    return reframedWindow[listenerProperty].apply(reframedWindow, arguments);
+  window[listenerProperty] = function reframedListenerFn(...args) {
+    return reframedWindow[listenerProperty].apply(reframedWindow, args);
   };
 }
 
@@ -134,14 +129,12 @@ Object.defineProperty(document, "body", {
   },
 });
 
-//const originalDocumentHead = document.head;
 Object.defineProperty(document, "head", {
   get: () => {
     return reframedContainer;
   },
 });
 
-//const originalDocumentStylesheets = document.stylesheets;
 Object.defineProperty(document, "stylesheets", {
   get: () => {
     return reframedDocument.stylesheets;

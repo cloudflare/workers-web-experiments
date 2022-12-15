@@ -330,7 +330,7 @@ export class PiercingGateway<Env> {
           "</head>"
       );
 
-      if (!this.config.isolateFragments || !this.config.isolateFragments(env)) {
+      if (!this.config.isolateFragments?.(env)) {
         // We need to include the qwikLoader script here
         // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
         indexBody = indexBody.replace(
@@ -369,7 +369,7 @@ export class PiercingGateway<Env> {
       </piercing-fragment-host>
     `;
 
-    if (this.config.isolateFragments && this.config.isolateFragments(env)) {
+    if (this.config.isolateFragments?.(env)) {
       // Quotes must be escaped from srcdoc contents
       template = `
         <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>

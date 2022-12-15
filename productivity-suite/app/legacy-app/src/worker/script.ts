@@ -216,7 +216,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "news",
-  framework: "solidjs",
+  framework: "solid",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;

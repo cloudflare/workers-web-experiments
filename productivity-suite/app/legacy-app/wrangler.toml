@@ -8,17 +8,29 @@ account_id = "8ed4d03ac99f77561d0e8c9cbcc76cb6"
 [dev]
 port = 8987
 
+[env.reframed]
+name = "reframed-productivity-suite"
+
 [vars]
 APP_BASE_URL = "https://productivity-suite-prod.pages.dev"
+ISOLATE_FRAGMENTS = false
 
 [env.local.vars]
 APP_BASE_URL = "http://localhost:8585"
+
+[env.reframed.vars]
+APP_BASE_URL = "https://reframed-productivity-suite-prod.pages.dev"
+ISOLATE_FRAGMENTS = true
 
 [[services]]
 binding = "login-fragment"
 service = "productivity-suite-login-fragment"
 
 [[env.local.services]]
+binding = "login-fragment"
+service = "productivity-suite-login-fragment"
+
+[[env.reframed.services]]
 binding = "login-fragment"
 service = "productivity-suite-login-fragment"
 
@@ -27,6 +39,10 @@ binding = "todo-lists-fragment"
 service = "productivity-suite-todo-lists-fragment"
 
 [[env.local.services]]
+binding = "todo-lists-fragment"
+service = "productivity-suite-todo-lists-fragment"
+
+[[env.reframed.services]]
 binding = "todo-lists-fragment"
 service = "productivity-suite-todo-lists-fragment"
 
@@ -35,6 +51,10 @@ binding = "todos-fragment"
 service = "productivity-suite-todos-fragment"
 
 [[env.local.services]]
+binding = "todos-fragment"
+service = "productivity-suite-todos-fragment"
+
+[[env.reframed.services]]
 binding = "todos-fragment"
 service = "productivity-suite-todos-fragment"
 
@@ -43,5 +63,9 @@ binding = "news-fragment"
 service = "productivity-suite-news-fragment"
 
 [[env.local.services]]
+binding = "news-fragment"
+service = "productivity-suite-news-fragment"
+
+[[env.reframed.services]]
 binding = "news-fragment"
 service = "productivity-suite-news-fragment"

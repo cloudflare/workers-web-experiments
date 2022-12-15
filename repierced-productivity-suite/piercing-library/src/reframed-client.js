@@ -11,10 +11,14 @@ const reframedWindow = reframedDocument.defaultView;
 const htmlToReframe = [];
 const nodesToRemove = [];
 
+const tagBlockList = ["META", "TITLE"];
+
 document.body.childNodes.forEach((node) => {
   if (node.nodeName === "SCRIPT") return;
   switch (node.nodeType) {
     case Node.ELEMENT_NODE: {
+      if (tagBlockList.includes(node.nodeName)) break;
+
       htmlToReframe.push(node.outerHTML);
       break;
     }

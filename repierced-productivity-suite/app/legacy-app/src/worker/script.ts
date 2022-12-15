@@ -78,6 +78,7 @@ function getPageNumber(searchParams: URLSearchParams) {
 
 gateway.registerFragment({
   fragmentId: "login",
+  framework: "qwik",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
@@ -109,6 +110,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todo-lists",
+  framework: "qwik",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -158,6 +160,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todos",
+  framework: "react",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
@@ -209,6 +212,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "news",
+  framework: "solidjs",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;

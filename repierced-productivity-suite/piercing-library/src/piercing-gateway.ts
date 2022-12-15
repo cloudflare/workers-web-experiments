@@ -22,6 +22,11 @@ export interface FragmentConfig<Env> {
    */
   fragmentId: string;
   /**
+   * The framework used by the fragment. This setting allows the gateway to make
+   * framework specific adjustments to the way it's served.
+   */
+  framework?: "qwik" | "react" | "solid";
+  /**
    * Styles to apply to the fragment before it gets pierced, their purpose
    * is to style the fragment in such a way to make it look as close as possible
    * to the final pierced view (so that the piercing operation can look seamless).
@@ -319,9 +324,6 @@ export class PiercingGateway<Env> {
           "</head>"
       );
 
-      // We need to include the qwikLoader script here
-      // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
-      indexBody = indexBody.replace("</head>", `\n${qwikloaderScript}</head>`);
       return new Response(indexBody, response);
     }
 
@@ -340,6 +342,8 @@ export class PiercingGateway<Env> {
     const fragmentStream = response.body!;
 
     const fragmentId = fragmentConfig.fragmentId;
+    const framework = fragmentConfig.framework;
+
     const prePiercingStyles = prePiercing
       ? `<style>${fragmentConfig.prePiercingStyles}</style>`
       : ``;
@@ -353,7 +357,7 @@ export class PiercingGateway<Env> {
         <body>
           --FRAGMENT_CONTENT--
           ${getEscapedReframedClientCode(fragmentId)}
-          ${escapeQuotes(qwikloaderScript)}
+          ${(framework === "qwik" && escapeQuotes(qwikloaderScript)) || ""}
         </body>
       "></iframe>
     `;

@@ -14,6 +14,7 @@
     "predeploy.react": "npm run build.react",
     "deploy.react": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish ./dist --branch main --project-name productivity-suite-prod",
     "deploy.worker": "wrangler publish",
+    "predeploy.react.reframed": "npm run build.react",
     "deploy.react.reframed": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish ./dist --branch main --project-name reframed-productivity-suite-prod",
     "deploy.worker.reframed": "wrangler publish -e reframed"
   },

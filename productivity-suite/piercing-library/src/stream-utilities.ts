@@ -21,6 +21,13 @@ export function wrapStreamInText(
   return readable;
 }
 
+/**
+ * Transforms a stream by applying the provided transformerFn on each chunk.
+ *
+ * @param stream the input stream to be transformed
+ * @param transformerFn the function to be applied to each chunk
+ * @returns a transformed stream
+ */
 export function transformStream(
   stream: ReadableStream<Uint8Array>,
   transformerFn: (str: string) => string

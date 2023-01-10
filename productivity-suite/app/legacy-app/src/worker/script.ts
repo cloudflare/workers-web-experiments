@@ -22,21 +22,19 @@ const gateway = new PiercingGateway<Env>({
   },
   async generateMessageBusState(requestMessageBusState, request) {
     const requestCookie = request.headers.get("Cookie");
-    const currentUser = requestCookie
-      ? await getCurrentUser(requestCookie)
-      : null;
+    const username = requestCookie ? await getCurrentUser(requestCookie) : null;
 
     if (!("authentication" in requestMessageBusState)) {
-      requestMessageBusState["authentication"] = {
-        username: currentUser,
+      requestMessageBusState["authentication"] = username && {
+        username,
       };
     }
 
-    if (!("todo-list-selected" in requestMessageBusState) && currentUser) {
+    if (!("todo-list-selected" in requestMessageBusState) && username) {
       const match = /\/todos\/([^/]+)$/.exec(request.url);
       let listName = match?.[1] && decodeURIComponent(match[1]);
 
-      const lists = await getTodoLists(currentUser, requestCookie!);
+      const lists = await getTodoLists(username, requestCookie!);
       // make sure that the provided listName is the name of an existing list
       listName = lists.find(({ name }) => name === listName)?.name;
 

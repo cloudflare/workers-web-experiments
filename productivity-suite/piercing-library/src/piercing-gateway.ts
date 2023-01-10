@@ -2,9 +2,14 @@ import {
   getMessageBusInlineScript,
   piercingFragmentHostInlineScript,
 } from "./index";
-import { concatenateStreams, wrapStreamInText } from "./stream-utilities";
+import {
+  concatenateStreams,
+  transformStream,
+  wrapStreamInText,
+} from "./stream-utilities";
 // for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
+import reframedClient from "./reframed-client?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
@@ -16,6 +21,11 @@ export interface FragmentConfig<Env> {
    * Unique Id for the fragment.
    */
   fragmentId: string;
+  /**
+   * The framework used by the fragment. This setting allows the gateway to make
+   * framework specific adjustments to the way it's served.
+   */
+  framework?: "qwik" | "react" | "solid";
   /**
    * Styles to apply to the fragment before it gets pierced, their purpose
    * is to style the fragment in such a way to make it look as close as possible
@@ -77,6 +87,11 @@ export interface PiercingGatewayConfig<Env> {
     env: Env,
     ctx: ExecutionContext
   ) => boolean | Promise<boolean>;
+
+  /**
+   * When enabled, isolates the execution context of each fragment to an iframe.
+   */
+  isolateFragments?: (env: Env) => boolean;
 }
 
 export class PiercingGateway<Env> {
@@ -146,7 +161,8 @@ export class PiercingGateway<Env> {
     if (requestIsForHtml) {
       const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
       const indexBodyResponse = this.fetchBaseIndexHtml(
-        new Request(baseUrl, request)
+        new Request(baseUrl, request),
+        env
       ).then((response) => response.text());
 
       const piercingEnabled =
@@ -247,6 +263,7 @@ export class PiercingGateway<Env> {
     const fragmentId = match[1];
     const fragmentConfig = this.fragmentConfigs.get(fragmentId);
     if (!fragmentConfig) return null;
+
     // if the request has an extra base we need to remove it here
     const adjustedReq = new Request(
       new URL(`${url.protocol}//${url.host}${match[0]}`),
@@ -262,6 +279,7 @@ export class PiercingGateway<Env> {
   private forwardFetchToBaseApp(request: Request, env: Env) {
     const url = new URL(request.url);
     const baseUrl = this.config.getLegacyAppBaseUrl(env).replace(/\/$/, "");
+
     const newRequest = new Request(`${baseUrl}${url.pathname}`);
     return fetch(newRequest, request);
   }
@@ -283,7 +301,7 @@ export class PiercingGateway<Env> {
     });
   }
 
-  private async fetchBaseIndexHtml(request: Request) {
+  private async fetchBaseIndexHtml(request: Request, env: Env) {
     // Note: we make sure to handle/proxy Upgrade requests, so
     //       that Vite's HMR can work for local development
     const upgradeHeader = request.headers.get("Upgrade");
@@ -312,9 +330,14 @@ export class PiercingGateway<Env> {
           "</head>"
       );
 
-      // We need to include the qwikLoader script here
-      // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
-      indexBody = indexBody.replace("</head>", `\n${qwikloaderScript}</head>`);
+      if (!this.config.isolateFragments?.(env)) {
+        // We need to include the qwikLoader script here
+        // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
+        indexBody = indexBody.replace(
+          "</head>",
+          `\n${qwikloaderScript}</head>`
+        );
+      }
       return new Response(indexBody, response);
     }
 
@@ -330,19 +353,41 @@ export class PiercingGateway<Env> {
     const service = this.getFragmentFetcher(env, fragmentConfig.fragmentId);
     const newRequest = this.getRequestForFragment(request, fragmentConfig, env);
     const response = await service.fetch(newRequest);
-    const fragmentStream = response.body!;
+    let fragmentStream = response.body!;
 
-    let preFragment = `<piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>`;
-    const postFragment = "</piercing-fragment-host>";
+    const fragmentId = fragmentConfig.fragmentId;
+    const framework = fragmentConfig.framework;
 
-    if (prePiercing) {
-      preFragment = `
-                ${preFragment}
-                <style>
-                    ${fragmentConfig.prePiercingStyles}
-                </style>`;
+    const prePiercingStyles = prePiercing
+      ? `<style>${fragmentConfig.prePiercingStyles}</style>`
+      : ``;
+
+    let template = `
+      <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>
+        ${prePiercingStyles}
+        --FRAGMENT_CONTENT--
+      </piercing-fragment-host>
+    `;
+
+    if (this.config.isolateFragments?.(env)) {
+      // Quotes must be escaped from srcdoc contents
+      template = `
+        <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>
+        </piercing-fragment-host>
+        ${prePiercingStyles}
+        <iframe id="iframe_${fragmentId}" style="display: none" srcdoc="
+          <body>
+            --FRAGMENT_CONTENT--
+            ${getEscapedReframedClientCode(fragmentId)}
+            ${(framework === "qwik" && escapeQuotes(qwikloaderScript)) || ""}
+          </body>
+        "></iframe>
+      `;
+
+      fragmentStream = transformStream(fragmentStream, escapeQuotes);
     }
 
+    const [preFragment, postFragment] = template.split("--FRAGMENT_CONTENT--");
     return wrapStreamInText(preFragment, postFragment, fragmentStream);
   }
 
@@ -406,5 +451,18 @@ export class PiercingGateway<Env> {
     return request;
   }
 }
+
+function getEscapedReframedClientCode(fragmentId: string) {
+  return `<script>
+    ${escapeQuotes(
+      reframedClient.replace(
+        "__FRAGMENT_SELECTOR__",
+        `"piercing-fragment-host[fragment-id='${fragmentId}']"`
+      )
+    )}
+  </script>`;
+}
+
+const escapeQuotes = (str: string) => str.replaceAll('"', `&quot;`);
 
 const qwikloaderScript = `<script id="qwikloader">${qwikloader}</script>`;

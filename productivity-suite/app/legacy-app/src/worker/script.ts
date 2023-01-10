@@ -3,11 +3,15 @@ import { getCurrentUser, getTodoLists } from "shared";
 
 export interface Env {
   APP_BASE_URL: string;
+  ISOLATE_FRAGMENTS: boolean;
 }
 
 const gateway = new PiercingGateway<Env>({
   getLegacyAppBaseUrl(env) {
     return env.APP_BASE_URL;
+  },
+  isolateFragments(env) {
+    return env.ISOLATE_FRAGMENTS || false;
   },
   shouldPiercingBeEnabled(request: Request) {
     const match = request.headers
@@ -76,6 +80,7 @@ function getPageNumber(searchParams: URLSearchParams) {
 
 gateway.registerFragment({
   fragmentId: "login",
+  framework: "qwik",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host {
       position: absolute;
@@ -107,6 +112,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todo-lists",
+  framework: "qwik",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todo-lists"] {
       position: absolute;
@@ -156,6 +162,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "todos",
+  framework: "react",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="todos"] {
       position: absolute;
@@ -207,6 +214,7 @@ gateway.registerFragment({
 
 gateway.registerFragment({
   fragmentId: "news",
+  framework: "solid",
   prePiercingStyles: `
     :not(piercing-fragment-outlet) > piercing-fragment-host[fragment-id="news"] {
       position: absolute;

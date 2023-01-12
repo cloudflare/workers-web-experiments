@@ -29,8 +29,8 @@
     "dev.open": "run-p build.server.watch dev.wrangler.open"
   },
   "devDependencies": {
-    "@builder.io/qwik": "0.15.2",
-    "@builder.io/qwik-city": "0.0.128",
+    "@builder.io/qwik": "0.16.2",
+    "@builder.io/qwik-city": "0.1.0-beta8",
     "@types/eslint": "8.4.10",
     "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "5.45.0",

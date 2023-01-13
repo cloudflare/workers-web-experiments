@@ -58,7 +58,15 @@
     <ul>
         {#each data.todos as { id, text, completed }}
             <li>
-                <form method="post" action="?/edit" use:enhance={() => () => invalidate('todos')}>
+                <form method="post" action="?/edit" use:enhance={() => ({result}) => {
+                        if(result?.type === 'success') {
+                            error = '';
+                            invalidate('todos');
+                        }
+                        if(result?.type === 'error') {
+                            error = result?.error?.message;
+                        }
+                    }}>
                     <input hidden name="todo-id" readOnly value={id} />
                     <input hidden name="completed" readOnly value={`${!completed}`} />
 					<button
@@ -69,7 +77,15 @@
 				  ></button>
                 </form>
                 <span class={completed ? "line-through" : ""}>{text}</span>
-                <form method="post" action="?/delete" use:enhance={() => () => invalidate('todos')}>
+                <form method="post" action="?/delete" use:enhance={() => ({result}) => {
+                        if(result?.type === 'success') {
+                            error = '';
+                            invalidate('todos');
+                        }
+                        if(result?.type === 'error') {
+                            error = result?.error?.message;
+                        }
+                    }}>
                     <input hidden name="todo-id" readOnly value={id} />
 					<button class="delete-btn" aria-label="delete"></button>
                 </form>

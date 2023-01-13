@@ -20,7 +20,7 @@ export const actions: Actions = {
 		const text = formData.get('text') as string;
 		const textValidation = validateTodoText(text);
 		if (textValidation.valid) {
-			runDbOperation(() => addTodo(todosDb, sessionId, text));
+			await runDbOperation(() => addTodo(todosDb, sessionId, text));
 		} else {
 			throw error(400, {
 				message: textValidation.reason
@@ -32,7 +32,7 @@ export const actions: Actions = {
 		const todosDb = getTodosDb(platform);
 		const formData = await request.formData();
 		const id = formData.get('todo-id') as string;
-		runDbOperation(() => deleteTodo(todosDb, sessionId, id));
+		await runDbOperation(() => deleteTodo(todosDb, sessionId, id));
 	},
 	async edit({ request, platform }) {
 		const sessionId = getSessionId(request);
@@ -40,7 +40,7 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const id = formData.get('todo-id') as string;
 		const completed = (formData.get('completed') as string) === 'true';
-		runDbOperation(() => editTodo(todosDb, sessionId, id, completed));
+		await runDbOperation(() => editTodo(todosDb, sessionId, id, completed));
 	}
 };
 

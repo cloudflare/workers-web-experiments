@@ -10,6 +10,7 @@
     "apps/solid-start"
   ],
   "scripts": {
+    "start": "npm run dev",
     "dev": "node ./scripts/dev.mjs",
     "deploy": "node ./scripts/deploy.mjs",
     "postinstall": "patch-package"

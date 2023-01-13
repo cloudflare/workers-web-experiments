@@ -39,53 +39,84 @@ export default function Home() {
   const [addTodoServerAction, { Form: AddTodoForm }] = createServerAction$(
     async (formData: FormData, { request, env }) => {
       const db = getTodosDb(env);
+      const timestamp = new Date().getTime();
       const text = formData.get("text") as string;
       const todoTextValidation = validateTodoText(text);
       if (!todoTextValidation.valid) {
-        throw new FormError(todoTextValidation.reason);
+        return { error: todoTextValidation.reason, timestamp };
       }
       const sessionId = getSessionId(request);
       try {
         await addTodo(db, sessionId, text);
       } catch {
-        throw new FormError("DataBase Internal Error");
+        return { error: "DataBase Internal Error", timestamp };
       }
-    },
-    {
-      invalidate: () => setNewTodo(""),
+
+      return { timestamp };
     }
   );
 
   const [editTodoServerAction, { Form: EditTodoForm }] = createServerAction$(
     async (formData: FormData, { request, env }) => {
       const db = getTodosDb(env);
+      const timestamp = new Date().getTime();
       const id = formData.get("todo-id") as string;
       const completed = formData.get("completed") as string;
       const sessionId = getSessionId(request);
       try {
         await editTodo(db, sessionId, id, completed === "true");
       } catch {
-        throw new FormError("DataBase Internal Error");
+        return { error: "DataBase Internal Error", timestamp };
       }
+      return { timestamp };
     }
   );
 
   const [deleteTodoServerAction, { Form: DeleteTodoForm }] =
     createServerAction$(async (formData: FormData, { request, env }) => {
       const db = getTodosDb(env);
+      const timestamp = new Date().getTime();
       const id = formData.get("todo-id") as string;
       const sessionId = getSessionId(request);
       try {
         await deleteTodo(db, sessionId, id);
       } catch {
-        throw new FormError("DataBase Internal Error");
+        return { error: "DataBase Internal Error", timestamp };
       }
+      return { timestamp };
     });
 
-  const backendError = () =>
-    addTodoServerAction.error?.message ??
-    editTodoServerAction.error?.message ??
-    deleteTodoServerAction.error?.message;
+  const [error, setError] = createSignal<string | undefined>();
+
+  createEffect(() => {
+    if (
+      [
+        addTodoServerAction.pending,
+        editTodoServerAction.pending,
+        deleteTodoServerAction.pending,
+      ].some(Boolean)
+    ) {
+      return;
+    }
+
+    const latestActionUtilsResult = [
+      addTodoServerAction.result,
+      editTodoServerAction.result,
+      deleteTodoServerAction.result,
+    ].reduce((acc, curr) =>
+      (curr?.timestamp ?? 0) > (acc?.timestamp ?? 0) ? curr : acc
+    );
+
+    debugger;
+    const latestError = latestActionUtilsResult?.error;
+    setError(latestError);
+    if (
+      !latestError &&
+      latestActionUtilsResult === addTodoServerAction.result
+    ) {
+      setNewTodo("");
+    }
+  });
 
   return (
     <main class="todos-app">
@@ -106,8 +137,8 @@ export default function Home() {
           <button disabled={!newTodo()}>add todo</button>
         </div>
       </AddTodoForm>
-      <Show when={backendError()}>
-        <p class="backend-error">{backendError()}</p>
+      <Show when={error()}>
+        <p class="backend-error">{error()}</p>
       </Show>
       <ul>
         <For each={data()?.todos}>

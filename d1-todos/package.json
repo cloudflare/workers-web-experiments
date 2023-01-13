@@ -12,6 +12,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "node ./scripts/dev.mjs",
+    "deploy-setup": "node ./scripts/deploy-setup.mjs",
     "deploy": "node ./scripts/deploy.mjs",
     "postinstall": "patch-package"
   },

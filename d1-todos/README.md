@@ -16,9 +16,13 @@ A prompt will let you choose what application to run.
 
 ### Deployment
 
-In order to be able to deploy any of the applications you'll need to modify their `deploy` script by replacing the `CLOUDFLARE_ACCOUNT_ID` value with your own and by also choosing a different project name (you need a different project name because different pages projects cannot have the same name).
+In order to be able to deploy any of the applications you'll need to set up their name and provide your Cloudflare account id, you can do so by simply running `npm run deploy-setup` and following the instructions.
 
-After that, to deploy any app simply run: `npm run deploy`
+> Alternatively you can manually update the `deploy` scripts of the package.json files of each application.
+
+> Note: you need to use project names different from the current onces since different pages projects cannot have the same names (and the current onces are already used by us).
+
+After having set the id and project names, to deploy any app simply run: `npm run deploy`
 
 A prompt will let you choose what application to deploy (or all of them).
 

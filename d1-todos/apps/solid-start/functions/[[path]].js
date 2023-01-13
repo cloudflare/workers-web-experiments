@@ -2,39 +2,39 @@ var manifest = {
 	"/*404": [
 	{
 		type: "script",
-		href: "/assets/_...404_.b71a7a69.js"
+		href: "/assets/_...404_.0d72726d.js"
 	},
 	{
 		type: "script",
-		href: "/assets/entry-client.e9566870.js"
+		href: "/assets/entry-client.2dda9fd9.js"
 	},
 	{
 		type: "style",
-		href: "/assets/entry-client.3c66b9b1.css"
+		href: "/assets/entry-client.1705cfeb.css"
 	}
 ],
 	"/": [
 	{
 		type: "script",
-		href: "/assets/index.2fa70662.js"
+		href: "/assets/index.5c670f2b.js"
 	},
 	{
 		type: "script",
-		href: "/assets/entry-client.e9566870.js"
+		href: "/assets/entry-client.2dda9fd9.js"
 	},
 	{
 		type: "style",
-		href: "/assets/entry-client.3c66b9b1.css"
+		href: "/assets/entry-client.1705cfeb.css"
 	}
 ],
 	"entry-client": [
 	{
 		type: "script",
-		href: "/assets/entry-client.e9566870.js"
+		href: "/assets/entry-client.2dda9fd9.js"
 	},
 	{
 		type: "style",
-		href: "/assets/entry-client.3c66b9b1.css"
+		href: "/assets/entry-client.1705cfeb.css"
 	}
 ],
 	"index.html": [
@@ -2803,16 +2803,16 @@ function D() {
     throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
   return m(w);
 }
-const i = [];
+const s = [];
 for (let e = 0; e < 256; ++e)
-  i.push((e + 256).toString(16).slice(1));
+  s.push((e + 256).toString(16).slice(1));
 function I(e, n = 0) {
-  return (i[e[n + 0]] + i[e[n + 1]] + i[e[n + 2]] + i[e[n + 3]] + "-" + i[e[n + 4]] + i[e[n + 5]] + "-" + i[e[n + 6]] + i[e[n + 7]] + "-" + i[e[n + 8]] + i[e[n + 9]] + "-" + i[e[n + 10]] + i[e[n + 11]] + i[e[n + 12]] + i[e[n + 13]] + i[e[n + 14]] + i[e[n + 15]]).toLowerCase();
+  return (s[e[n + 0]] + s[e[n + 1]] + s[e[n + 2]] + s[e[n + 3]] + "-" + s[e[n + 4]] + s[e[n + 5]] + "-" + s[e[n + 6]] + s[e[n + 7]] + "-" + s[e[n + 8]] + s[e[n + 9]] + "-" + s[e[n + 10]] + s[e[n + 11]] + s[e[n + 12]] + s[e[n + 13]] + s[e[n + 14]] + s[e[n + 15]]).toLowerCase();
 }
 const O = typeof crypto < "u" && crypto.randomUUID && crypto.randomUUID.bind(crypto), y = {
   randomUUID: O
 };
-function p(e, n, o) {
+function l(e, n, o) {
   if (y.randomUUID && !n && !e)
     return y.randomUUID();
   e = e || {};
@@ -2829,14 +2829,14 @@ async function k(e, n) {
   const o = e.prepare(
     "SELECT * from TODOS WHERE sessionId = ?1;"
   ).bind(n), { results: t } = await o.all();
-  return (t != null ? t : []).map(({ id: a, text: d, completed: s }) => ({
+  return (t != null ? t : []).map(({ id: a, text: d, completed: i }) => ({
     id: a,
     text: d,
-    completed: s === "true"
+    completed: i === "true"
   }));
 }
 async function N(e, n, o) {
-  const t = p(), r = {
+  const t = l(), r = {
     id: t,
     text: o,
     completed: !1
@@ -2845,16 +2845,16 @@ async function N(e, n, o) {
     "INSERT INTO TODOS (id, text, completed, sessionId, date) VALUES (?1, ?2, 'false', ?3, ?4);"
   ).bind(t, o, n, new Date().toISOString()).run(), r;
 }
-async function E(e, n, o) {
-  const t = o.map((s) => ({
-    id: p(),
-    text: s,
+async function f(e, n, o) {
+  const t = o.map((i) => ({
+    id: l(),
+    text: i,
     completed: !1
   })), { statement: r, values: a } = t.reduce(
-    ({ valueIdx: s, statement: u, values: c }, l, g, S) => ({
-      statement: `${u} (?${++s}, ?${++s} ,'false', ?1, ?2)${g === S.length - 1 ? ";" : ","}`,
-      valueIdx: s,
-      values: [...c, l.id, l.text]
+    ({ valueIdx: i, statement: u, values: c }, p, g, S) => ({
+      statement: `${u} (?${++i}, ?${++i} ,'false', ?1, ?2)${g === S.length - 1 ? ";" : ","}`,
+      valueIdx: i,
+      values: [...c, p.id, p.text]
     }),
     {
       valueIdx: 2,
@@ -2892,7 +2892,7 @@ function V(e) {
  * Copyright(c) 2015 Douglas Christopher Wilson
  * MIT Licensed
  */
-var f = v;
+var E = v;
 function v(e, n) {
   if (typeof e != "string")
     throw new TypeError("argument str must be a string");
@@ -2900,19 +2900,19 @@ function v(e, n) {
     var d = e.indexOf("=", a);
     if (d === -1)
       break;
-    var s = e.indexOf(";", a);
-    if (s === -1)
-      s = e.length;
-    else if (s < d) {
+    var i = e.indexOf(";", a);
+    if (i === -1)
+      i = e.length;
+    else if (i < d) {
       a = e.lastIndexOf(";", d - 1) + 1;
       continue;
     }
     var u = e.slice(a, d).trim();
     if (o[u] === void 0) {
-      var c = e.slice(d + 1, s).trim();
+      var c = e.slice(d + 1, i).trim();
       c.charCodeAt(0) === 34 && (c = c.slice(1, -1)), o[u] = h(c, r);
     }
-    a = s + 1;
+    a = i + 1;
   }
   return o;
 }
@@ -2926,17 +2926,17 @@ function h(e, n) {
     return e;
   }
 }
-const R = "d1TodosSessionId";
+const b = "d1TodosSessionId";
 async function W(e, n) {
-  const o = b(e);
+  const o = R(e);
   if (o)
     return o;
-  const t = p();
-  return await E(n, t, A), t;
+  const t = l();
+  return await f(n, t, A), t;
 }
-function b(e) {
+function R(e) {
   var t;
-  return f((t = e.headers.get("cookie")) != null ? t : "")[R];
+  return E((t = e.headers.get("cookie")) != null ? t : "")[b];
 }
 const A = [
   "Create D1 database",
@@ -2965,17 +2965,27 @@ const $$server_module1$1 = server$.createHandler(async function $$serverHandler1
   env
 }) {
   const db = getTodosDb$1(env);
+  const timestamp = new Date().getTime();
   const text = formData.get("text");
   const todoTextValidation = V(text);
   if (!todoTextValidation.valid) {
-    throw new FormError(todoTextValidation.reason);
+    return {
+      error: todoTextValidation.reason,
+      timestamp
+    };
   }
   const sessionId = getSessionId$1(request);
   try {
     await N(db, sessionId, text);
   } catch {
-    throw new FormError("DataBase Internal Error");
+    return {
+      error: "DataBase Internal Error",
+      timestamp
+    };
   }
+  return {
+    timestamp
+  };
 }, "/_m/90d4313cf1/addTodoServerAction");
 server$.registerHandler("/_m/90d4313cf1/addTodoServerAction", $$server_module1$1);
 const $$server_module2$1 = server$.createHandler(async function $$serverHandler2(formData, {
@@ -2983,14 +2993,21 @@ const $$server_module2$1 = server$.createHandler(async function $$serverHandler2
   env
 }) {
   const db = getTodosDb$1(env);
+  const timestamp = new Date().getTime();
   const id = formData.get("todo-id");
   const completed = formData.get("completed");
   const sessionId = getSessionId$1(request);
   try {
     await $(db, sessionId, id, completed === "true");
   } catch {
-    throw new FormError("DataBase Internal Error");
+    return {
+      error: "DataBase Internal Error",
+      timestamp
+    };
   }
+  return {
+    timestamp
+  };
 }, "/_m/34a106c003/editTodoServerAction");
 server$.registerHandler("/_m/34a106c003/editTodoServerAction", $$server_module2$1);
 const $$server_module3$1 = server$.createHandler(async function $$serverHandler3(formData, {
@@ -2998,13 +3015,20 @@ const $$server_module3$1 = server$.createHandler(async function $$serverHandler3
   env
 }) {
   const db = getTodosDb$1(env);
+  const timestamp = new Date().getTime();
   const id = formData.get("todo-id");
   const sessionId = getSessionId$1(request);
   try {
     await x(db, sessionId, id);
   } catch {
-    throw new FormError("DataBase Internal Error");
+    return {
+      error: "DataBase Internal Error",
+      timestamp
+    };
   }
+  return {
+    timestamp
+  };
 }, "/_m/688bbd5a7c/deleteTodoServerAction");
 server$.registerHandler("/_m/688bbd5a7c/deleteTodoServerAction", $$server_module3$1);
 function getTodosDb$1(env) {
@@ -3016,7 +3040,7 @@ function getTodosDb$1(env) {
   return db;
 }
 function getSessionId$1(request) {
-  const sessionId = b(request);
+  const sessionId = R(request);
   if (!sessionId) {
     throw new FormError("Session id not provided");
   }
@@ -3049,17 +3073,27 @@ const $$server_module1 = server$.createHandler(async function $$serverHandler1(f
   env
 }) {
   const db = getTodosDb(env);
+  const timestamp = new Date().getTime();
   const text = formData.get("text");
   const todoTextValidation = V(text);
   if (!todoTextValidation.valid) {
-    throw new FormError(todoTextValidation.reason);
+    return {
+      error: todoTextValidation.reason,
+      timestamp
+    };
   }
   const sessionId = getSessionId(request);
   try {
     await N(db, sessionId, text);
   } catch {
-    throw new FormError("DataBase Internal Error");
+    return {
+      error: "DataBase Internal Error",
+      timestamp
+    };
   }
+  return {
+    timestamp
+  };
 }, "/_m/90d4313cf1/addTodoServerAction");
 server$.registerHandler("/_m/90d4313cf1/addTodoServerAction", $$server_module1);
 const $$server_module2 = server$.createHandler(async function $$serverHandler2(formData, {
@@ -3067,14 +3101,21 @@ const $$server_module2 = server$.createHandler(async function $$serverHandler2(f
   env
 }) {
   const db = getTodosDb(env);
+  const timestamp = new Date().getTime();
   const id = formData.get("todo-id");
   const completed = formData.get("completed");
   const sessionId = getSessionId(request);
   try {
     await $(db, sessionId, id, completed === "true");
   } catch {
-    throw new FormError("DataBase Internal Error");
+    return {
+      error: "DataBase Internal Error",
+      timestamp
+    };
   }
+  return {
+    timestamp
+  };
 }, "/_m/34a106c003/editTodoServerAction");
 server$.registerHandler("/_m/34a106c003/editTodoServerAction", $$server_module2);
 const $$server_module3 = server$.createHandler(async function $$serverHandler3(formData, {
@@ -3082,13 +3123,20 @@ const $$server_module3 = server$.createHandler(async function $$serverHandler3(f
   env
 }) {
   const db = getTodosDb(env);
+  const timestamp = new Date().getTime();
   const id = formData.get("todo-id");
   const sessionId = getSessionId(request);
   try {
     await x(db, sessionId, id);
   } catch {
-    throw new FormError("DataBase Internal Error");
+    return {
+      error: "DataBase Internal Error",
+      timestamp
+    };
   }
+  return {
+    timestamp
+  };
 }, "/_m/688bbd5a7c/deleteTodoServerAction");
 server$.registerHandler("/_m/688bbd5a7c/deleteTodoServerAction", $$server_module3);
 function Home() {
@@ -3096,26 +3144,24 @@ function Home() {
   const [newTodo, setNewTodo] = createSignal("");
   const [addTodoServerAction, {
     Form: AddTodoForm
-  }] = createRouteAction($$server_module1, {
-    invalidate: () => setNewTodo("")
-  });
+  }] = createRouteAction($$server_module1);
   const [editTodoServerAction, {
     Form: EditTodoForm
   }] = createRouteAction($$server_module2);
   const [deleteTodoServerAction, {
     Form: DeleteTodoForm
   }] = createRouteAction($$server_module3);
-  const backendError = () => addTodoServerAction.error?.message ?? editTodoServerAction.error?.message ?? deleteTodoServerAction.error?.message;
+  const [error, setError] = createSignal();
   return ssr(_tmpl$3, ssrHydrationKey(), escape(createComponent(AddTodoForm, {
     get children() {
       return ssr(_tmpl$$1, ssrHydrationKey(), ssrAttribute("class", !newTodo() || V(newTodo()).valid ? "" : "invalid", false), ssrAttribute("value", escape(newTodo(), true), false), ssrAttribute("disabled", !newTodo(), true));
     }
   })), escape(createComponent(Show, {
     get when() {
-      return backendError();
+      return error();
     },
     get children() {
-      return ssr(_tmpl$2$1, ssrHydrationKey(), escape(backendError()));
+      return ssr(_tmpl$2$1, ssrHydrationKey(), escape(error()));
     }
   })), escape(createComponent(For, {
     get each() {
@@ -3146,7 +3192,7 @@ function getTodosDb(env) {
   return db;
 }
 function getSessionId(request) {
-  const sessionId = b(request);
+  const sessionId = R(request);
   if (!sessionId) {
     throw new FormError("Session id not provided");
   }

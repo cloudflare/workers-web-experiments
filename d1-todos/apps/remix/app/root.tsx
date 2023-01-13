@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { blogPostUrl } from "shared";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -32,12 +33,7 @@ export default function App() {
         <footer className="app-footer">
           <span>
             D1 todos demo. For more details check out the{" "}
-            {/* href to update when the blog-post url is known */}
-            <a
-              href="https://blog.cloudflare.com/404"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={blogPostUrl} target="_blank" rel="noreferrer">
               blog post
               <svg
                 xmlns="http://www.w3.org/2000/svg"

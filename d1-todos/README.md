@@ -1,23 +1,35 @@
 # D1 Todos
 
-To start any app: `npm run dev`
+<!-- TODO: add screenshot and description of the experiment here -->
 
-To deploy any app: `npm run deploy`
+## Local Setup
 
-Apps:
+Install all the node module via `npm i` at the root (`d1-todos`) directory.
 
-- QwikCity
+### Development
 
-  - Deployed at https://d1-todos-qwik-city.pages.dev
+To start any app simply run: `npm run dev`.
 
-- Remix
+A prompt will let you choose what application to run.
 
-  - Deployed at https://d1-todos-remix.pages.dev
+(Note: if you'll also want to make changes to the code present in the shared package, open a separate terminal and in the `shared` directory run either `npm run build` for a one-time change or `npm run build.watch` for the watch mode build).
 
-- SolidStart
+### Deployment
 
-  - Deployed at https://d1-todos-solid-start.pages.dev
+In order to be able to deploy any of the applications you'll need to modify their `deploy` script by replacing the `CLOUDFLARE_ACCOUNT_ID` value with your own and by also choosing a different project name (you need a different project name because different pages projects cannot have the same name).
 
-- SvelteKit
+After that, to deploy any app simply run: `npm run deploy`
 
-  - Deployed at https://d1-todos-svelte-kit.pages.dev
+A prompt will let you choose what application to deploy (or all of them).
+
+## Deployed applications
+
+You can view the various demo applications at the following URLs:
+
+- QwikCity: https://d1-todos-qwik-city.pages.dev
+
+- Remix: https://d1-todos-remix.pages.dev
+
+- SolidStart: https://d1-todos-solid-start.pages.dev
+
+- SvelteKit: https://d1-todos-svelte-kit.pages.dev

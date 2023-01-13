@@ -6,6 +6,15 @@ body {
     min-height: 100vh;
 }
 
+*:focus-visible {
+    outline: solid 2px #471effaf;
+    outline-offset: 0.35rem;
+}
+
+input:focus-visible {
+    outline-offset: -0.1rem;
+}
+
 @supports (min-height: 100dvh) {
     body {
         min-height: 100dvh;
@@ -186,6 +195,8 @@ body {
     background-color: #ff000024;
     border: 1px solid currentColor;
     border-radius: 5px;
+    width: fit-content;
+    margin-inline: auto;
 }
 
 .custom-checkbox {
@@ -235,5 +246,6 @@ body {
 
 .delete-btn::before {
     content: '\2715';
-    line-height: 1.5rem;
+    line-height: 0;
+    font-size: 0.7rem;
 }

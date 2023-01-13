@@ -24,7 +24,9 @@ export default function App() {
       </head>
       <body>
         <header className="app-header">
-          <img src="remix-logo.svg" alt="Remix logo" />
+          <a href="https://remix.run/" target="_blank" rel="noreferrer">
+            <img src="remix-logo.svg" alt="Remix logo" />
+          </a>
         </header>
         <Outlet />
         <ScrollRestoration />

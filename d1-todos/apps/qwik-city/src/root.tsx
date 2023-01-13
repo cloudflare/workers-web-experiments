@@ -28,7 +28,9 @@ export default component$(() => {
       </head>
       <body lang="en">
         <header class="app-header">
-          <img src="qwik-logo.svg" alt="Qwik logo" />
+          <a href="https://qwik.builder.io/" target="_blank" rel="noreferrer">
+            <img src="qwik-logo.svg" alt="Qwik logo" />
+          </a>
         </header>
         <RouterOutlet />
         <ServiceWorkerRegister />

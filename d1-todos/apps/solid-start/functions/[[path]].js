@@ -2,39 +2,39 @@ var manifest = {
 	"/*404": [
 	{
 		type: "script",
-		href: "/assets/_...404_.0d72726d.js"
+		href: "/assets/_...404_.9747f514.js"
 	},
 	{
 		type: "script",
-		href: "/assets/entry-client.2dda9fd9.js"
+		href: "/assets/entry-client.497c086b.js"
 	},
 	{
 		type: "style",
-		href: "/assets/entry-client.1705cfeb.css"
+		href: "/assets/entry-client.455d0791.css"
 	}
 ],
 	"/": [
 	{
 		type: "script",
-		href: "/assets/index.5c670f2b.js"
+		href: "/assets/index.e36f25ff.js"
 	},
 	{
 		type: "script",
-		href: "/assets/entry-client.2dda9fd9.js"
+		href: "/assets/entry-client.497c086b.js"
 	},
 	{
 		type: "style",
-		href: "/assets/entry-client.1705cfeb.css"
+		href: "/assets/entry-client.455d0791.css"
 	}
 ],
 	"entry-client": [
 	{
 		type: "script",
-		href: "/assets/entry-client.2dda9fd9.js"
+		href: "/assets/entry-client.497c086b.js"
 	},
 	{
 		type: "style",
-		href: "/assets/entry-client.1705cfeb.css"
+		href: "/assets/entry-client.455d0791.css"
 	}
 ],
 	"index.html": [
@@ -2942,7 +2942,7 @@ const A = [
   "Create D1 database",
   "Write Cloudflare Worker",
   "Deploy to the SuperCloud"
-];
+], F = "https://blog.cloudflare.com/404";
 
 const $$server_module0$1 = server$.createHandler(async function $$serverHandler0(_, {
   request,
@@ -3217,8 +3217,8 @@ const FileRoutes = () => {
   return fileRoutes;
 };
 
-const _tmpl$ = ["<header", " class=\"app-header\"><img src=\"solid-logo.svg\" alt=\"Solid logo\"></header>"],
-  _tmpl$2 = ["<footer", " class=\"app-footer\"><span>D1 todos demo. For more details check out the <a href=\"https://blog.cloudflare.com/404\" target=\"_blank\" rel=\"noreferrer\">blog post<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"48\" width=\"48\" viewBox=\"0 0 48 48\"><path d=\"M9.9 41q-1.2 0-2.05-.85Q7 39.3 7 38.1V9.9q0-1.2.85-2.05Q8.7 7 9.9 7h12.55v2.25H9.9q-.25 0-.45.2t-.2.45v28.2q0 .25.2.45t.45.2h28.2q.25 0 .45-.2t.2-.45V25.55H41V38.1q0 1.2-.85 2.05-.85.85-2.05.85Zm9.3-10.6-1.6-1.6L37.15 9.25H26.5V7H41v14.5h-2.25V10.9Z\"></path></svg></a>.</span><span class=\"copyright\">&copy; 2023 Cloudflare.com</span></footer>"];
+const _tmpl$ = ["<header", " class=\"app-header\"><a href=\"https://start.solidjs.com/\" target=\"_blank\" rel=\"noreferrer\"><img src=\"solid-logo.svg\" alt=\"Solid logo\"></a></header>"],
+  _tmpl$2 = ["<footer", " class=\"app-footer\"><span>D1 todos demo. For more details check out the <a", " target=\"_blank\" rel=\"noreferrer\">blog post<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"48\" width=\"48\" viewBox=\"0 0 48 48\"><path d=\"M9.9 41q-1.2 0-2.05-.85Q7 39.3 7 38.1V9.9q0-1.2.85-2.05Q8.7 7 9.9 7h12.55v2.25H9.9q-.25 0-.45.2t-.2.45v28.2q0 .25.2.45t.45.2h28.2q.25 0 .45-.2t.2-.45V25.55H41V38.1q0 1.2-.85 2.05-.85.85-2.05.85Zm9.3-10.6-1.6-1.6L37.15 9.25H26.5V7H41v14.5h-2.25V10.9Z\"></path></svg></a>.</span><span class=\"copyright\">&copy; 2023 Cloudflare.com</span></footer>"];
 function Root() {
   return createComponent(Html, {
     lang: "en",
@@ -3244,7 +3244,7 @@ function Root() {
                     get children() {
                       return createComponent(FileRoutes, {});
                     }
-                  }), ssr(_tmpl$2, ssrHydrationKey())];
+                  }), ssr(_tmpl$2, ssrHydrationKey(), ssrAttribute("href", escape(F, true), false))];
                 }
               });
             }

@@ -8,7 +8,9 @@
 
 <div class="svelte-body-host">
 	<header class="app-header">
-		<img src='/svelte-logo.svg' alt="Svelte logo" />
+		<a href="https://kit.svelte.dev/" target="_blank" rel="noreferrer">
+			<img src='/svelte-logo.svg' alt="Svelte logo" />
+		</a>
 	</header>
 		<slot />
 	<footer class="app-footer">

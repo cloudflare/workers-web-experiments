@@ -40,6 +40,10 @@ input:focus-visible {
     height: var(--logo-size);
 }
 
+.app-header a {
+    outline-offset: -0.25rem;
+}
+
 .app-footer {
     display: flex;
     justify-content: space-between;

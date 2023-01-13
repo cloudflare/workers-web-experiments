@@ -27,7 +27,13 @@ export default function Root() {
         <Suspense>
           <ErrorBoundary>
             <header class="app-header">
-              <img src="solid-logo.svg" alt="Solid logo" />
+              <a
+                href="https://start.solidjs.com/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img src="solid-logo.svg" alt="Solid logo" />
+              </a>
             </header>
             <Routes>
               <FileRoutes />

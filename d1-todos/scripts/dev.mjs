@@ -30,7 +30,7 @@ inquirer
     if(open) {
       setTimeout(
         () => openBrowser(`http://localhost:${appDetails.port}/`),
-        5000
+        7000
       );
     }
   });

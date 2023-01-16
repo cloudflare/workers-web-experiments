@@ -1,0 +1,31 @@
+{
+  "name": "nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "pages:build": "npx @cloudflare/next-on-pages --watch",
+    "pages:build:watch": "sleep 5; npx @cloudflare/next-on-pages --watch",
+    "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flags=streams_enable_constructors --port 8699",
+    "dev": "run-p pages:build:watch pages:dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish .vercel/output/static --branch main --project-name d1-todos-nextjs"
+  },
+  "dependencies": {
+    "@next/font": "13.1.2",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.10",
+    "eslint": "8.31.0",
+    "eslint-config-next": "13.1.2",
+    "next": "13.1.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^0.2.0",
+    "vercel": "^28.12.4"
+  }
+}

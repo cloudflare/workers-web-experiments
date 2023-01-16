@@ -7,7 +7,8 @@
     "apps/remix",
     "apps/qwik-city",
     "apps/svelte-kit",
-    "apps/solid-start"
+    "apps/solid-start",
+    "apps/nextjs"
   ],
   "scripts": {
     "start": "npm run dev",

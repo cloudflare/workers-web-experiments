@@ -1,4 +1,10 @@
 export const appsDetails = {
+    NextJS: {
+      path: './apps/nextjs',
+      devScript: 'dev',
+      deployScript: 'deploy',
+      port: 8699,
+    },
     QwikCity: {
       path: './apps/qwik-city',
       devScript: 'dev',

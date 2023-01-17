@@ -11,6 +11,7 @@
 		"format": "prettier --plugin-search-dir . --write .",
 		"setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
 		"dev:wrangler": "npx wrangler pages dev ./.svelte-kit/cloudflare --port 8711 --d1 D1_TODOS_DB --live-reload --persist",
+		"predev": "npm run build",
 		"dev": "run-p build:watch dev:wrangler",
 		"deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish ./.svelte-kit/cloudflare --branch main --project-name d1-todos-svelte-kit"
 	},

@@ -4,32 +4,26 @@
   "description": "workspace for the piercing migration strategy demo",
   "workspaces": [
     "shared",
-    "apps/remix",
-    "apps/qwik-city",
-    "apps/svelte-kit",
-    "apps/solid-start",
-    "apps/nextjs"
+    "apps/*"
   ],
   "scripts": {
     "start": "npm run dev",
     "dev": "node ./scripts/dev.mjs",
     "deploy-setup": "node ./scripts/deploy-setup.mjs",
     "deploy": "node ./scripts/deploy.mjs",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package ; npm run build-shared",
+    "build-shared": "npm run --prefix shared build"
   },
   "author": "",
   "license": "Apache 2",
+  "//devDependencies comment 0": "patch-package and @sveltejs/adapter-cloudflare are",
+  "//devDependencies comment 1": "are needed for fixing a svelte-kit issue, but need",
+  "//devDependencies comment 2": "to be applied here at the root",
   "devDependencies": {
-    "@databases/split-sql-query": "^1.0.3",
-    "@databases/sql": "^3.2.0",
-    "@sveltejs/adapter-cloudflare": "^1.0.0-next.42",
     "inquirer": "^9.1.4",
     "npm-run-all": "^4.1.5",
     "open": "^8.4.0",
     "patch-package": "^6.5.0",
-    "wrangler": "^2.6.2"
-  },
-  "dependencies": {
-    "cookie": "^0.5.0"
+    "@sveltejs/adapter-cloudflare": "^1.0.3"
   }
 }

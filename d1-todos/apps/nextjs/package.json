@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "pages:build": "npx @cloudflare/next-on-pages --watch",
+    "pages:build": "npx @cloudflare/next-on-pages",
     "pages:build:watch": "sleep 5; npx @cloudflare/next-on-pages --watch",
     "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flags=streams_enable_constructors --port 8699",
+    "predev": "npm run pages:build",
     "dev": "run-p pages:build:watch pages:dev",
     "build": "next build",
     "start": "next start",

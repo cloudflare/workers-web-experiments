@@ -1,22 +1,37 @@
 import "shared/src/styles.css";
-import { type Todo, validateTodoText } from "shared";
-import { ChangeEvent, FormEventHandler, useState } from "react";
+import { type Todo, validateTodoText, saveSessionIdCookie } from "shared";
+import { ChangeEvent, FormEventHandler, useEffect, useState } from "react";
 
-import { getTodos } from "../_tmpShared";
-import { sessionId, tmpTodosD1Db } from "../_tmp";
+import { getOrCreateSessionId, getTodos } from "../_tmpShared";
+import { tmpTodosD1Db } from "../_tmp";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 
 export type HandlerResult = { success: boolean; errorMessage?: string };
 
-export async function getServerSideProps() {
-  const todos = await getTodos(tmpTodosD1Db, sessionId);
+export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+  const sessionId = await getOrCreateSessionId(
+    {
+      headers: new Headers({
+        cookie: req.headers.cookie ?? "",
+      }),
+    } as Request,
+    tmpTodosD1Db
+  );
+  const todos = await getTodos(tmpTodosD1Db, "test");
   return {
     props: {
       todos,
+      sessionId,
     },
   };
 }
 
-export default function Home({ todos: initialTodos }: { todos: Todo[] }) {
+export default function Home({
+  todos: initialTodos,
+  sessionId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  useEffect(() => saveSessionIdCookie(sessionId), [sessionId]);
+
   const [todos, setTodos] = useState<Todo[]>(initialTodos ?? []);
   const [newTodo, setNewTodo] = useState<string>("");
   const [error, setError] = useState<string>("");

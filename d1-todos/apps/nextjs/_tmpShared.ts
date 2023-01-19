@@ -2,7 +2,7 @@
  *  used here just temporarily until Nextjs can access the D1 bindings
  */
 
-import { Todo } from "shared";
+import { Todo, getSessionIdFromRequest } from "shared";
 
 const firebaseBaseUrl =
   "https://firestore.googleapis.com/v1/projects/nextjs-d1-todos-tmp-db/databases/(default)/documents/todos";
@@ -94,4 +94,13 @@ export async function deleteTodo(
   await fetch(`${firebaseBaseUrl}/${todoId}`, {
     method: "DELETE",
   });
+}
+
+export async function getOrCreateSessionId(
+  request: Request,
+  TODOS_DB: null
+): Promise<string> {
+  const existingSessionId = getSessionIdFromRequest(request);
+  console.log(`\x1b[44m existingSessionId = ${existingSessionId} \x1b[0m`);
+  return existingSessionId ?? "test";
 }

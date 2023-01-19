@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { parse } from "cookie";
-import { addTodo, addTodos } from "./todos";
+import { addTodos } from "./todos";
 
 const sessionIdCookieName = "d1TodosSessionId";
 

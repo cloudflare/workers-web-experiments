@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "predeploy": "npm run build",
     "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish .vercel/output/static --branch main --project-name d1-todos-nextjs"
   },
   "dependencies": {

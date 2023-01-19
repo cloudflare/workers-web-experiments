@@ -68,6 +68,22 @@ export default function Home({ todos: initialTodos }: { todos: Todo[] }) {
     updateUiOnResult(result);
   };
 
+  const handleTodoEditing = async (todoId: string, completed: boolean) => {
+    const response = await fetch("/api/todos/edit", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        todoId,
+        completed,
+      }),
+    });
+
+    const result = (await response.json()) as HandlerResult;
+    updateUiOnResult(result);
+  };
+
   return (
     <div className="todos-app">
       <h1>Todos</h1>
@@ -93,16 +109,13 @@ export default function Home({ todos: initialTodos }: { todos: Todo[] }) {
       <ul>
         {todos.map(({ id, text, completed }) => (
           <li key={id}>
-            <form method="put">
-              <input hidden name="todo-id" readOnly value={id} />
-              <input hidden name="completed" readOnly value={`${!completed}`} />
-              <button
-                role="checkbox"
-                aria-checked={completed}
-                aria-label={text}
-                className={`custom-checkbox ${completed ? "checked" : ""}`}
-              ></button>
-            </form>
+            <button
+              role="checkbox"
+              aria-checked={completed}
+              aria-label={text}
+              className={`custom-checkbox ${completed ? "checked" : ""}`}
+              onClick={() => handleTodoEditing(id, !completed)}
+            ></button>
             <span className={completed ? "line-through" : ""}>{text}</span>
             <button
               className="delete-btn"

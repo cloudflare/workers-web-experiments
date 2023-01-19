@@ -54,7 +54,7 @@ export async function addTodo(
   };
 
   await fetch(`${firebaseBaseUrl}/${id}`, {
-    method: "PATCH",
+    method: "POST",
     body: JSON.stringify({
       fields: {
         id: { stringValue: newTodo.id },
@@ -65,6 +65,23 @@ export async function addTodo(
     }),
   });
   return newTodo;
+}
+
+export async function editTodo(
+  TODOS_DB: null,
+  sessionId: string,
+  todoId: string,
+  completed: boolean
+): Promise<void> {
+  await fetch(`${firebaseBaseUrl}/${todoId}?updateMask.fieldPaths=completed`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      fields: {
+        id: { stringValue: todoId },
+        completed: { booleanValue: completed },
+      },
+    }),
+  });
 }
 
 export async function deleteTodo(

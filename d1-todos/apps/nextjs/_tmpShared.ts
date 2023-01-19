@@ -56,7 +56,7 @@ export async function addTodo(
   };
 
   await fetch(`${firebaseBaseUrl}/${id}`, {
-    method: "POST",
+    method: "PATCH",
     body: JSON.stringify({
       fields: {
         id: { stringValue: newTodo.id },

@@ -24,4 +24,4 @@ gitignore
 .DS_Store
 Thumbs.db
 
-!.mf
+.mf

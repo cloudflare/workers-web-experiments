@@ -4,7 +4,8 @@ import { ChangeEvent, FormEventHandler, useState } from "react";
 
 import { getTodos } from "../_tmpShared";
 import { sessionId, tmpTodosD1Db } from "../_tmp";
-import { HandlerResult } from "api-utils";
+
+export type HandlerResult = { success: boolean; errorMessage?: string };
 
 export async function getServerSideProps() {
   const todos = await getTodos(tmpTodosD1Db, sessionId);
@@ -35,51 +36,19 @@ export default function Home({ todos: initialTodos }: { todos: Todo[] }) {
     event
   ) => {
     event.preventDefault();
-
-    const text = (event.target as unknown as { text: { value: string } }).text
-      .value;
-
-    const response = await fetch("/api/todos/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        text,
-      }),
-    });
-
+    const response = await sendTodosRequest("add", { text: newTodo });
     const result = (await response.json()) as HandlerResult;
     updateUiOnResult(result);
   };
 
   const handleTodoDeletion = async (todoId: string) => {
-    const response = await fetch("/api/todos/delete", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        todoId,
-      }),
-    });
-
+    const response = await sendTodosRequest("delete", { todoId });
     const result = (await response.json()) as HandlerResult;
     updateUiOnResult(result);
   };
 
   const handleTodoEditing = async (todoId: string, completed: boolean) => {
-    const response = await fetch("/api/todos/edit", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        todoId,
-        completed,
-      }),
-    });
-
+    const response = await sendTodosRequest("edit", { todoId, completed });
     const result = (await response.json()) as HandlerResult;
     updateUiOnResult(result);
   };
@@ -130,7 +99,7 @@ export default function Home({ todos: initialTodos }: { todos: Todo[] }) {
 }
 
 async function fetchTodos(): Promise<Todo[]> {
-  const todosFetchResp = await fetch("/api/todos/list");
+  const todosFetchResp = await fetch("/api/todos");
 
   if (todosFetchResp.status !== 200) {
     throw new Error("Todos fetching failed");
@@ -141,4 +110,24 @@ async function fetchTodos(): Promise<Todo[]> {
   };
 
   return todos;
+}
+
+const todosRequestTypeMethodMap = {
+  list: "GET",
+  add: "POST",
+  edit: "PATCH",
+  delete: "DELETE",
+} as const;
+
+async function sendTodosRequest(
+  type: keyof typeof todosRequestTypeMethodMap,
+  body: object
+) {
+  return await fetch("/api/todos", {
+    method: todosRequestTypeMethodMap[type],
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
 }

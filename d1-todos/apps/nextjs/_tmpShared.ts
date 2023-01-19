@@ -29,10 +29,12 @@ export async function getTodos(
   sessionId: string
 ): Promise<Todo[]> {
   return (
-    (await (await fetch(firebaseBaseUrl)).json()) as {
-      documents: FirebaseDoc[];
-    }
-  ).documents
+    (
+      (await (await fetch(firebaseBaseUrl)).json()) as {
+        documents: FirebaseDoc[];
+      }
+    ).documents ?? []
+  )
     .filter((doc) => doc.fields.sessionId.stringValue === sessionId)
     .map((doc) => ({
       id: doc.fields.id.stringValue,

@@ -22,7 +22,7 @@
     "qwik": "qwik",
     "setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
     "dev.wrangler": "sleep 3; cross-env NODE_ENV=development npx wrangler pages dev ./dist  --port 8700 --d1 D1_TODOS_DB --live-reload --persist",
-    "predev": "npm run build",
+    "predev": "npm run build ; npm run setup-db",
     "dev": "run-p build.server.watch dev.wrangler",
     "dev.wrangler.open": "sleep 3; cross-env NODE_ENV=development npx wrangler pages dev ./dist --open --port 8700 --d1 D1_TODOS_DB --live-reload --persist",
     "predev.open": "npm run predev",

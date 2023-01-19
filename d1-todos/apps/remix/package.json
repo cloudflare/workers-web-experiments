@@ -6,6 +6,7 @@
     "dev:remix": "remix watch",
     "setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
     "dev:wrangler": "cross-env NODE_ENV=development npx wrangler pages dev ./public  --port 8701 --d1 D1_TODOS_DB --live-reload --persist",
+    "predev": "npm run setup-db",
     "dev": "remix build && run-p \"dev:*\"",
     "start": "cross-env NODE_ENV=production npm run dev:wrangler",
     "predeploy": "npm run build",

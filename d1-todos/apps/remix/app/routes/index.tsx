@@ -59,7 +59,7 @@ export async function action({
   if (request.method === "POST") {
     return handlePostAction(request, sessionId, context);
   }
-  if (request.method === "PUT") {
+  if (request.method === "PATCH") {
     return handlePutAction(request, sessionId, context);
   }
   if (request.method === "DELETE") {
@@ -222,7 +222,7 @@ export default function Index() {
       <ul>
         {todos.map(({ id, text, completed }) => (
           <li key={id}>
-            <Form method="put">
+            <Form method="patch">
               <input hidden name="todo-id" readOnly value={id} />
               <input hidden name="completed" readOnly value={`${!completed}`} />
               <button

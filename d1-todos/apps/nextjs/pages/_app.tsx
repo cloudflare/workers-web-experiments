@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import { blogPostUrl } from "shared";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import "../styles.css";
+import Image from "next/image";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -14,7 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <header className="app-header">
         <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <img src="next-logo.svg" alt="Remix logo" />
+          <Image src="next-logo.svg" alt="Next.js logo" />
         </a>
       </header>
       <Component {...pageProps} />

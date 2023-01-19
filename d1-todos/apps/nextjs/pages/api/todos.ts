@@ -43,7 +43,7 @@ async function handleAddTodo(request: Request): Promise<Response> {
   try {
     await addTodo(tmpTodosD1Db, sessionId, text);
   } catch {
-    return dbErrorResponse;
+    return createDbErrorResponse();
   }
 
   return createResponse({ success: true });
@@ -68,7 +68,7 @@ async function handleEditTodo(request: Request): Promise<Response> {
   try {
     await editTodo(tmpTodosD1Db, sessionId, todoId, completed);
   } catch {
-    return dbErrorResponse;
+    return createDbErrorResponse();
   }
 
   return createResponse({ success: true });
@@ -84,7 +84,7 @@ async function handleDeleteTodo(request: Request): Promise<Response> {
   try {
     await deleteTodo(tmpTodosD1Db, sessionId, todoId);
   } catch {
-    return dbErrorResponse;
+    return createDbErrorResponse();
   }
 
   return createResponse({ success: true });
@@ -106,10 +106,12 @@ function createBadRequestResponse(errorMessage: string) {
   );
 }
 
-const dbErrorResponse = createResponse(
-  {
-    success: false,
-    errorMessage: "DataBase Internal Error",
-  },
-  500
-);
+function createDbErrorResponse() {
+  return createResponse(
+    {
+      success: false,
+      errorMessage: "DataBase Internal Error",
+    },
+    500
+  );
+}

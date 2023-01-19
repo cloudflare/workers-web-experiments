@@ -80,7 +80,7 @@ async function handlePostAction(
   if (!text) {
     return {
       success: false,
-      errorMessage: "Todos can be empty",
+      errorMessage: "Todos can't be empty",
     };
   }
 

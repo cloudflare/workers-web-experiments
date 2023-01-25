@@ -60,6 +60,7 @@ export class GenericMessageBus implements MessageBus {
   }
 
   dispatch(eventName: string, value: JSONValue) {
+    value = JSON.parse(JSON.stringify(value));
     this._state[eventName] = value;
     const callbacksForEvent = this._callbacksMap.get(eventName) ?? [];
     setTimeout(

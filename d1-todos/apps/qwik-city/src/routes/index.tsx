@@ -18,7 +18,7 @@ import {
 } from "shared";
 
 interface Platform {
-  D1_TODOS_DB: D1Database;
+  D1_TODOS_DB?: D1Database;
 }
 
 export const dataLoader = loader$<
@@ -29,9 +29,9 @@ export const dataLoader = loader$<
     error?: string;
   }>
 >(async ({ request, platform }) => {
-  const todosDb = getTodosDb(platform);
-  const sessionId = await getOrCreateSessionId(request as Request, todosDb);
-  const todos = await getTodos(todosDb, sessionId);
+  const db = getTodosDb(platform);
+  const sessionId = await getOrCreateSessionId(request as Request, db);
+  const todos = await getTodos(db, sessionId);
   return {
     sessionId,
     todos,
@@ -39,7 +39,7 @@ export const dataLoader = loader$<
 });
 
 export const addAction = action$(async (formData, { request, platform }) => {
-  const todosDb = getTodosDb(platform as Platform);
+  const db = getTodosDb(platform as Platform);
   const timestamp = new Date().getTime();
   const sessionId = getSessionIdFromRequest(request as Request);
   if (!sessionId) {
@@ -49,7 +49,7 @@ export const addAction = action$(async (formData, { request, platform }) => {
   const checkResult = validateTodoText(text);
   if (checkResult.valid) {
     try {
-      await addTodo(todosDb, sessionId, text);
+      await addTodo(db, sessionId, text);
     } catch {
       return { error: "DataBase Internal Error", timestamp };
     }
@@ -60,7 +60,7 @@ export const addAction = action$(async (formData, { request, platform }) => {
 });
 
 export const editAction = action$(async (formData, { request, platform }) => {
-  const todosDb = getTodosDb(platform as Platform);
+  const db = getTodosDb(platform as Platform);
   const sessionId = getSessionIdFromRequest(request as Request);
   const timestamp = new Date().getTime();
 
@@ -70,7 +70,7 @@ export const editAction = action$(async (formData, { request, platform }) => {
   const id = formData.get("todo-id") as string;
   const completed = (formData.get("completed") as string) === "true";
   try {
-    await editTodo(todosDb, sessionId, id, completed);
+    await editTodo(db, sessionId, id, completed);
   } catch {
     return { error: "DataBase Internal Error", timestamp };
   }
@@ -79,7 +79,7 @@ export const editAction = action$(async (formData, { request, platform }) => {
 });
 
 export const deleteAction = action$(async (formData, { request, platform }) => {
-  const todosDb = getTodosDb(platform as Platform);
+  const db = getTodosDb(platform as Platform);
   const sessionId = getSessionIdFromRequest(request as Request);
   const timestamp = new Date().getTime();
 
@@ -88,7 +88,7 @@ export const deleteAction = action$(async (formData, { request, platform }) => {
   }
   const id = formData.get("todo-id") as string;
   try {
-    await deleteTodo(todosDb, sessionId, id);
+    await deleteTodo(db, sessionId, id);
   } catch {
     return { error: "DataBase Internal Error", timestamp };
   }
@@ -186,5 +186,10 @@ export default component$(() => {
 });
 
 export function getTodosDb(platform: Platform): D1Database {
-  return platform["D1_TODOS_DB"] as D1Database;
+  const db = platform["D1_TODOS_DB"] as D1Database;
+  if (!db) {
+    throw new Error("No binding found for the D1_TODOS_DB database");
+  }
+
+  return db;
 }

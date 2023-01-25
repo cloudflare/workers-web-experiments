@@ -14,13 +14,13 @@ import 'shared/src/styles.css';
 
 export const actions: Actions = {
 	async add({ request, platform }) {
-		const todosDb = getTodosDb(platform);
+		const db = getTodosDb(platform);
 		const sessionId = getSessionId(request);
 		const formData = await request.formData();
 		const text = formData.get('text') as string;
 		const textValidation = validateTodoText(text);
 		if (textValidation.valid) {
-			await runDbOperation(() => addTodo(todosDb, sessionId, text));
+			await runDbOperation(() => addTodo(db, sessionId, text));
 		} else {
 			throw error(400, {
 				message: textValidation.reason
@@ -29,18 +29,18 @@ export const actions: Actions = {
 	},
 	async delete({ request, platform }) {
 		const sessionId = getSessionId(request);
-		const todosDb = getTodosDb(platform);
+		const db = getTodosDb(platform);
 		const formData = await request.formData();
 		const id = formData.get('todo-id') as string;
-		await runDbOperation(() => deleteTodo(todosDb, sessionId, id));
+		await runDbOperation(() => deleteTodo(db, sessionId, id));
 	},
 	async edit({ request, platform }) {
 		const sessionId = getSessionId(request);
-		const todosDb = getTodosDb(platform);
+		const db = getTodosDb(platform);
 		const formData = await request.formData();
 		const id = formData.get('todo-id') as string;
 		const completed = (formData.get('completed') as string) === 'true';
-		await runDbOperation(() => editTodo(todosDb, sessionId, id, completed));
+		await runDbOperation(() => editTodo(db, sessionId, id, completed));
 	}
 };
 
@@ -59,10 +59,10 @@ export const load: PageServerLoad = async ({ request, platform, depends }) => {
 
 	let todos: Todo[] = [];
 
-	const todosDb = getTodosDb(platform);
-	const sessionId = await getOrCreateSessionId(request, todosDb);
-	if (todosDb) {
-		todos = await getTodos(todosDb, sessionId);
+	const db = getTodosDb(platform);
+	const sessionId = await getOrCreateSessionId(request, db);
+	if (db) {
+		todos = await getTodos(db, sessionId);
 	}
 
 	return {
@@ -73,7 +73,6 @@ export const load: PageServerLoad = async ({ request, platform, depends }) => {
 
 function getTodosDb(platform: Readonly<App.Platform>): D1Database {
 	const db = platform.env?.D1_TODOS_DB;
-	platform;
 	if (!db) {
 		throw error(404, {
 			message: `No binding found for the D1_TODOS_DB database`

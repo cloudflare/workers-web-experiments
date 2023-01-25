@@ -29,9 +29,9 @@ export function links() {
 //       (see: https://jfranciscosousa.com/blog/typing-remix-loaders-with-confidence)
 
 export async function loader({ request, context }: DataFunctionArgs) {
-  const todosDb = getTodosDb(context);
-  const sessionId = await getOrCreateSessionId(request, todosDb);
-  const todos = await getTodos(todosDb, sessionId);
+  const db = getTodosDb(context);
+  const sessionId = await getOrCreateSessionId(request, db);
+  const todos = await getTodos(db, sessionId);
   return {
     sessionId,
     todos,
@@ -245,5 +245,10 @@ export default function Index() {
 }
 
 function getTodosDb(context: AppLoadContext): D1Database {
-  return context["D1_TODOS_DB"] as D1Database;
+  const db = context["D1_TODOS_DB"] as D1Database | undefined;
+  if (!db) {
+    throw new Error("No binding found for the D1_TODOS_DB database");
+  }
+
+  return db;
 }

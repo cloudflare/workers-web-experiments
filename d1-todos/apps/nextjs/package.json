@@ -5,14 +5,15 @@
   "scripts": {
     "pages:build": "npx @cloudflare/next-on-pages",
     "pages:build:watch": "sleep 5; npx @cloudflare/next-on-pages --watch",
-    "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flags streams_enable_constructors transformstream_enable_standard_constructor --port 8699",
-    "predev": "npm run pages:build",
+    "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flags streams_enable_constructors transformstream_enable_standard_constructor --port 8699  --d1 D1_TODOS_DB --live-reload --persist",
+    "predev": "npm run setup-db ; npm run pages:build",
     "dev": "run-p pages:build:watch pages:dev",
+    "setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "predeploy": "npm run pages:build",
-    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish .vercel/output/static --branch main --project-name d1-todos-nextjs"
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish .vercel/output/static --no-bundle=false --branch main --project-name d1-todos-nextjs"
   },
   "dependencies": {
     "@next/font": "13.1.2",
@@ -24,10 +25,12 @@
     "next": "13.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "shared": "file:../../shared",
     "typescript": "4.9.4"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^0.2.0",
-    "vercel": "^28.12.8"
+    "vercel": "^28.13.1",
+    "wrangler": "latest"
   }
 }

@@ -1,23 +1,30 @@
 import "shared/src/styles.css";
-import { type Todo, validateTodoText, saveSessionIdCookie } from "shared";
+import {
+  type Todo,
+  validateTodoText,
+  saveSessionIdCookie,
+  getOrCreateSessionId,
+  getTodos,
+} from "shared";
 import { ChangeEvent, FormEventHandler, useEffect, useState } from "react";
-
-import { getOrCreateSessionId, getTodos } from "../_tmpShared";
-import { tmpTodosD1Db } from "../_tmp";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { getTodosDb } from "utils";
 
 export type HandlerResult = { success: boolean; errorMessage?: string };
 
 export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+  const db = getTodosDb();
+
   const sessionId = await getOrCreateSessionId(
     {
       headers: new Headers({
         cookie: req.headers.cookie ?? "",
       }),
     } as Request,
-    tmpTodosD1Db
+    db
   );
-  const todos = await getTodos(tmpTodosD1Db, "test");
+
+  const todos = await getTodos(db, sessionId);
   return {
     props: {
       todos,

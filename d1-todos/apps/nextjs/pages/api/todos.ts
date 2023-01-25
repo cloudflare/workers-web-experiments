@@ -1,9 +1,16 @@
-import { addTodo, deleteTodo, editTodo, getTodos } from "_tmpShared";
-import { tmpTodosD1Db } from "../../_tmp";
-import { validateTodoText, getSessionIdFromRequest } from "shared";
+import {
+  validateTodoText,
+  getOrCreateSessionId,
+  getTodos,
+  addTodo,
+  editTodo,
+  deleteTodo,
+} from "shared";
+import { getTodosDb } from "utils";
 
 export default async function handler(request: Request): Promise<Response> {
-  const sessionId = getSessionIdFromRequest(request);
+  const db = getTodosDb();
+  const sessionId = await getOrCreateSessionId(request as Request, db);
   if (!sessionId) {
     return createBadRequestResponse("Session id not provided");
   }
@@ -30,7 +37,8 @@ async function handleListTodos(
   request: Request,
   sessionId: string
 ): Promise<Response> {
-  const todos = await getTodos(tmpTodosD1Db, sessionId);
+  const db = getTodosDb();
+  const todos = await getTodos(db, sessionId);
   return createResponse({
     todos,
   });
@@ -52,7 +60,8 @@ async function handleAddTodo(
   }
 
   try {
-    await addTodo(tmpTodosD1Db, sessionId, text);
+    const db = getTodosDb();
+    await addTodo(db, sessionId, text);
   } catch {
     return createDbErrorResponse();
   }
@@ -80,7 +89,8 @@ async function handleEditTodo(
   }
 
   try {
-    await editTodo(tmpTodosD1Db, sessionId, todoId, completed);
+    const db = getTodosDb();
+    await editTodo(db, sessionId, todoId, completed);
   } catch {
     return createDbErrorResponse();
   }
@@ -99,7 +109,8 @@ async function handleDeleteTodo(
   }
 
   try {
-    await deleteTodo(tmpTodosD1Db, sessionId, todoId);
+    const db = getTodosDb();
+    await deleteTodo(db, sessionId, todoId);
   } catch {
     return createDbErrorResponse();
   }

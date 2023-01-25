@@ -9,7 +9,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
+		"setup-db": "npx wrangler d1 execute D1_TODOS_DB -y --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
 		"dev:wrangler": "npx wrangler pages dev ./.svelte-kit/cloudflare --port 8711 --d1 D1_TODOS_DB --live-reload --persist",
 		"predev": "npm run build ; npm run setup-db",
 		"dev": "run-p build:watch dev:wrangler",

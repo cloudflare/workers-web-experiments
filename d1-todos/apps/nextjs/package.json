@@ -8,7 +8,7 @@
     "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flags streams_enable_constructors transformstream_enable_standard_constructor --port 8699  --d1 D1_TODOS_DB --live-reload --persist",
     "predev": "npm run setup-db ; npm run pages:build",
     "dev": "run-p pages:build:watch pages:dev",
-    "setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
+    "setup-db": "npx wrangler d1 execute D1_TODOS_DB -y --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

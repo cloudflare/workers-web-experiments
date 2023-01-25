@@ -2,7 +2,7 @@
   "name": "solid-start",
   "version": "0.0.0",
   "scripts": {
-    "setup-db": "npx wrangler d1 execute D1_TODOS_DB --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);' --persist-to ./.mf",
+    "setup-db": "npx wrangler d1 execute D1_TODOS_DB -y --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);' --persist-to ./.mf",
     "predev": "npm run setup-db",
     "dev": "solid-start dev --port 8710",
     "build": "solid-start build",

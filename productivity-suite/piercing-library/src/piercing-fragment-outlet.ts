@@ -80,7 +80,28 @@ export class PiercingFragmentOutlet extends HTMLElement {
 
   disconnectedCallback() {
     if (this.fragmentHost) {
-      unmountedFragmentIds.add(this.fragmentHost.fragmentId);
+      const fragmentId = this.fragmentHost.fragmentId;
+      unmountedFragmentIds.add(fragmentId);
+
+      const fragmentFunctionConstructor =
+        fragmentRegistrationMap.get(fragmentId)!;
+      if (fragmentFunctionConstructor) {
+        fragmentRegistrationMap.delete(fragmentId);
+
+        const listenerRegistrations = fragmentListenerMap.get(
+          fragmentFunctionConstructor
+        )!;
+        fragmentListenerMap.delete(fragmentFunctionConstructor);
+
+        for (const listenerRegistration of listenerRegistrations) {
+          listenerRegistration.target.removeEventListener(
+            listenerRegistration.name,
+            listenerRegistration.listener,
+            listenerRegistration.options
+          );
+        }
+      }
+
       this.fragmentHost = null;
     }
   }

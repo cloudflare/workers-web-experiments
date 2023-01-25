@@ -1,12 +1,22 @@
 const reframedContainer = window.parent.document.querySelector(
   __FRAGMENT_SELECTOR__
 );
+
 if (!reframedContainer) {
   console.error("Container element couldn't be found");
 }
 
+const fragmentId = reframedContainer.getAttribute("fragment-id");
+window["____XXXXXXXX" + fragmentId + Date.now()] = true;
+
 const reframedDocument = reframedContainer.ownerDocument;
 const reframedWindow = reframedDocument.defaultView;
+const reframedRegistrationSymbol = Symbol.for("reframedRegistration");
+const reframedRegistration = Reflect.get(
+  reframedWindow,
+  reframedRegistrationSymbol
+);
+reframedRegistration(fragmentId, Function);
 
 const htmlToReframe = [];
 const nodesToRemove = [];
@@ -52,51 +62,51 @@ document.addEventListener("DOMContentLoaded", () => {
   originalDocumentBody.innerHTML = "";
 });
 
-const domCreateProperties = [
-  "createAttributeNS",
-  "createCDATASection",
-  "createComment",
-  "createDocumentFragment",
-  "createElement",
-  "createElementNS",
-  "createEvent",
-  "createExpression",
-  "createNSResolver",
-  "createNodeIterator",
-  "createProcessingInstruction",
-  "createRange",
-  "createTextNode",
-  "createTreeWalker",
-];
-for (const createProperty of domCreateProperties) {
-  document[createProperty] = function reframedCreateFn(...args) {
-    return reframedDocument[createProperty].apply(reframedDocument, args);
-  };
-}
+// const domCreateProperties = [
+//   "createAttributeNS",
+//   "createCDATASection",
+//   "createComment",
+//   "createDocumentFragment",
+//   "createElement",
+//   "createElementNS",
+//   "createEvent",
+//   "createExpression",
+//   "createNSResolver",
+//   "createNodeIterator",
+//   "createProcessingInstruction",
+//   "createRange",
+//   "createTextNode",
+//   "createTreeWalker",
+// ];
+// for (const createProperty of domCreateProperties) {
+//   document[createProperty] = function reframedCreateFn(...args) {
+//     return reframedDocument[createProperty].apply(reframedDocument, args);
+//   };
+// }
 
 // methods to query for elements that can be retargeted into the reframedContainer
-const domQueryProperties = [
-  "querySelector",
-  "querySelectorAll",
-  "getElementsByClassName",
-  "getElementsByTagName",
-  "getElementsByTagNameNS",
-];
-for (const queryProperty of domQueryProperties) {
-  document[queryProperty] = function reframedQueryFn(...args) {
-    return reframedContainer[queryProperty].apply(reframedContainer, args);
-  };
-}
+// const domQueryProperties = [
+//   "querySelector",
+//   "querySelectorAll",
+//   "getElementsByClassName",
+//   "getElementsByTagName",
+//   "getElementsByTagNameNS",
+// ];
+// for (const queryProperty of domQueryProperties) {
+//   document[queryProperty] = function reframedQueryFn(...args) {
+//     return reframedContainer[queryProperty].apply(reframedContainer, args);
+//   };
+// }
 
 // scope document.getElementById to execute just on the reframed container
-document.getElementById = function reframedGetElementById(id) {
-  return reframedContainer.querySelector(`#${id}`);
-};
+// document.getElementById = function reframedGetElementById(id) {
+//   return reframedContainer.querySelector(`#${id}`);
+// };
 
 // scope document.getElementsByName to execute just on the reframed container
-document.getElementsByName = function reframedGetElementsByName(name) {
-  return reframedContainer.querySelectorAll(`[name="${name}"]`);
-};
+// document.getElementsByName = function reframedGetElementsByName(name) {
+//   return reframedContainer.querySelectorAll(`[name="${name}"]`);
+// };
 
 const domListenerProperties = ["addEventListener", "removeEventListener"];
 for (const listenerProperty of domListenerProperties) {
@@ -111,8 +121,11 @@ for (const listenerProperty of domListenerProperties) {
     );
   };
 
-  window[listenerProperty] = function reframedListenerFn(...args) {
-    return reframedWindow[listenerProperty].apply(reframedWindow, args);
+  // window[listenerProperty] = function reframedListenerFn(...args) {
+  //   return reframedWindow[listenerProperty].apply(reframedWindow, args);
+  // };
+  window[listenerProperty] = function reframedListenerFn() {
+    return reframedWindow[listenerProperty].apply(reframedWindow, arguments);
   };
 }
 

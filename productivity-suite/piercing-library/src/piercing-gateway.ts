@@ -10,6 +10,7 @@ import {
 // for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import reframedClient from "./reframed-client?raw";
+import reframedHost from "./reframed-host?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
@@ -327,6 +328,7 @@ export class PiercingGateway<Env> {
         "</head>",
         `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
           `${piercingFragmentHostInlineScript}\n` +
+          `${getReframedHostCode()}\n` +
           "</head>"
       );
 
@@ -461,6 +463,10 @@ function getEscapedReframedClientCode(fragmentId: string) {
       )
     )}
   </script>`;
+}
+
+function getReframedHostCode() {
+  return `<script> ${reframedHost}</script>`;
 }
 
 const escapeQuotes = (str: string) => str.replaceAll('"', `&quot;`);

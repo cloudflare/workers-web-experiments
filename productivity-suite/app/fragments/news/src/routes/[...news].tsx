@@ -17,7 +17,6 @@ export default function News() {
   let ref: HTMLDivElement;
 
   const [page, setPage] = createSignal<number>(1);
-  const [numbers] = createSignal<number[]>(new Array(10000));
 
   onMount(() => {
     getBus(ref).listen<{ page: number }>("news-page", ({ page }) => {
@@ -75,11 +74,6 @@ export default function News() {
           <StoryList stories={stories()}></StoryList>
         </Suspense>
       </main>
-      <For each={numbers()}>
-        {(_, i) => {
-          return <div onClick={() => console.log(i())}>{`number: ` + i()}</div>;
-        }}
-      </For>
     </div>
   );
 }

@@ -83,21 +83,6 @@ const App: React.FC<{
     }
   }, [ref.current]);
 
-  // const renderBloat = () => {
-  //   return new Array(1000).fill(1).map((_, i) => {
-  //     return (
-  //       <div
-  //         onClick={() => {
-  //           console.log(i);
-  //         }}
-  //         data-bloat={new Array(10000).join("x")}
-  //       >
-  //         number {i}
-  //       </div>
-  //     );
-  //   });
-  // };
-
   return (
     <div className="todo-mvc-wrapper" ref={ref}>
       <section className="todo-mvc">
@@ -134,7 +119,6 @@ const App: React.FC<{
             />
           </>
         )}
-        {/* {renderBloat()} */}
       </section>
     </div>
   );

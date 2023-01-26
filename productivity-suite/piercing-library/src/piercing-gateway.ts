@@ -374,12 +374,13 @@ export class PiercingGateway<Env> {
     if (this.config.isolateFragments?.(env)) {
       // Quotes must be escaped from srcdoc contents
       template = `
+        ${prePiercingStyles}
         <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>
         </piercing-fragment-host>
-        ${prePiercingStyles}
         <iframe id="iframe_${fragmentId}" style="display: none" srcdoc="
           <body>
             --FRAGMENT_CONTENT--
+            ${getEmbeddedStyleScript(fragmentId)}
             ${getEscapedReframedClientCode(fragmentId)}
             ${(framework === "qwik" && escapeQuotes(qwikloaderScript)) || ""}
           </body>
@@ -461,6 +462,31 @@ function getEscapedReframedClientCode(fragmentId: string) {
         "__FRAGMENT_SELECTOR__",
         `"piercing-fragment-host[fragment-id='${fragmentId}']"`
       )
+    )}
+  </script>`;
+}
+
+function getEmbeddedStyleScript(fragmentId: string) {
+  return `<script>
+    ${escapeQuotes(
+      `
+        const stylesheets = document.querySelectorAll(
+          'link[href][rel="stylesheet"]'
+        );
+
+        stylesheets.forEach((styleLink) => {
+          if (styleLink.sheet) {
+            let rulesText = "";
+            for (const { cssText } of styleLink.sheet.cssRules) {
+              rulesText += cssText + "\\n";
+            }
+
+            const styleElement = document.createElement("style");
+            styleElement.textContent = rulesText;
+            styleLink.replaceWith(styleElement);
+          }
+        });
+      `
     )}
   </script>`;
 }

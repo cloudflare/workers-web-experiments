@@ -13,7 +13,7 @@
     "start": "next start",
     "lint": "next lint",
     "predeploy": "npm run pages:build",
-    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish .vercel/output/static --no-bundle=false --branch main --project-name d1-todos-nextjs"
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish .vercel/output/static --bundle=true --branch main --project-name d1-todos-nextjs"
   },
   "dependencies": {
     "@next/font": "13.1.2",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^0.2.0",
-    "vercel": "^28.13.1",
-    "wrangler": "latest"
+    "vercel": "^28.13.2",
+    "wrangler": "https://prerelease-registry.devprod.cloudflare.dev/prs/2608/npm-package-wrangler-2608"
   }
 }

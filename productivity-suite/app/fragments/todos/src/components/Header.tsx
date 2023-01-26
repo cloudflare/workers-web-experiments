@@ -26,6 +26,8 @@ export function Header({
         }`}
         placeholder="What needs to be done?"
         autoFocus
+        autoComplete="off"
+        spellCheck={false}
         value={newTodoDetails.text}
         onInput={(event: ChangeEvent<HTMLInputElement>) => {
           const text = event.target.value;

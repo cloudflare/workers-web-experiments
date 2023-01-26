@@ -37,3 +37,5 @@ You can view the various demo applications at the following URLs:
 - SolidStart: https://d1-todos-solid-start.pages.dev
 
 - SvelteKit: https://d1-todos-svelte-kit.pages.dev
+
+- Hono: https://d1-todos-hono.pages.dev

@@ -1,0 +1,28 @@
+{
+  "name": "hono",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "predev": "npm run setup-db",
+    "dev": "run-p dev:*",
+    "dev:wrangler": "npx wrangler pages dev ./dist  --port 8698 --d1 D1_TODOS_DB --live-reload --persist",
+    "dev:esbuild": "esbuild --bundle src/server.tsx --format=esm --watch --outfile=dist/_worker.js",
+    "setup-db": "npx wrangler d1 execute D1_TODOS_DB -y --local --command 'CREATE TABLE if not exists TODOS (id CHAR PRIMARY KEY, text CHAR, completed CHAR, sessionId CHAR, date CHAR);'",
+    "build": "esbuild --bundle src/server.tsx --format=esm --outfile=dist/_worker.js",
+    "predeploy": "npm run build",
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish dist --bundle=true --branch main --project-name d1-todos-hono"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hono": "^2.7.5",
+    "shared": "file:../../shared"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.4",
+    "npm-run-all": "^4.1.5",
+    "wrangler": "https://prerelease-registry.devprod.cloudflare.dev/prs/2608/npm-package-wrangler-2608"
+  }
+}

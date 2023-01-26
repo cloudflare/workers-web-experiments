@@ -29,6 +29,12 @@ export const appsDetails = {
       deployScript: 'deploy',
       port: 8711,
     },
+    Hono: {
+      path: './apps/hono',
+      devScript: 'dev',
+      deployScript: 'deploy',
+      port: 8698,
+    },
 };
 
 export const appNames = Object.keys(appsDetails);

@@ -29,10 +29,14 @@ const millisInAWeek = 6.048e8;
 export function saveSessionIdCookie(sessionId: string) {
   if (typeof document === "undefined") return;
 
+  document.cookie = generateSessionIdCookie(sessionId);
+}
+
+export function generateSessionIdCookie(sessionId: string) {
   const expirationDate = new Date(
     new Date().getTime() + millisInAWeek
   ).toUTCString();
-  document.cookie = `d1TodosSessionId=${sessionId}; expires=${expirationDate}; path=/`;
+  return `d1TodosSessionId=${sessionId}; expires=${expirationDate}; path=/`;
 }
 
 const newSessionTodos = [

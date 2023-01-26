@@ -7,8 +7,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc && vite build",
-    "build.watch": "tsc && vite build -w"
+    "build": "npx tsc && vite build",
+    "build.watch": "npx tsc && vite build -w"
   },
   "dependencies": {
     "cookie": "^0.5.0",

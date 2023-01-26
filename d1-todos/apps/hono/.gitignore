@@ -1,0 +1,4 @@
+# ignore all the content of dist except the public directory
+!dist/
+dist/*
+!dist/public/

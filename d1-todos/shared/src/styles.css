@@ -6,6 +6,10 @@ body {
     min-height: 100vh;
 }
 
+form {
+    margin: 0;
+}
+
 *:focus-visible {
     outline: solid 2px #471effaf;
     outline-offset: 0.35rem;
@@ -42,6 +46,7 @@ input:focus-visible {
 
 .app-header a {
     outline-offset: -0.25rem;
+    display: flex;
 }
 
 .app-footer {

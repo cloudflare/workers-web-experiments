@@ -9,7 +9,7 @@ inquirer
       type: 'list',
       name: 'app',
       message: 'Which app do you want to deploy?',
-      choices: [...appNames, new inquirer.Separator(), 'all'],
+      choices: [...appNames, new inquirer.Separator(), 'all', new inquirer.Separator(),],
     },
   ])
   .then(({ app }) => {

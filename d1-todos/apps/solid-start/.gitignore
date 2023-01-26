@@ -25,3 +25,4 @@ gitignore
 Thumbs.db
 
 .mf
+functions/

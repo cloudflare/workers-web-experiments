@@ -6,7 +6,7 @@ const fragmentListenerMap = new Map();
 // monkey patch global addEventListner on window and document so that we can automatically unregister
 // any listeners created from within a registered fragment.
 const addEventListenerTargets = [window, document];
-// const addEventListenerTargets = [Node.prototype];
+
 for (const addEventListenerTarget of addEventListenerTargets) {
   const originalDocumentAddEventListener =
     addEventListenerTarget.addEventListener;
@@ -25,7 +25,6 @@ for (const addEventListenerTarget of addEventListenerTargets) {
       if (listenerFns) {
         listenerFns.push({
           target: addEventListenerTarget,
-          // target: this,
           name,
           listener,
           options,
@@ -34,7 +33,6 @@ for (const addEventListenerTarget of addEventListenerTargets) {
 
       return originalDocumentAddEventListener.call(
         addEventListenerTarget,
-        // this,
         name,
         listener,
         options

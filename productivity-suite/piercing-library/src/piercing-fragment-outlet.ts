@@ -83,8 +83,12 @@ export class PiercingFragmentOutlet extends HTMLElement {
       const fragmentId = this.fragmentHost.fragmentId;
       unmountedFragmentIds.add(fragmentId);
 
+      // Loop through listeners created by the fragment and clean them up.
+      // fragmentRegistrationMap is initialized by `reframed-host` and then
+      // registered in reframed-client.
       const fragmentFunctionConstructor =
         fragmentRegistrationMap.get(fragmentId)!;
+
       if (fragmentFunctionConstructor) {
         fragmentRegistrationMap.delete(fragmentId);
 

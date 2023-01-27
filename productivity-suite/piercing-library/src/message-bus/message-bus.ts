@@ -60,7 +60,11 @@ export class GenericMessageBus implements MessageBus {
   }
 
   dispatch(eventName: string, value: JSONValue) {
-    value = JSON.parse(JSON.stringify(value));
+    // If the `value` here is an object that originates in a iframe, then it
+    // will hold a reference to the iframe Window through the `Object`'s
+    // prototype chain, causing a leak. Cloning it here avoids this
+    value = structuredClone(value);
+
     this._state[eventName] = value;
     const callbacksForEvent = this._callbacksMap.get(eventName) ?? [];
     setTimeout(

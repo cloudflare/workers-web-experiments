@@ -368,7 +368,6 @@ export class PiercingGateway<Env> {
       <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>
         ${prePiercingStyles}
         --FRAGMENT_CONTENT--
-        <div class="fragment-end"></div>
       </piercing-fragment-host>
     `;
 
@@ -381,7 +380,6 @@ export class PiercingGateway<Env> {
         <iframe id="iframe_${fragmentId}" style="display: none" srcdoc="
           <body>
             --FRAGMENT_CONTENT--
-            <div class="fragment-end"></div>
             ${getEmbeddedStyleScript(fragmentId)}
             ${getEscapedReframedClientCode(fragmentId)}
             ${(framework === "qwik" && escapeQuotes(qwikloaderScript)) || ""}
@@ -468,6 +466,9 @@ function getEscapedReframedClientCode(fragmentId: string) {
   </script>`;
 }
 
+// In order to avoid a FOUC when rendering fragments in an iframe, we need to
+// resolve any linked css files into `style` tags which we inline. This is
+// handled for non-isolated fragments inside `piercing-fragment-host`
 function getEmbeddedStyleScript(fragmentId: string) {
   return `<script>
     ${escapeQuotes(

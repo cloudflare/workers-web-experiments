@@ -322,24 +322,19 @@ export class PiercingGateway<Env> {
     const requestIsForHtml = request.headers
       .get("Accept")
       ?.includes("text/html");
+
     if (requestIsForHtml) {
       const stateHeaderStr = request.headers.get("message-bus-state");
-      let indexBody = (await response.text()).replace(
-        "</head>",
-        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
-          `${piercingFragmentHostInlineScript}\n` +
-          `${getReframedHostCode()}\n` +
-          "</head>"
-      );
+      const isolateFragments = this.config.isolateFragments?.(env);
 
-      if (!this.config.isolateFragments?.(env)) {
-        // We need to include the qwikLoader script here
-        // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
-        indexBody = indexBody.replace(
-          "</head>",
-          `\n${qwikloaderScript}</head>`
-        );
-      }
+      const postHead = `
+          ${getMessageBusInlineScript(stateHeaderStr ?? "{}")}
+          ${piercingFragmentHostInlineScript}
+          ${isolateFragments ? getReframedHostCode() : qwikloaderScript}
+        </head>
+      `;
+      let indexBody = (await response.text()).replace("</head>", postHead);
+
       return new Response(indexBody, response);
     }
 
@@ -495,7 +490,7 @@ function getEmbeddedStyleScript(fragmentId: string) {
 }
 
 function getReframedHostCode() {
-  return `<script> ${reframedHost}</script>`;
+  return `<script id="reframedHost">${reframedHost}</script>`;
 }
 
 const escapeQuotes = (str: string) => str.replaceAll('"', `&quot;`);

@@ -155,7 +155,7 @@
       }
 
       body.show-seams #root > .layout,
-      body.show-seams piercing-fragment-host {
+      body.show-seams piercing-fragment-host:has( div.fragment-end) {
         outline: 2px dashed var(--seams-color);
         border-radius: 1px;
       }

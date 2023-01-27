@@ -368,6 +368,7 @@ export class PiercingGateway<Env> {
       <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>
         ${prePiercingStyles}
         --FRAGMENT_CONTENT--
+        <div class="fragment-end"></div>
       </piercing-fragment-host>
     `;
 
@@ -380,6 +381,7 @@ export class PiercingGateway<Env> {
         <iframe id="iframe_${fragmentId}" style="display: none" srcdoc="
           <body>
             --FRAGMENT_CONTENT--
+            <div class="fragment-end"></div>
             ${getEmbeddedStyleScript(fragmentId)}
             ${getEscapedReframedClientCode(fragmentId)}
             ${(framework === "qwik" && escapeQuotes(qwikloaderScript)) || ""}

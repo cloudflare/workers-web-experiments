@@ -107,7 +107,6 @@ export default function Home() {
       (curr?.timestamp ?? 0) > (acc?.timestamp ?? 0) ? curr : acc
     );
 
-    debugger;
     const latestError = latestActionUtilsResult?.error;
     setError(latestError);
     if (

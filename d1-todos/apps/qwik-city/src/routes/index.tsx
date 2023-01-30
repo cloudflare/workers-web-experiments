@@ -26,7 +26,6 @@ export const dataLoader = loader$<
   Promise<{
     sessionId: string;
     todos: Todo[];
-    error?: string;
   }>
 >(async ({ request, platform }) => {
   const db = getTodosDb(platform);

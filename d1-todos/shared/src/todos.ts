@@ -105,7 +105,7 @@ export async function deleteTodo(
 
 const todoTextInvalidReasons = {
   empty: "A todo can't be empty or contain only spaces",
-  wrongFormat: "only characters, spaces and numbers are allowed",
+  wrongFormat: "only letters, spaces and numbers are allowed",
 } as const;
 type TodoTextInvalidReasons = typeof todoTextInvalidReasons;
 type TodoTextInvalidReason =

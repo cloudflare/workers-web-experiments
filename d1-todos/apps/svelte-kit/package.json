@@ -13,6 +13,7 @@
 		"dev:wrangler": "npx wrangler pages dev ./.svelte-kit/cloudflare --port 8711 --d1 D1_TODOS_DB --live-reload --persist",
 		"predev": "npm run build ; npm run setup-db",
 		"dev": "run-p build:watch dev:wrangler",
+		"predeploy": "npm run build",
 		"deploy": "CLOUDFLARE_ACCOUNT_ID=8ed4d03ac99f77561d0e8c9cbcc76cb6 npx wrangler pages publish  ./.svelte-kit/cloudflare --bundle=true --branch main --project-name d1-todos-svelte-kit"
 	},
 	"devDependencies": {

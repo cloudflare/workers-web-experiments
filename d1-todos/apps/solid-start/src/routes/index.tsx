@@ -1,6 +1,7 @@
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { FormError, useRouteData } from "solid-start";
 import { createServerAction$, createServerData$ } from "solid-start/server";
+import type { Invalidate } from "solid-start/data/createRouteAction";
 import {
   getTodos,
   addTodo,
@@ -36,86 +37,68 @@ export default function Home() {
     }
   });
 
-  const [addTodoServerAction, { Form: AddTodoForm }] = createServerAction$(
+  const [error, setError] = createSignal<string | undefined>();
+
+  const getUIUpdater = (clearNewTodoTextOnSuccess = false) => ({
+    // Note: `invalidate` shouldn't be used to update the UI but to refetch data
+    //       but this is currently the only way to update the UI after a successful
+    //       submission in SolidStart
+    invalidate: (({ error }: { error?: string }) => {
+      setError(error ?? "");
+      if (!error && clearNewTodoTextOnSuccess) {
+        setNewTodo("");
+      }
+    }) as Invalidate,
+  });
+
+  const [_addTodoServerAction, { Form: AddTodoForm }] = createServerAction$(
     async (formData: FormData, { request, env }) => {
       const db = getTodosDb(env);
-      const timestamp = new Date().getTime();
       const text = formData.get("text") as string;
       const todoTextValidation = validateTodoText(text);
       if (!todoTextValidation.valid) {
-        return { error: todoTextValidation.reason, timestamp };
+        return { error: todoTextValidation.reason };
       }
       const sessionId = getSessionId(request);
       try {
         await addTodo(db, sessionId, text);
       } catch {
-        return { error: "DataBase Internal Error", timestamp };
+        return { error: "DataBase Internal Error" };
       }
 
-      return { timestamp };
-    }
+      return {};
+    },
+    getUIUpdater(true)
   );
 
-  const [editTodoServerAction, { Form: EditTodoForm }] = createServerAction$(
+  const [_editTodoServerAction, { Form: EditTodoForm }] = createServerAction$(
     async (formData: FormData, { request, env }) => {
       const db = getTodosDb(env);
-      const timestamp = new Date().getTime();
       const id = formData.get("todo-id") as string;
       const completed = formData.get("completed") as string;
       const sessionId = getSessionId(request);
       try {
         await editTodo(db, sessionId, id, completed === "true");
       } catch {
-        return { error: "DataBase Internal Error", timestamp };
+        return { error: "DataBase Internal Error" };
       }
-      return { timestamp };
-    }
+      return {};
+    },
+    getUIUpdater()
   );
 
-  const [deleteTodoServerAction, { Form: DeleteTodoForm }] =
+  const [_deleteTodoServerAction, { Form: DeleteTodoForm }] =
     createServerAction$(async (formData: FormData, { request, env }) => {
       const db = getTodosDb(env);
-      const timestamp = new Date().getTime();
       const id = formData.get("todo-id") as string;
       const sessionId = getSessionId(request);
       try {
         await deleteTodo(db, sessionId, id);
       } catch {
-        return { error: "DataBase Internal Error", timestamp };
+        return { error: "DataBase Internal Error" };
       }
-      return { timestamp };
-    });
-
-  const [error, setError] = createSignal<string | undefined>();
-
-  createEffect(() => {
-    if (
-      [
-        addTodoServerAction.pending,
-        editTodoServerAction.pending,
-        deleteTodoServerAction.pending,
-      ].some(Boolean)
-    ) {
-      return;
-    }
-
-    const latestActionUtilsResult = [
-      addTodoServerAction.result,
-      editTodoServerAction.result,
-      deleteTodoServerAction.result,
-    ].reduce((acc, curr) =>
-      (curr?.timestamp ?? 0) > (acc?.timestamp ?? 0) ? curr : acc
-    );
-
-    const latestError = latestActionUtilsResult?.error;
-    setError(latestError);
-    if (
-      !latestError &&
-      latestActionUtilsResult === addTodoServerAction.result
-    ) {
-      setNewTodo("");
-    }
-  });
+      return {};
+    }, getUIUpdater());
 
   return (
     <main class="todos-app">

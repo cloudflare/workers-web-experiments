@@ -1,9 +1,4 @@
-import {
-  component$,
-  useClientEffect$,
-  useSignal,
-  useTask$,
-} from "@builder.io/qwik";
+import { component$, useClientEffect$, useSignal } from "@builder.io/qwik";
 import { loader$, action$, Form } from "@builder.io/qwik-city";
 import {
   type Todo,
@@ -26,20 +21,42 @@ export const dataLoader = loader$<
   Promise<{
     sessionId: string;
     todos: Todo[];
+    latestActionError?: string;
+    resetTodoInput: boolean;
   }>
->(async ({ request, platform }) => {
+>(async ({ request, platform, getData }) => {
   const db = getTodosDb(platform);
   const sessionId = await getOrCreateSessionId(request as Request, db);
   const todos = await getTodos(db, sessionId);
+
+  const addActionData = await getData(addAction);
+  const editActionData = await getData(editAction);
+  const deleteActionData = await getData(deleteAction);
+
+  const latestActionValue = [
+    addActionData,
+    editActionData,
+    deleteActionData,
+  ].find(Boolean);
+
+  const latestActionError = latestActionValue?.error;
+
+  const resetTodoInput = !!(
+    latestActionValue &&
+    latestActionValue === addActionData &&
+    !latestActionError
+  );
+
   return {
     sessionId,
     todos,
+    latestActionError,
+    resetTodoInput,
   };
 });
 
 export const addAction = action$(async (formData, { request, platform }) => {
   const db = getTodosDb(platform as Platform);
-  const timestamp = new Date().getTime();
   const sessionId = getSessionIdFromRequest(request as Request);
   if (!sessionId) {
     return { error: "Session Id not defined!" };
@@ -50,57 +67,54 @@ export const addAction = action$(async (formData, { request, platform }) => {
     try {
       await addTodo(db, sessionId, text);
     } catch {
-      return { error: "DataBase Internal Error", timestamp };
+      return { error: "DataBase Internal Error" };
     }
   } else {
-    return { error: checkResult.reason!, timestamp };
+    return { error: checkResult.reason! };
   }
-  return { addedTodo: text, timestamp };
+  return { addedTodo: text };
 });
 
 export const editAction = action$(async (formData, { request, platform }) => {
   const db = getTodosDb(platform as Platform);
   const sessionId = getSessionIdFromRequest(request as Request);
-  const timestamp = new Date().getTime();
 
   if (!sessionId) {
-    return { error: "Session Id not defined!", timestamp };
+    return { error: "Session Id not defined!" };
   }
   const id = formData.get("todo-id") as string;
   const completed = (formData.get("completed") as string) === "true";
   try {
     await editTodo(db, sessionId, id, completed);
   } catch {
-    return { error: "DataBase Internal Error", timestamp };
+    return { error: "DataBase Internal Error" };
   }
 
-  return { timestamp };
+  return {};
 });
 
 export const deleteAction = action$(async (formData, { request, platform }) => {
   const db = getTodosDb(platform as Platform);
   const sessionId = getSessionIdFromRequest(request as Request);
-  const timestamp = new Date().getTime();
 
   if (!sessionId) {
-    return { error: "Session Id not defined!", timestamp };
+    return { error: "Session Id not defined!" };
   }
   const id = formData.get("todo-id") as string;
   try {
     await deleteTodo(db, sessionId, id);
   } catch {
-    return { error: "DataBase Internal Error", timestamp };
+    return { error: "DataBase Internal Error" };
   }
 
-  return { timestamp };
+  return {};
 });
 
 export default component$(() => {
   const data = dataLoader.use();
-  const { sessionId, todos } = data.value;
+  const { sessionId, todos, latestActionError: error } = data.value;
 
   const newTodo = useSignal<string>("");
-  const error = useSignal<string | undefined>();
 
   useClientEffect$(() => {
     if (sessionId) {
@@ -112,24 +126,10 @@ export default component$(() => {
   const editActionUtils = editAction.use();
   const deleteActionUtils = deleteAction.use();
 
-  useTask$(({ track }) => {
-    track(() => addActionUtils.value);
-    track(() => editActionUtils.value);
-    track(() => deleteActionUtils.value);
+  useClientEffect$(({ track }) => {
+    track(() => data.value.resetTodoInput);
 
-    const latestActionUtilsValue = [
-      addActionUtils.value,
-      editActionUtils.value,
-      deleteActionUtils.value,
-    ].reduce((acc, curr) =>
-      (curr?.timestamp ?? 0) > (acc?.timestamp ?? 0) ? curr : acc
-    );
-
-    const latestError = latestActionUtilsValue?.error;
-
-    error.value = latestError;
-
-    if (!latestError && latestActionUtilsValue === addActionUtils.value) {
+    if (data.value.resetTodoInput) {
       newTodo.value = "";
     }
   });
@@ -158,7 +158,7 @@ export default component$(() => {
           <button disabled={!newTodo.value}>add todo</button>
         </div>
       </Form>
-      {error.value && <p class="backend-error">{error.value}</p>}
+      {error && <p class="backend-error">{error}</p>}
       <ul>
         {todos.map(({ id, text, completed }) => (
           <li key={id}>

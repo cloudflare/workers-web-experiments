@@ -10,6 +10,7 @@ import {
 // for debugging replace `qwikloader.js` with `qwikloader.debug.js` to have the code non-minified
 import qwikloader from "@builder.io/qwik/qwikloader.js?raw";
 import reframedClient from "./reframed-client?raw";
+import reframedHost from "./reframed-host?raw";
 import { MessageBusState } from "./message-bus/message-bus";
 import { getMessageBusState } from "./message-bus/server-side-message-bus";
 
@@ -321,23 +322,19 @@ export class PiercingGateway<Env> {
     const requestIsForHtml = request.headers
       .get("Accept")
       ?.includes("text/html");
+
     if (requestIsForHtml) {
       const stateHeaderStr = request.headers.get("message-bus-state");
-      let indexBody = (await response.text()).replace(
-        "</head>",
-        `${getMessageBusInlineScript(stateHeaderStr ?? "{}")}\n` +
-          `${piercingFragmentHostInlineScript}\n` +
-          "</head>"
-      );
+      const isolateFragments = this.config.isolateFragments?.(env);
 
-      if (!this.config.isolateFragments?.(env)) {
-        // We need to include the qwikLoader script here
-        // this is a temporary bugfix, see: https://jira.cfops.it/browse/DEVDASH-51
-        indexBody = indexBody.replace(
-          "</head>",
-          `\n${qwikloaderScript}</head>`
-        );
-      }
+      const postHead = `
+          ${getMessageBusInlineScript(stateHeaderStr ?? "{}")}
+          ${piercingFragmentHostInlineScript}
+          ${isolateFragments ? getReframedHostCode() : qwikloaderScript}
+        </head>
+      `;
+      let indexBody = (await response.text()).replace("</head>", postHead);
+
       return new Response(indexBody, response);
     }
 
@@ -372,12 +369,13 @@ export class PiercingGateway<Env> {
     if (this.config.isolateFragments?.(env)) {
       // Quotes must be escaped from srcdoc contents
       template = `
+        ${prePiercingStyles}
         <piercing-fragment-host fragment-id=${fragmentConfig.fragmentId}>
         </piercing-fragment-host>
-        ${prePiercingStyles}
         <iframe id="iframe_${fragmentId}" style="display: none" srcdoc="
           <body>
             --FRAGMENT_CONTENT--
+            ${getEmbeddedStyleScript(fragmentId)}
             ${getEscapedReframedClientCode(fragmentId)}
             ${(framework === "qwik" && escapeQuotes(qwikloaderScript)) || ""}
           </body>
@@ -461,6 +459,38 @@ function getEscapedReframedClientCode(fragmentId: string) {
       )
     )}
   </script>`;
+}
+
+// In order to avoid a FOUC when rendering fragments in an iframe, we need to
+// resolve any linked css files into `style` tags which we inline. This is
+// handled for non-isolated fragments inside `piercing-fragment-host`
+function getEmbeddedStyleScript(fragmentId: string) {
+  return `<script>
+    ${escapeQuotes(
+      `
+        const stylesheets = document.querySelectorAll(
+          'link[href][rel="stylesheet"]'
+        );
+
+        stylesheets.forEach((styleLink) => {
+          if (styleLink.sheet) {
+            let rulesText = "";
+            for (const { cssText } of styleLink.sheet.cssRules) {
+              rulesText += cssText + "\\n";
+            }
+
+            const styleElement = document.createElement("style");
+            styleElement.textContent = rulesText;
+            styleLink.replaceWith(styleElement);
+          }
+        });
+      `
+    )}
+  </script>`;
+}
+
+function getReframedHostCode() {
+  return `<script id="reframedHost">${reframedHost}</script>`;
 }
 
 const escapeQuotes = (str: string) => str.replaceAll('"', `&quot;`);

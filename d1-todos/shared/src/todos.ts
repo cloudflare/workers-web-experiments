@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 export type Todo = {
   id: string;
   text: string;
@@ -31,7 +29,7 @@ export async function addTodo(
   sessionId: string,
   text: string
 ): Promise<Todo> {
-  const id = uuidv4();
+  const id = crypto.randomUUID();
   const newTodo: Todo = {
     id,
     text,
@@ -51,7 +49,7 @@ export async function addTodos(
   texts: string[]
 ): Promise<Todo[]> {
   const newTodos: Todo[] = texts.map((text) => ({
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     text,
     completed: false,
   }));

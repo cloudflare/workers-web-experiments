@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { parse } from "cookie";
 import { addTodos } from "./todos";
 
@@ -12,7 +11,7 @@ export async function getOrCreateSessionId(
   if (existingSessionId) {
     return existingSessionId;
   }
-  const sessionId = uuidv4();
+  const sessionId = crypto.randomUUID();
 
   await addTodos(TODOS_DB, sessionId, newSessionTodos);
 

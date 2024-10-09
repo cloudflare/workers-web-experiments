@@ -1,12 +1,21 @@
 const reframedContainer = window.parent.document.querySelector(
   __FRAGMENT_SELECTOR__
 );
+
 if (!reframedContainer) {
   console.error("Container element couldn't be found");
 }
 
+const fragmentId = reframedContainer.getAttribute("fragment-id");
+
 const reframedDocument = reframedContainer.ownerDocument;
 const reframedWindow = reframedDocument.defaultView;
+const reframedRegistrationSymbol = Symbol.for("reframedRegistration");
+const reframedRegistration = Reflect.get(
+  reframedWindow,
+  reframedRegistrationSymbol
+);
+reframedRegistration(fragmentId, Function);
 
 const htmlToReframe = [];
 const nodesToRemove = [];
@@ -42,6 +51,8 @@ document.body.childNodes.forEach((node) => {
 });
 
 nodesToRemove.forEach((node) => node.remove());
+
+console.log("reframing iframe nodes");
 reframedContainer.innerHTML = htmlToReframe.join("");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -111,8 +122,8 @@ for (const listenerProperty of domListenerProperties) {
     );
   };
 
-  window[listenerProperty] = function reframedListenerFn(...args) {
-    return reframedWindow[listenerProperty].apply(reframedWindow, args);
+  window[listenerProperty] = function reframedListenerFn() {
+    return reframedWindow[listenerProperty].apply(reframedWindow, arguments);
   };
 }
 

@@ -26,6 +26,9 @@ export function Header({
         }`}
         placeholder="What needs to be done?"
         autoFocus
+        // Spellcheck set to false to work around a memory leak issue in chrome:
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1410394
+        spellCheck={false}
         value={newTodoDetails.text}
         onInput={(event: ChangeEvent<HTMLInputElement>) => {
           const text = event.target.value;
